@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root, .dark {
+  --bg: #0A110D;
+  --surface: #111B15;
+  --raised: #182420;
+  --border: #24332B;
+  --text: #E6EEE8;
+  --muted: #8FA095;
+  --primary: #7BC144;
+  --on-primary: #0A110D;
+  --due-soon: #E0A526;
+  --overdue: #D9694A;
+}
+.light {
+  --bg: #F4F3EC;
+  --surface: #FFFFFF;
+  --raised: #ECEBE2;
+  --border: #E2E1D6;
+  --text: #14201A;
+  --muted: #5E6B62;
+  --primary: #2B6B3A;
+  --on-primary: #FFFFFF;
+  --due-soon: #B97C0C;
+  --overdue: #B3402A;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-due-soon: var(--due-soon);
+  --color-overdue: var(--overdue);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-geist-sans);
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), sans-serif;
+  font-size: 16px;
+  font-feature-settings: "tnum";
+}
+button, input { font: inherit; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+::selection { background: var(--primary); color: var(--on-primary); }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.status-pill--on-track { color: var(--primary); background: color-mix(in srgb, var(--primary) 18%, transparent); }
+.status-pill--due-soon { color: var(--due-soon); background: color-mix(in srgb, var(--due-soon) 18%, transparent); }
+.status-pill--overdue { color: var(--overdue); background: color-mix(in srgb, var(--overdue) 18%, transparent); }
+.status-pill--done { color: var(--muted); background: color-mix(in srgb, var(--muted) 18%, transparent); }
+.status-dot { display: inline-block; width: 8px; height: 8px; flex: none; border-radius: 999px; }
+.status-dot--on-track { background: var(--primary); }
+.status-dot--due-soon { background: var(--due-soon); }
+.status-dot--overdue { background: var(--overdue); }
+.status-dot--done { background: var(--muted); }
