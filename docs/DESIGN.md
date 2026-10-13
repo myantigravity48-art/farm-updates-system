@@ -71,8 +71,11 @@ WCAG AA contrast in both modes. Visible focus rings. Status never by colour alon
 Verb-first buttons. No "please", no "successfully", no exclamation marks. Errors say what happened and what to do. One primary button per screen.
 
 ## Screens
-Designed for v1: Dashboard, Farm detail, Add farm (and bulk add), Mark done, Alert settings, Stage template.
-Not yet designed: Login, and the phase 2 screens (Costs overview, Add expense, Workers, Worker detail, Record payment).
+Designed: Dashboard, Farm detail, Add farm (and bulk add), Mark done, Alert settings, Stage template, Login.
+Alert settings is email only now. If the export still shows WhatsApp numbers, a WhatsApp channel toggle or chat bubbles, follow this file instead: recipients are name and email, there is no channel toggle, and the preview shows an email (subject line plus a short body).
+Not yet designed: the phase 2 screens (Costs overview, Add expense, Workers, Worker detail, Record payment).
 Every screen has desktop (1440) and mobile (390) in both modes.
+
+Screen exports live in `design/` at the repo root.
 
 Wordmark: "Farm updates system". The mock exports may still show the old placeholder "Farm Reminder". All mock data in the exports is placeholder.
