@@ -48,7 +48,7 @@ create table public.farms (
   schedule_anchor_date date        not null default current_date,
   notes                text,
   created_at           timestamptz not null default now(),
-  created_by           uuid        default auth.uid() references auth.users (id)
+  created_by           uuid        default auth.uid() references auth.users (id) on delete set null
 );
 
 create unique index farms_name_lower_idx on public.farms (lower(name));
@@ -65,7 +65,7 @@ create table public.farm_stages (
   template_id       uuid    not null references public.stage_templates (id),
   is_done           boolean not null default false,
   done_date         date,
-  done_by           uuid    references auth.users (id),
+  done_by           uuid    references auth.users (id) on delete set null,
   done_note         text,
   due_date_override date,
   unique (farm_id, template_id)
@@ -85,7 +85,7 @@ create table public.notes (
   farm_id        uuid        not null references public.farms (id) on delete cascade,
   farm_stage_id  uuid        references public.farm_stages (id) on delete set null,
   body           text        not null,
-  created_by     uuid        default auth.uid() references auth.users (id),
+  created_by     uuid        default auth.uid() references auth.users (id) on delete set null,
   created_at     timestamptz not null default now()
 );
 
@@ -105,7 +105,7 @@ create table public.photos (
   storage_path   text        not null,
   caption        text,
   taken_on       date,
-  created_by     uuid        default auth.uid() references auth.users (id),
+  created_by     uuid        default auth.uid() references auth.users (id) on delete set null,
   created_at     timestamptz not null default now()
 );
 

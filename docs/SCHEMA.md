@@ -21,6 +21,8 @@
 | `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, overdue repeat, and London send hour. |
 | `notification_log` | One row per sent or failed alert. Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
 
+All `auth.users` references (`created_by` and `done_by`) are nullable and use `ON DELETE SET NULL`, preserving farm records, notes, and photos when a user is deleted.
+
 ## Auto-create trigger
 
 When a row is inserted into `farms`, a trigger function inserts one `farm_stages` row (is_done = false) for every row in `stage_templates`. The function uses `security invoker` and `set search_path = ''` with all objects schema-qualified.
