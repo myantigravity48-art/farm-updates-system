@@ -21,7 +21,7 @@ function activeFor(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, email }: { children: React.ReactNode; email: string }) {
   const pathname = usePathname();
   const [query, setQuery] = useState("");
   const showFarmPanel = pathname === "/" || pathname === "/farms" || pathname.startsWith("/farms/");
@@ -75,9 +75,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main className={`min-h-screen px-6 pb-24 pt-5 min-[768px]:pb-10 min-[768px]:pl-[104px] min-[768px]:pt-9 min-[1024px]:pl-6 ${showFarmPanel ? "min-[1024px]:ml-[320px]" : ""}`}>
         <div className="mx-auto w-full max-w-[1200px]">
-          <div className="mb-8 flex items-center justify-between min-[768px]:hidden">
-            <span className="font-medium">Farm updates system</span>
-            <ThemeToggle />
+          <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="mr-auto font-medium min-[768px]:hidden">Farm updates system</span>
+            <div className="ml-auto flex min-w-0 items-center gap-2">
+              <Link
+                href="/settings"
+                aria-label={`Settings, signed in as ${email}`}
+                className="flex min-h-11 min-w-0 items-center gap-2 rounded-[10px] px-2 text-sm text-muted hover:bg-raised hover:text-text"
+              >
+                <Settings aria-hidden="true" size={18} strokeWidth={1.5} />
+                <span className="max-w-[160px] truncate min-[768px]:max-w-[260px]">{email}</span>
+              </Link>
+              <span className="min-[768px]:hidden">
+                <ThemeToggle />
+              </span>
+            </div>
           </div>
           {children}
         </div>

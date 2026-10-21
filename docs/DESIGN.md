@@ -20,6 +20,8 @@ Define as CSS variables. Dark is the default theme. Light overrides under the th
   --on-primary: #0A110D;
   --due-soon: #E0A526;
   --overdue: #D9694A;
+  --photo-overlay: rgb(10 17 13 / 0.55);
+  --on-photo: #F4F3EC;
 }
 .light {
   --bg: #F4F3EC;
@@ -32,6 +34,8 @@ Define as CSS variables. Dark is the default theme. Light overrides under the th
   --on-primary: #FFFFFF;
   --due-soon: #B97C0C;
   --overdue: #B3402A;
+  --photo-overlay: rgb(10 17 13 / 0.55);
+  --on-photo: #F4F3EC;
 }
 ```
 

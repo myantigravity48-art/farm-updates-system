@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist } from "next/font/google";
-import { Suspense, type ReactNode } from "react";
-import { AppShell } from "@/components/app-shell";
+import type { ReactNode } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -18,9 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en" suppressHydrationWarning className={`${fraunces.variable} ${geist.variable}`}>
       <body>
         <ThemeProvider attribute="class" themes={["dark", "light"]} defaultTheme="dark" enableSystem={false}>
-          <Suspense fallback={<main className="min-h-screen bg-bg px-6 pt-9 text-text">{children}</main>}>
-            <AppShell>{children}</AppShell>
-          </Suspense>
+          {children}
         </ThemeProvider>
       </body>
     </html>
