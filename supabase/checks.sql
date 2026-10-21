@@ -36,3 +36,32 @@ union all
 select 'season_windows',        count(*) from public.season_windows
 union all
 select 'alert_settings',        count(*) from public.alert_settings;
+
+-- 6. Farm functions exist (expect 2 rows)
+select n.nspname as schema_name,
+       p.proname as function_name,
+       pg_get_function_identity_arguments(p.oid) as arguments
+from pg_proc p
+join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public'
+  and p.proname in ('create_farm', 'create_farms_bulk')
+order by p.proname;
+
+-- 7. anon and public cannot execute the farm functions (expect zero rows)
+select routine_schema, routine_name, grantee, privilege_type
+from information_schema.routine_privileges
+where routine_schema = 'public'
+  and routine_name in ('create_farm', 'create_farms_bulk')
+  and grantee in ('anon', 'PUBLIC');
+
+-- 8. anon cannot execute either farm function (expect false, false)
+select has_function_privilege(
+         'anon',
+         'public.create_farm(text,text,numeric,text,text,int,date,date)',
+         'execute'
+       ) as anon_can_create_farm,
+       has_function_privilege(
+         'anon',
+         'public.create_farms_bulk(jsonb,date)',
+         'execute'
+       ) as anon_can_create_farms_bulk;

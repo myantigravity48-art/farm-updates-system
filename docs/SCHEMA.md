@@ -5,7 +5,8 @@
 1. Open the Supabase dashboard → SQL Editor.
 2. Paste and run `supabase/migrations/0001_schema.sql`. This creates all tables, indexes, the auto-create trigger, the storage bucket, RLS policies, and grants.
 3. Paste and run `supabase/migrations/0002_seed.sql`. This inserts the 8 stage templates, 2 season windows, and 1 alert_settings row.
-4. Paste and run `supabase/checks.sql` to verify everything is correct.
+4. Paste and run `supabase/migrations/0004_farm_functions.sql`. This creates the transactional farm-creation functions and their execute grants.
+5. Paste and run `supabase/checks.sql` to verify everything is correct.
 
 ## Tables
 
@@ -26,6 +27,19 @@ All `auth.users` references (`created_by` and `done_by`) are nullable and use `O
 ## Auto-create trigger
 
 When a row is inserted into `farms`, a trigger function inserts one `farm_stages` row (is_done = false) for every row in `stage_templates`. The function uses `security invoker` and `set search_path = ''` with all objects schema-qualified.
+
+## Farm functions
+
+`0004_farm_functions.sql` adds two transactional functions. Both use `security invoker` and `set search_path = ''`, and every object name is schema-qualified, so row-level security and `auth.uid()` apply to the signed-in user.
+
+| Function | Arguments | Returns | Purpose |
+|----------|-----------|---------|---------|
+| `create_farm` | `p_name text, p_location text, p_size_value numeric, p_size_unit text, p_notes text, p_current_position int, p_planting_date date, p_anchor_date date` | `uuid` | Inserts one farm, lets the trigger create its stages, then marks every stage before `p_current_position` as done. The planting stage is found by `stage_templates.window_key = 'planting'`, never by a position literal. When planting is already past, its `done_date` is set to `p_planting_date`. |
+| `create_farms_bulk` | `p_rows jsonb, p_anchor_date date` | `int` | Creates each row at position 1 by calling `create_farm`. All rows succeed or none do. Rejects more than 100 rows. A duplicate name returns `row N: a farm with that name already exists`. |
+
+`create_farm` rejects a blank name, a position outside 1 to the highest `stage_templates.position`, a missing planting date when the chosen stage is after planting, and a planting date when the chosen stage is not after planting.
+
+`execute` is revoked from `public` and `anon`, and granted to `authenticated` only. `checks.sql` queries confirm both functions exist and that `anon` and `public` cannot execute them.
 
 ## Storage
 

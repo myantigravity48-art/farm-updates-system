@@ -1,5 +1,5 @@
 import { AlertCircle, Check, CircleCheck, Clock3 } from "lucide-react";
-import type { FarmStatus } from "@/mocks/farms";
+import type { FarmStatus } from "@/lib/data/types";
 
 export type StatusVariant = FarmStatus | "done";
 

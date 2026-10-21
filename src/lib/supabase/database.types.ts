@@ -30,6 +30,7 @@ export interface Database {
           end_month?: number;
           end_day?: number;
         };
+        Relationships: [];
       };
       stage_templates: {
         Row: {
@@ -56,6 +57,7 @@ export interface Database {
           offset_months?: number | null;
           window_key?: string | null;
         };
+        Relationships: [];
       };
       farms: {
         Row: {
@@ -94,6 +96,7 @@ export interface Database {
           created_at?: string;
           created_by?: string | null;
         };
+        Relationships: [];
       };
       farm_stages: {
         Row: {
@@ -126,6 +129,7 @@ export interface Database {
           done_note?: string | null;
           due_date_override?: string | null;
         };
+        Relationships: [];
       };
       notes: {
         Row: {
@@ -152,6 +156,7 @@ export interface Database {
           created_by?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       photos: {
         Row: {
@@ -184,6 +189,7 @@ export interface Database {
           created_by?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       recipients: {
         Row: {
@@ -204,6 +210,7 @@ export interface Database {
           email?: string;
           enabled?: boolean;
         };
+        Relationships: [];
       };
       alert_settings: {
         Row: {
@@ -230,6 +237,7 @@ export interface Database {
           overdue_repeat_days?: number;
           send_hour_london?: number;
         };
+        Relationships: [];
       };
       notification_log: {
         Row: {
@@ -265,10 +273,32 @@ export interface Database {
           error?: string | null;
           sent_at?: string;
         };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      create_farm: {
+        Args: {
+          p_name: string;
+          p_location: string | null;
+          p_size_value: number | null;
+          p_size_unit: string | null;
+          p_notes: string | null;
+          p_current_position: number;
+          p_planting_date: string | null;
+          p_anchor_date: string;
+        };
+        Returns: string;
+      };
+      create_farms_bulk: {
+        Args: {
+          p_rows: Json;
+          p_anchor_date: string;
+        };
+        Returns: number;
+      };
+    };
     Enums: Record<string, never>;
   };
 }
