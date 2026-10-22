@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CalendarDate } from "@/lib/schedule";
-import { formatDayCount, formatUkDate } from "./dates";
+import { formatDayCount, formatUkDate, formatUkShortDate } from "./dates";
 
 const date = (value: string) => value as CalendarDate;
 
@@ -11,6 +11,12 @@ describe("formatUkDate", () => {
 
   it("formats leap days without shifting to local time", () => {
     expect(formatUkDate(date("2028-02-29"))).toBe("Tue 29 Feb 2028");
+  });
+});
+
+describe("formatUkShortDate", () => {
+  it("formats without the weekday", () => {
+    expect(formatUkShortDate(date("2026-10-23"))).toBe("23 Oct 2026");
   });
 });
 

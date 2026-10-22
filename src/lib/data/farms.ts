@@ -6,6 +6,7 @@ import {
   todayInLondon,
   type CalendarDate,
   type ScheduledStage,
+  type SeasonWindow,
 } from "@/lib/schedule";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
@@ -64,8 +65,17 @@ function summarise(
   );
 }
 
+export interface FarmCoreData {
+  farmRows: FarmRow[];
+  templateRows: TemplateRow[];
+  windows: SeasonWindow[];
+  stagesByFarm: Map<string, FarmStageRow[]>;
+  today: CalendarDate;
+  headsUpDays: number;
+}
+
 /** Loads every farm and its stage state in a fixed number of queries. */
-export async function getFarmSummaries(): Promise<FarmSummary[]> {
+export async function loadFarmCore(): Promise<FarmCoreData> {
   const supabase = await createClient();
 
   const [templateResult, windowResult, settingsResult, farmResult, stageResult] =
@@ -87,11 +97,6 @@ export async function getFarmSummaries(): Promise<FarmSummary[]> {
     throw new FarmDataError("Could not load farms.");
   }
 
-  const today = todayInLondon(new Date());
-  const templateRows = templateResult.data ?? [];
-  const windows = mapWindows(windowResult.data ?? []);
-  const headsUpDays = settingsResult.data?.heads_up_days ?? defaultAlertSettings.headsUpDays;
-
   const stagesByFarm = new Map<string, FarmStageRow[]>();
   for (const stage of stageResult.data ?? []) {
     const list = stagesByFarm.get(stage.farm_id);
@@ -99,15 +104,28 @@ export async function getFarmSummaries(): Promise<FarmSummary[]> {
     else stagesByFarm.set(stage.farm_id, [stage]);
   }
 
-  return (farmResult.data ?? [])
+  return {
+    farmRows: farmResult.data ?? [],
+    templateRows: templateResult.data ?? [],
+    windows: mapWindows(windowResult.data ?? []),
+    stagesByFarm,
+    today: todayInLondon(new Date()),
+    headsUpDays: settingsResult.data?.heads_up_days ?? defaultAlertSettings.headsUpDays,
+  };
+}
+
+export async function getFarmSummaries(): Promise<FarmSummary[]> {
+  const core = await loadFarmCore();
+
+  return core.farmRows
     .map((farm) =>
       summarise(
         farm,
-        stagesByFarm.get(farm.id) ?? [],
-        templateRows,
-        windows,
-        today,
-        headsUpDays,
+        core.stagesByFarm.get(farm.id) ?? [],
+        core.templateRows,
+        core.windows,
+        core.today,
+        core.headsUpDays,
       ),
     )
     .sort((left, right) => left.name.localeCompare(right.name, "en-GB"));

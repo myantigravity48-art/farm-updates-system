@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-10-21
+Last updated: 2026-10-22
 
 ## Done
 - Product defined: lifecycle, alert rules, v1 scope (see `PRODUCT.md`)
@@ -12,6 +12,7 @@ Last updated: 2026-10-21
 - Database schema written and security-reviewed, then applied in Supabase (`0001_schema.sql`, `0002_seed.sql`, `checks.sql`). See `docs/SCHEMA.md` for tables, RLS, grants, storage bucket, and how to apply.
 - Auth and login: route groups `(auth)` and `(app)`, login and forgot-password screens, proxy session refresh and redirects, server-side `getUser()` validation, sign out, Account section with change password, `next` sanitiser and password validator tests. See `docs/AUTH.md`.
 - Step 5a built: data layer (`src/lib/data`) with a pure row mapper and summary builder, real farm panel, `/farms` grid, Add farm dialog/sheet, bulk add, Edit farm, Toast, UK date formatting, pure validation and bulk parsing, and the 0004 farm functions with checks. Mock farms removed. All 89 tests pass, including the original 30.
+- Step 5b built: the Dashboard at "/" (`src/app/(app)/page.tsx`, `src/components/dashboard/`, `src/lib/data/dashboard.ts`, `build-dashboard.ts`, `timeline.ts`, and phrase/greeting pure functions in `src/lib/format/`). Real data through the existing session-scoped Supabase server client. `buildDashboard(input, today)` is pure and tested, plus `buildSeasonTimeline`, window/date stage phrases, and the London-hour greeting. Screen matches the Dashboard exports: KPI cards (Overdue, Next 14 days, Done this month, Farms), Needs attention, Farm progress, Season timeline, Coming up, both themes, 8-row caps with "+ N more" and "View all N farms". No Mark done buttons yet. Add farm and Edit farm already revalidate "/" and "/farms" via `refreshFarmLists`.
 - `0004_farm_functions.sql` is written but NOT applied yet. Adding one farm or several farms needs it applied first. Step 5a is done once it has been applied.
 
 ## Decisions
@@ -20,13 +21,13 @@ Last updated: 2026-10-21
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Dashboard (step 5b)
-2. Farm detail, Mark done, Alert settings, Stage template
-3. Daily email alert job with Resend (needs the project domain verified)
-4. Deploy
+1. Farm detail, Mark done, Alert settings, Stage template
+2. Daily email alert job with Resend (needs the project domain verified)
+3. Deploy
 
 ## Waiting on
 - Apply `supabase/migrations/0004_farm_functions.sql` and run `supabase/checks.sql`, then test Add farm and bulk add.
+- The Mark done step must add the Mark done button to the Dashboard's Needs attention rows (the rows comment it as pending).
 - The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub

@@ -8,12 +8,27 @@ const ukDate = new Intl.DateTimeFormat("en-GB", {
   timeZone: "UTC",
 });
 
+const ukShortDate = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
 /** Formats a calendar date for the UI, for example "Fri 23 Oct 2026". */
 export function formatUkDate(date: CalendarDate): string {
   const parts = ukDate.formatToParts(parse(date));
   const part = (type: Intl.DateTimeFormatPartTypes) =>
     parts.find((item) => item.type === type)?.value ?? "";
   return `${part("weekday")} ${part("day")} ${part("month")} ${part("year")}`.trim();
+}
+
+/** Formats a calendar date without the weekday, for example "23 Oct 2026". */
+export function formatUkShortDate(date: CalendarDate): string {
+  const parts = ukShortDate.formatToParts(parse(date));
+  const read = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? "";
+  return `${read("day")} ${read("month")} ${read("year")}`.trim();
 }
 
 /** Describes the distance from today, for example "today", "in 5 days" or "3 days late". */

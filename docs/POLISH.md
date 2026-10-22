@@ -9,6 +9,7 @@ Do not work on this until every v1 feature is built and working (see `STATUS.md`
 - Settings: the Change password form is not centred and hangs to the left. Fix the layout and align it with the page's content width.
 - Login: add the licensed photograph at `public/login-moss.jpg` (about 1600px wide, under 300 KB). The login panel picks it up automatically. Do not crop it from a design mockup, and check the licence first.
 - The Alert settings design export still shows WhatsApp. Follow `DESIGN.md` (email only), not the export.
+- The Dashboard has no dedicated treatment for large numbers of farms beyond the 8-row caps: Needs attention and Farm progress stop at 8 rows each ("+ N more" / "View all N farms"), Coming up at 4, and there is no pagination or density handling for many farms. Revisit when 50+ farms are live.
 
 ## Skills for the polish pass
 Install at project level, in `.agents/skills/` at the repo root, and only when the polish pass starts.

@@ -3,7 +3,12 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { MissingSupabaseConfigError } from "@/lib/supabase/config";
 
-export type SessionUser = { id: string; email: string };
+export type SessionUser = {
+  id: string;
+  email: string;
+  /** From user_metadata.display_name, null when unset. */
+  displayName: string | null;
+};
 
 export type SessionState =
   | { status: "authenticated"; user: SessionUser }
@@ -25,7 +30,11 @@ export const readSession = cache(async (): Promise<SessionState> => {
 
     return {
       status: "authenticated",
-      user: { id: data.user.id, email: data.user.email },
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        displayName: readDisplayName(data.user.user_metadata),
+      },
     };
   } catch (error) {
     if (error instanceof MissingSupabaseConfigError) {
@@ -34,6 +43,13 @@ export const readSession = cache(async (): Promise<SessionState> => {
     return { status: "signed-out" };
   }
 });
+
+/** Reads display_name from user metadata without trusting its shape. */
+function readDisplayName(metadata: unknown): string | null {
+  if (typeof metadata !== "object" || metadata === null) return null;
+  const value = (metadata as Record<string, unknown>).display_name;
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
 
 export async function requireSessionUser(): Promise<SessionUser> {
   const session = await readSession();
