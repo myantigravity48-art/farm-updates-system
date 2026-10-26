@@ -65,3 +65,29 @@ select has_function_privilege(
          'public.create_farms_bulk(jsonb,date)',
          'execute'
        ) as anon_can_create_farms_bulk;
+
+-- 9. author_name columns from 0005 exist (expect 2 rows)
+select table_name, column_name, data_type, is_nullable
+from information_schema.columns
+where table_schema = 'public'
+  and table_name in ('notes', 'photos')
+  and column_name = 'author_name'
+order by table_name;
+
+-- 10. Newest-first indexes from 0005 exist (expect 2 rows)
+select indexname, indexdef
+from pg_indexes
+where schemaname = 'public'
+  and indexname in ('notes_farm_created_at_idx', 'photos_farm_created_at_idx')
+order by indexname;
+
+-- 11. The photo storage path prefix constraint from 0005 exists (expect 1 row)
+select conname, pg_get_constraintdef(oid) as definition
+from pg_constraint
+where conrelid = 'public.photos'::regclass
+  and conname = 'photos_storage_path_prefix_check';
+
+-- 12. Photo rows whose path is outside their farm folder (expect zero rows)
+select id, farm_id, storage_path
+from public.photos
+where left(storage_path, length(farm_id::text) + 1) <> farm_id::text || '/';

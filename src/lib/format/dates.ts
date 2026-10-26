@@ -41,3 +41,29 @@ export function formatDayCount(today: CalendarDate, target: CalendarDate): strin
   if (days === -1) return "1 day late";
   return `${Math.abs(days)} days late`;
 }
+
+const londonDateTime = new Intl.DateTimeFormat("en-GB", {
+  weekday: "short",
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+  timeZone: "Europe/London",
+});
+
+/**
+ * Formats an ISO timestamp in Europe/London, for example "Fri 23 Oct 2026, 14:05".
+ * Returns an empty string when the timestamp cannot be parsed.
+ */
+export function formatLondonDateTime(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const parts = londonDateTime.formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? "";
+
+  return `${part("weekday")} ${part("day")} ${part("month")} ${part("year")}, ${part("hour")}:${part("minute")}`.trim();
+}

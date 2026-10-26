@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CalendarDate } from "@/lib/schedule";
-import { formatDayCount, formatUkDate, formatUkShortDate } from "./dates";
+import { formatDayCount, formatLondonDateTime, formatUkDate, formatUkShortDate } from "./dates";
 
 const date = (value: string) => value as CalendarDate;
 
@@ -41,5 +41,20 @@ describe("formatDayCount", () => {
 
   it("counts several days late", () => {
     expect(formatDayCount(today, date("2026-10-18"))).toBe("3 days late");
+  });
+});
+
+describe("formatLondonDateTime", () => {
+  it("formats an instant in London time", () => {
+    expect(formatLondonDateTime("2026-10-23T13:05:00Z")).toBe("Fri 23 Oct 2026, 14:05");
+  });
+
+  it("applies the winter offset after the clocks go back", () => {
+    expect(formatLondonDateTime("2026-10-25T00:30:00Z")).toBe("Sun 25 Oct 2026, 01:30");
+    expect(formatLondonDateTime("2026-10-25T01:30:00Z")).toBe("Sun 25 Oct 2026, 01:30");
+  });
+
+  it("returns an empty string for an unparseable timestamp", () => {
+    expect(formatLondonDateTime("not-a-date")).toBe("");
   });
 });

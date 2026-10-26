@@ -137,6 +137,7 @@ export interface Database {
           farm_id: string;
           farm_stage_id: string | null;
           body: string;
+          author_name: string | null;
           created_by: string | null;
           created_at: string;
         };
@@ -145,6 +146,7 @@ export interface Database {
           farm_id: string;
           farm_stage_id?: string | null;
           body: string;
+          author_name?: string | null;
           created_by?: string | null;
           created_at?: string;
         };
@@ -153,6 +155,7 @@ export interface Database {
           farm_id?: string;
           farm_stage_id?: string | null;
           body?: string;
+          author_name?: string | null;
           created_by?: string | null;
           created_at?: string;
         };
@@ -166,6 +169,7 @@ export interface Database {
           storage_path: string;
           caption: string | null;
           taken_on: string | null;
+          author_name: string | null;
           created_by: string | null;
           created_at: string;
         };
@@ -176,6 +180,7 @@ export interface Database {
           storage_path: string;
           caption?: string | null;
           taken_on?: string | null;
+          author_name?: string | null;
           created_by?: string | null;
           created_at?: string;
         };
@@ -186,6 +191,7 @@ export interface Database {
           storage_path?: string;
           caption?: string | null;
           taken_on?: string | null;
+          author_name?: string | null;
           created_by?: string | null;
           created_at?: string;
         };

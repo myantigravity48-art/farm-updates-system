@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { ChangePasswordForm } from "@/components/auth/change-password-form";
+import { DisplayNameForm } from "@/components/auth/display-name-form";
 import { ConfigError } from "@/components/auth/config-error";
 import { signOut } from "@/lib/auth/actions";
 import { readSession } from "@/lib/auth/session";
@@ -38,6 +39,14 @@ export default async function SettingsPage() {
             autoComplete="username"
             className="h-12 w-full rounded-[10px] border border-border bg-raised px-4 text-base text-muted"
           />
+        </div>
+
+        <div className="mt-8 border-t border-border pt-6">
+          <h3 className="font-display text-xl font-light">Display name</h3>
+          <p className="mt-1 text-sm text-muted">
+            The name shown on your notes and photos, and in the Dashboard greeting.
+          </p>
+          <DisplayNameForm initialName={session.user.displayName} />
         </div>
 
         <div className="mt-8 border-t border-border pt-6">

@@ -26,7 +26,9 @@ export default async function DashboardPage() {
 
   const now = new Date();
   const today = todayInLondon(now);
-  const greeting = getGreeting(now, session.user.displayName);
+  // The name is highlighted separately by DashboardScreen, so the greeting
+  // itself stays name-free to avoid showing it twice.
+  const greeting = getGreeting(now);
 
   const model = await getDashboardData().catch(() => null);
 

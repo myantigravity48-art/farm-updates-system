@@ -12,6 +12,15 @@ Login and session handling for the two invited users. There is no sign-up.
 
 Password change is a separate server action. It revalidates the user, checks the new password with the pure `validateNewPassword` function, then calls `supabase.auth.updateUser({ password })`. Passwords are never logged.
 
+## Display name
+
+Each user can set a display name in Settings → Account. It is stored in the user's auth metadata as `display_name`:
+
+- `validateDisplayName` (`src/lib/settings/display-name.ts`) trims the value and requires 1 to 40 characters. The `saveDisplayName` server action calls `auth.getUser()` first, validates on the server, then calls `supabase.auth.updateUser({ data: { display_name } })`.
+- The Dashboard greeting already reads `display_name` from the session metadata. It shows the name once one is set.
+- Notes and photos store the display name in `author_name` at the time of writing. The value comes from `authorNameFromUser` (`src/lib/auth/author-name.ts`): `display_name` first, then the email local part, so a new user always gets a readable author without any setup.
+- Emails and metadata are never logged.
+
 ## Route groups
 
 The app router is split so the login screens get no app shell.

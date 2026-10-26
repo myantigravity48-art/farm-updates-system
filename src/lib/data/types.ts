@@ -1,4 +1,5 @@
 import type { CalendarDate } from "@/lib/schedule";
+import type { StageRow } from "./build-stage-rows";
 
 export type FarmStatus = "on-track" | "due-soon" | "overdue" | "done";
 
@@ -38,4 +39,53 @@ export interface StageConfig {
   stages: StageOption[];
   /** Position of the stage whose window_key is "planting". */
   plantingPosition: number;
+}
+
+/** A note shown on the Farm detail page. */
+export interface FarmNote {
+  id: string;
+  body: string;
+  authorName: string | null;
+  /** ISO timestamp. Formatted in Europe/London at render time. */
+  createdAt: string;
+  stageId: string | null;
+  stageName: string | null;
+}
+
+/** A photo shown on the Farm detail page, with a server-signed URL. */
+export interface FarmPhoto {
+  id: string;
+  caption: string | null;
+  takenOn: CalendarDate | null;
+  authorName: string | null;
+  /** Null when the signed URL could not be created; the tile shows a placeholder. */
+  url: string | null;
+}
+
+export interface FarmStageOption {
+  id: string;
+  position: number;
+  name: string;
+}
+
+/** Everything the Farm detail page renders. Stage progress is read-only here. */
+export interface FarmDetailView {
+  id: string;
+  name: string;
+  location: string | null;
+  sizeLabel: string | null;
+  sizeValue: number | null;
+  sizeUnit: string | null;
+  /** The farm's own notes field, used by the Edit farm dialog. */
+  farmNotes: string | null;
+  status: FarmStatus;
+  doneCount: number;
+  totalStages: number;
+  plantingDate: CalendarDate | null;
+  /** Today in Europe/London, computed on the server for the forms and the engine. */
+  today: CalendarDate;
+  stages: StageRow[];
+  stageOptions: FarmStageOption[];
+  notes: FarmNote[];
+  photos: FarmPhoto[];
 }

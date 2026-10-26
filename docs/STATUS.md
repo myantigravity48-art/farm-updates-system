@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-10-22
+Last updated: 2026-10-26
 
 ## Done
 - Product defined: lifecycle, alert rules, v1 scope (see `PRODUCT.md`)
@@ -13,7 +13,9 @@ Last updated: 2026-10-22
 - Auth and login: route groups `(auth)` and `(app)`, login and forgot-password screens, proxy session refresh and redirects, server-side `getUser()` validation, sign out, Account section with change password, `next` sanitiser and password validator tests. See `docs/AUTH.md`.
 - Step 5a built: data layer (`src/lib/data`) with a pure row mapper and summary builder, real farm panel, `/farms` grid, Add farm dialog/sheet, bulk add, Edit farm, Toast, UK date formatting, pure validation and bulk parsing, and the 0004 farm functions with checks. Mock farms removed. All 89 tests pass, including the original 30.
 - Step 5b built: the Dashboard at "/" (`src/app/(app)/page.tsx`, `src/components/dashboard/`, `src/lib/data/dashboard.ts`, `build-dashboard.ts`, `timeline.ts`, and phrase/greeting pure functions in `src/lib/format/`). Real data through the existing session-scoped Supabase server client. `buildDashboard(input, today)` is pure and tested, plus `buildSeasonTimeline`, window/date stage phrases, and the London-hour greeting. Screen matches the Dashboard exports: KPI cards (Overdue, Next 14 days, Done this month, Farms), Needs attention, Farm progress, Season timeline, Coming up, both themes, 8-row caps with "+ N more" and "View all N farms". No Mark done buttons yet. Add farm and Edit farm already revalidate "/" and "/farms" via `refreshFarmLists`.
+- Step 5c built: the Farm detail page at `/farms/[id]` (header, read-only stage timeline, Notes and Photos). `getFarmDetail` loads the farm, templates, windows, alert settings, stages, 50 newest notes and 60 newest photos in parallel, then runs the schedule engine. `buildStageRows` is pure and tested (rule text from templates, done with and without dates, date and window text, overrides, unscheduled, overdue, open window, next up, all done). Photos use server-signed URLs in one batch with a 1 hour expiry. Notes and photos are added and deleted through server actions that call `auth.getUser()`, validate with pure functions, and revalidate the farm page. The upload flow shrinks each image in the browser to 1600px JPEG at 0.8, asks the server for a UUID path, uploads with the user's session, then registers the row with `author_name`; failures delete the object. Settings has a Display name field. The `unscheduled` StatusPill variant is added. All 184 tests pass. Stage progress stays read-only: no Mark done, no date editing, no Costs.
 - `0004_farm_functions.sql` is written but NOT applied yet. Adding one farm or several farms needs it applied first. Step 5a is done once it has been applied.
+- `0005_notes_photos_author.sql` is written but NOT applied yet. Step 5c is done once it has been applied and `checks.sql` has been run.
 
 ## Decisions
 - Alerts are email only (Resend). WhatsApp and SMS are dropped.
@@ -21,13 +23,16 @@ Last updated: 2026-10-22
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Farm detail, Mark done, Alert settings, Stage template
-2. Daily email alert job with Resend (needs the project domain verified)
-3. Deploy
+1. Mark done (also adds changing the planting date and manual stage dates, and the Mark done button on the Dashboard's Needs attention rows and on the farm page)
+2. Alert settings
+3. Stage template
+4. Daily email alert job with Resend (needs the project domain verified)
+5. Deploy
 
 ## Waiting on
+- Apply `supabase/migrations/0005_notes_photos_author.sql` and run `supabase/checks.sql`, then test adding and deleting notes and photos.
 - Apply `supabase/migrations/0004_farm_functions.sql` and run `supabase/checks.sql`, then test Add farm and bulk add.
-- The Mark done step must add the Mark done button to the Dashboard's Needs attention rows (the rows comment it as pending).
+- The Mark done step must add the Mark done button to the Dashboard's Needs attention rows (the rows comment it as pending) and to the farm page (the header comments it as pending).
 - The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub
@@ -37,12 +42,15 @@ Last updated: 2026-10-22
 - `/forgot-password` is a stub with no email. Replace it after Resend SMTP is set up (TODO in the page and `docs/AUTH.md`).
 - The login desktop panel uses `public/login-moss.jpg` when present. The real photograph still needs to be added.
 - The Farms page has no dedicated design export. It reuses the shared cards and tokens for now and is on the polish list in `docs/POLISH.md`.
+- The Farm detail page shows the 50 newest notes and 60 newest photos with no paging yet. Revisit when farms collect more.
 
 ## Notes for the next agent
 - Timing values for stages 1, 2 and 4 to 7 are placeholders until the owner confirms them. Keep them as editable data.
 - The screen exports folder is `design/`. If references to `designs/` remain anywhere, fix them.
 - Read `docs/ENGINE.md` for the schedule engine rules, public API, and alert key format.
-- Read `docs/SCHEMA.md` for the database schema, security policies and the 0004 farm functions.
-- Read `docs/AUTH.md` for the login flow, route groups, session validation, and the no-sign-up rules.
-- Read `docs/STATUS.md` and `docs/POLISH.md` before starting the Dashboard.
+- Read `docs/SCHEMA.md` for the database schema, security policies and the 0004 and 0005 migrations.
+- Read `docs/AUTH.md` for the login flow, route groups, session validation, display name, and the no-sign-up rules.
+- Read `docs/STATUS.md` and `docs/POLISH.md` before starting a screen.
+- Farm detail stage progress is read-only. The next step adds Mark done plus planting-date and manual stage-date editing. Do not add stage writes to `src/lib/data/farm-detail.ts` or `buildStageRows` yet.
+- Photos live in the private `farm-photos` bucket. Sign paths on the server with `createSignedUrls`; never store or render a public URL.
 - The database types in `src/lib/supabase/database.types.ts` are hand-written. Regenerate with `npx supabase gen types typescript` once the CLI is connected.

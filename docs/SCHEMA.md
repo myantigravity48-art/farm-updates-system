@@ -6,7 +6,8 @@
 2. Paste and run `supabase/migrations/0001_schema.sql`. This creates all tables, indexes, the auto-create trigger, the storage bucket, RLS policies, and grants.
 3. Paste and run `supabase/migrations/0002_seed.sql`. This inserts the 8 stage templates, 2 season windows, and 1 alert_settings row.
 4. Paste and run `supabase/migrations/0004_farm_functions.sql`. This creates the transactional farm-creation functions and their execute grants.
-5. Paste and run `supabase/checks.sql` to verify everything is correct.
+5. Paste and run `supabase/migrations/0005_notes_photos_author.sql`. This adds `author_name` to notes and photos, the newest-first indexes, and the photo storage path check.
+6. Paste and run `supabase/checks.sql` to verify everything is correct.
 
 ## Tables
 
@@ -16,8 +17,8 @@
 | `stage_templates` | The 8-stage lifecycle definition. Position is unique. Check constraint ensures season_window rows have a window_key and no offset, and after_planting rows have an offset and no window_key. |
 | `farms` | One row per farm plot. Unique index on `lower(name)`. `schedule_anchor_date` defaults to today but the app sets it explicitly. `created_by` references `auth.users`. |
 | `farm_stages` | One row per farm per stage template (auto-created by trigger). Tracks done state, done date, override. Unique on `(farm_id, template_id)`. |
-| `notes` | Free-text notes on a farm or a specific stage. |
-| `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. |
+| `notes` | Free-text notes on a farm or a specific stage. `author_name` stores the writer's display name at the time of writing. |
+| `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. `author_name` stores the uploader's display name. |
 | `recipients` | Email recipients for alerts. Unique index on `lower(email)`. |
 | `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, overdue repeat, and London send hour. |
 | `notification_log` | One row per sent or failed alert. Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
@@ -45,6 +46,23 @@ When a row is inserted into `farms`, a trigger function inserts one `farm_stages
 
 - Bucket: `farm-photos`, private (public = false), 10 MB file size limit, allowed MIME types: jpeg, png, webp, gif.
 - Storage policies: authenticated users can select, insert, update, and delete objects in the bucket. Each policy also rejects anonymous JWTs, so anonymous sign-ins cannot access it.
+- Object paths are `<farm_id>/<uuid>.jpg`. The server action generates the UUID and returns the path; the browser uploads the re-encoded JPEG with the user's session.
+- The Farm detail page never renders a public URL. Signed URLs are created server-side in one batch call with a 1 hour expiry, and a photo whose signature fails shows a placeholder tile.
+- A database check (`photos_storage_path_prefix_check`) rejects any row whose `storage_path` does not start with its own `farm_id` and a slash.
+
+## Farm detail additions (0005)
+
+`0005_notes_photos_author.sql` adds:
+
+| Change | Detail |
+|--------|--------|
+| `notes.author_name` | Nullable text. The display name captured when the note was added, so the record survives a user being deleted. |
+| `photos.author_name` | Nullable text. The display name captured when the photo was added. |
+| `notes_farm_created_at_idx` | `(farm_id, created_at desc)` for the newest-first note list. |
+| `photos_farm_created_at_idx` | `(farm_id, created_at desc)` for the newest-first photo grid. |
+| `photos_storage_path_prefix_check` | `left(storage_path, length(farm_id::text) + 1) = farm_id::text || '/'`. |
+
+`supabase/checks.sql` queries 9 to 12 verify the columns, indexes, constraint and existing photo rows.
 
 ## RLS policies
 
@@ -75,7 +93,7 @@ The two invited users have equal permissions. The alert job will write to `notif
 
 - `src/lib/supabase/client.ts` — browser client using `createBrowserClient` from `@supabase/ssr`.
 - `src/lib/supabase/server.ts` — server client using `createServerClient` with Next.js `cookies()`.
-- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema. Regenerate later with `npx supabase gen types typescript`.
+- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema, including the 0005 columns. Regenerate later with `npx supabase gen types typescript`.
 - `.env.example` — placeholder variable names. Copy to `.env.local` and fill in real values.
 
 ## Environment variables

@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/page-header";
 import { StatusPill, type StatusVariant } from "@/components/status-pill";
 
 const tokens = ["bg", "surface", "raised", "border", "text", "muted", "primary", "on-primary", "due-soon", "overdue"] as const;
-const statuses: StatusVariant[] = ["on-track", "due-soon", "overdue", "done"];
+const statuses: StatusVariant[] = ["on-track", "due-soon", "overdue", "done", "unscheduled"];
 
 function ThemeSwatches({ theme }: { theme: "dark" | "light" }) {
   return (
