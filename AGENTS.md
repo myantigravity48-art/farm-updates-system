@@ -23,3 +23,4 @@ Next.js (App Router) + TypeScript + Tailwind CSS. Supabase (Postgres, Auth, Stor
 8. Work in small tasks. Run lint, typecheck and tests before finishing. Make a clear commit after each task. Do not refactor unrelated code.
 9. If a requirement is unclear or conflicts with these docs, ask instead of guessing. This matters most for any rule marked TBC in `docs/PRODUCT.md`.
 10. At the end of each task, update `docs/STATUS.md`: what changed, what is next, open questions.
+11. Database changes: every migration NNNN gets its own check file at supabase/checks/NNNN_checks.sql containing only that migration's checks. Number each query, and above each one write "EXPECT:" with the exact result (for example "EXPECT: 2 rows"). In the final report, give me numbered, click-by-click steps for applying the migration and running its checks, naming the exact file paths. Keep supabase/checks.sql for the original security checks only.
