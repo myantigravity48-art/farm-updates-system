@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring supabase/migrations/0001_schema.sql.
+ * Hand-written database types mirroring migrations 0001, 0002, 0004 and 0005.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 

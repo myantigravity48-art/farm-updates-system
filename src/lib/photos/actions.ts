@@ -151,6 +151,7 @@ export async function registerPhoto(input: RegisterPhotoInput): Promise<Register
       .list(farmId, { search: fileName, limit: 1 });
 
     if (listError || !objects?.some((object) => object.name === fileName)) {
+      await removeObject(supabase, path);
       return { ok: false, error: "The photo did not finish uploading. Try again." };
     }
 

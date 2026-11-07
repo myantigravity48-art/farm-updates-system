@@ -7,7 +7,8 @@
 3. Paste and run `supabase/migrations/0002_seed.sql`. This inserts the 8 stage templates, 2 season windows, and 1 alert_settings row.
 4. Paste and run `supabase/migrations/0004_farm_functions.sql`. This creates the transactional farm-creation functions and their execute grants.
 5. Paste and run `supabase/migrations/0005_notes_photos_author.sql`. This adds `author_name` to notes and photos, the newest-first indexes, and the photo storage path check.
-6. Paste and run `supabase/checks.sql` to verify everything is correct.
+6. In the SQL Editor, paste and run `supabase/checks/0005_checks.sql` to verify only the 0005 changes.
+7. Run `supabase/checks.sql` when you need to recheck the original schema security rules. It is not a substitute for the migration-specific check file.
 
 ## Tables
 
@@ -40,7 +41,7 @@ When a row is inserted into `farms`, a trigger function inserts one `farm_stages
 
 `create_farm` rejects a blank name, a position outside 1 to the highest `stage_templates.position`, a missing planting date when the chosen stage is after planting, and a planting date when the chosen stage is not after planting.
 
-`execute` is revoked from `public` and `anon`, and granted to `authenticated` only. `checks.sql` queries confirm both functions exist and that `anon` and `public` cannot execute them.
+`execute` is revoked from `public` and `anon`, and granted to `authenticated` only. The existing checks confirm both functions exist and that `anon` and `public` cannot execute them.
 
 ## Storage
 
@@ -62,7 +63,7 @@ When a row is inserted into `farms`, a trigger function inserts one `farm_stages
 | `photos_farm_created_at_idx` | `(farm_id, created_at desc)` for the newest-first photo grid. |
 | `photos_storage_path_prefix_check` | `left(storage_path, length(farm_id::text) + 1) = farm_id::text || '/'`. |
 
-`supabase/checks.sql` queries 9 to 12 verify the columns, indexes, constraint and existing photo rows.
+`supabase/checks/0005_checks.sql` contains four numbered checks for the columns, indexes, constraint and existing photo rows. Each query has an exact `EXPECT:` result above it.
 
 ## RLS policies
 

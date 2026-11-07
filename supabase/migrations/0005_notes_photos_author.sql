@@ -1,6 +1,6 @@
 -- 0005_notes_photos_author.sql
 -- Farm detail: author display names, newest-first indexes, and a storage path guard.
--- Apply this after 0004, then run supabase/checks.sql.
+-- Apply this after 0004, then run supabase/checks/0005_checks.sql.
 
 -- ---------------------------------------------------------------------------
 -- author_name: the display name captured when the note or photo was added.

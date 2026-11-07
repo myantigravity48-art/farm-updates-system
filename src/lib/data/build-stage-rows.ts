@@ -30,16 +30,9 @@ export const STATUS_LABELS: Record<Status, string> = {
   overdue: "Overdue",
 };
 
-const WINDOW_LABELS: Record<string, string> = {
-  dry_season: "Dry season",
-  planting: "Planting",
-};
-
 /** Turns a window key into a readable phrase, for example "dry_season" to "Dry season". */
 function windowLabel(key: string | undefined): string {
   if (!key) return "Season";
-  const known = WINDOW_LABELS[key];
-  if (known) return known;
   const words = key.replace(/_/g, " ");
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
