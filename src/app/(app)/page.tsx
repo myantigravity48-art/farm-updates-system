@@ -1,8 +1,4 @@
 import { redirect } from "next/navigation";
-// The project enables Next.js cacheComponents, which does not support the
-// `dynamic = "force-dynamic"` segment config. `connection()` marks the page
-// request-time dynamic, so the Dashboard is never cached.
-import { connection } from "next/server";
 import { AddFarmCta } from "@/components/dashboard/add-farm-cta";
 import { DashboardScreen } from "@/components/dashboard/dashboard-screen";
 import { ConfigError } from "@/components/auth/config-error";
@@ -15,7 +11,6 @@ import { getGreeting } from "@/lib/format/greeting";
 import { todayInLondon } from "@/lib/schedule";
 
 export default async function DashboardPage() {
-  await connection();
   const session = await readSession();
 
   if (session.status === "signed-out") redirect("/login");

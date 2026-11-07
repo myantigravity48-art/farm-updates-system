@@ -32,8 +32,6 @@ export interface PhotoActionState {
   message?: string;
 }
 
-export const initialPhotoActionState: PhotoActionState = { status: "idle" };
-
 interface RegisterPhotoInput {
   farmId: string;
   path: string;

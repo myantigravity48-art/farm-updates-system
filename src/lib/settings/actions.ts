@@ -10,8 +10,6 @@ export interface DisplayNameState {
   message?: string;
 }
 
-export const initialDisplayNameState: DisplayNameState = { status: "idle" };
-
 function readField(formData: FormData, name: string): string {
   const value = formData.get(name);
   return typeof value === "string" ? value : "";
@@ -46,7 +44,7 @@ export async function saveDisplayName(
 
     revalidatePath("/", "layout");
     revalidatePath("/settings");
-    return { status: "success", message: "Display name saved" };
+    return { status: "success", message: "Name saved." };
   } catch {
     return { status: "error", message: NETWORK_ERROR };
   }

@@ -8,8 +8,10 @@ import {
   labelClass,
   textareaClass,
 } from "@/components/ui/form-styles";
-import { addNote, deleteNote, initialNoteActionState } from "@/lib/notes/actions";
+import { addNote, deleteNote, type NoteActionState } from "@/lib/notes/actions";
 import { NOTE_BODY_MAX } from "@/lib/notes/validate";
+
+const initialNoteActionState: NoteActionState = { status: "idle" };
 import { formatLondonDateTime } from "@/lib/format/dates";
 import type { FarmNote, FarmStageOption } from "@/lib/data/types";
 

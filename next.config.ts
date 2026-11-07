@@ -7,8 +7,6 @@ const nextConfig: NextConfig = {
     // 16.4.0 to 16.4.3 advisory upgrade).
     agentUpgrade: "security",
   },
-  cacheComponents: true,
-  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {

@@ -5,9 +5,11 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ImageOff, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { photoAltText } from "@/components/farms/photo-alt";
-import { deletePhoto, initialPhotoActionState } from "@/lib/photos/actions";
+import { deletePhoto, type PhotoActionState } from "@/lib/photos/actions";
 import { formatUkDate } from "@/lib/format/dates";
 import type { FarmPhoto } from "@/lib/data/types";
+
+const initialPhotoActionState: PhotoActionState = { status: "idle" };
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';

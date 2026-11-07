@@ -16,8 +16,6 @@ export interface NoteActionState {
   fieldErrors?: NoteFieldErrors;
 }
 
-export const initialNoteActionState: NoteActionState = { status: "idle" };
-
 function readField(formData: FormData, name: string): string {
   const value = formData.get(name);
   return typeof value === "string" ? value : "";

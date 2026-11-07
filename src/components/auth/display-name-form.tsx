@@ -4,8 +4,10 @@ import { useEffect, useState, useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { hintTextClass, inputClass, labelClass } from "@/components/ui/form-styles";
-import { initialDisplayNameState, saveDisplayName } from "@/lib/settings/actions";
+import { saveDisplayName, type DisplayNameState } from "@/lib/settings/actions";
 import { DISPLAY_NAME_MAX } from "@/lib/settings/display-name";
+
+const initialDisplayNameState: DisplayNameState = { status: "idle" };
 
 export function DisplayNameForm({ initialName }: { initialName: string | null }) {
   const router = useRouter();

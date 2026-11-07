@@ -3,8 +3,6 @@ import { LoginPhotoPanel } from "@/components/auth/login-photo-panel";
 import { Wordmark } from "@/components/auth/wordmark";
 import { safeNextPath } from "@/lib/auth/next-path";
 
-export const instant = false;
-
 type LoginPageProps = {
   searchParams: Promise<{ next?: string | string[] }>;
 };
