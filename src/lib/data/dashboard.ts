@@ -32,7 +32,13 @@ export async function getDashboardData(): Promise<DashboardModel> {
         core.windows,
         mapFarmInput(farmRow),
         mapStageStates(core.stagesByFarm.get(farmRow.id) ?? [], core.templateRows),
-      ).map(toStageInput),
+      ).map((stage) => {
+        const template = core.templateRows.find((row) => row.position === stage.position);
+        const stageRow = template
+          ? core.stagesByFarm.get(farmRow.id)?.find((row) => row.template_id === template.id)
+          : undefined;
+        return { ...toStageInput(stage), stageId: stageRow?.id };
+      }),
     }))
     .sort((left, right) => left.name.localeCompare(right.name, "en-GB"));
 

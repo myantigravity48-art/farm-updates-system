@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring migrations 0001, 0002, 0004 and 0005.
+ * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005 and 0006.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 
@@ -106,6 +106,7 @@ export interface Database {
           is_done: boolean;
           done_date: string | null;
           done_by: string | null;
+          done_by_name: string | null;
           done_note: string | null;
           due_date_override: string | null;
         };
@@ -116,6 +117,7 @@ export interface Database {
           is_done?: boolean;
           done_date?: string | null;
           done_by?: string | null;
+          done_by_name?: string | null;
           done_note?: string | null;
           due_date_override?: string | null;
         };
@@ -126,6 +128,7 @@ export interface Database {
           is_done?: boolean;
           done_date?: string | null;
           done_by?: string | null;
+          done_by_name?: string | null;
           done_note?: string | null;
           due_date_override?: string | null;
         };
@@ -303,6 +306,28 @@ export interface Database {
           p_anchor_date: string;
         };
         Returns: number;
+      };
+      mark_stage_done: {
+        Args: {
+          p_farm_stage_id: string;
+          p_done_date: string;
+          p_note: string | null;
+          p_done_by_name: string | null;
+          p_today: string;
+        };
+        Returns: undefined;
+      };
+      undo_stage_done: {
+        Args: { p_farm_stage_id: string };
+        Returns: undefined;
+      };
+      set_planting_date: {
+        Args: { p_farm_id: string; p_date: string; p_today: string };
+        Returns: undefined;
+      };
+      set_stage_due_override: {
+        Args: { p_farm_stage_id: string; p_date: string | null };
+        Returns: undefined;
       };
     };
     Enums: Record<string, never>;

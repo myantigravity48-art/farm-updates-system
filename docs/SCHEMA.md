@@ -8,7 +8,9 @@
 4. Paste and run `supabase/migrations/0004_farm_functions.sql`. This creates the transactional farm-creation functions and their execute grants.
 5. Paste and run `supabase/migrations/0005_notes_photos_author.sql`. This adds `author_name` to notes and photos, the newest-first indexes, and the photo storage path check.
 6. In the SQL Editor, paste and run `supabase/checks/0005_checks.sql` to verify only the 0005 changes.
-7. Run `supabase/checks.sql` when you need to recheck the original schema security rules. It is not a substitute for the migration-specific check file.
+7. Paste and run `supabase/migrations/0006_mark_done.sql` to add completion author names and the stage action functions.
+8. In the SQL Editor, paste and run `supabase/checks/0006_checks.sql` to verify only the 0006 changes.
+9. Run `supabase/checks.sql` when you need to recheck the original schema security rules. It is not a substitute for migration-specific check files.
 
 ## Tables
 
@@ -17,7 +19,7 @@
 | `season_windows` | Recurring date ranges for season-triggered stages. PK is the key (`dry_season`, `planting`). |
 | `stage_templates` | The 8-stage lifecycle definition. Position is unique. Check constraint ensures season_window rows have a window_key and no offset, and after_planting rows have an offset and no window_key. |
 | `farms` | One row per farm plot. Unique index on `lower(name)`. `schedule_anchor_date` defaults to today but the app sets it explicitly. `created_by` references `auth.users`. |
-| `farm_stages` | One row per farm per stage template (auto-created by trigger). Tracks done state, done date, override. Unique on `(farm_id, template_id)`. |
+| `farm_stages` | One row per farm per stage template (auto-created by trigger). Tracks done state, done date, completion author and name, note, and due-date override. Unique on `(farm_id, template_id)`. |
 | `notes` | Free-text notes on a farm or a specific stage. `author_name` stores the writer's display name at the time of writing. |
 | `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. `author_name` stores the uploader's display name. |
 | `recipients` | Email recipients for alerts. Unique index on `lower(email)`. |
@@ -65,6 +67,19 @@ When a row is inserted into `farms`, a trigger function inserts one `farm_stages
 
 `supabase/checks/0005_checks.sql` contains four numbered checks for the columns, indexes, constraint and existing photo rows. Each query has an exact `EXPECT:` result above it.
 
+## Mark done additions (0006)
+
+`0006_mark_done.sql` adds nullable `farm_stages.done_by_name` and four `SECURITY INVOKER` functions with an empty search path and fully qualified objects. They keep RLS in force, revoke execution from `public` and `anon`, and grant it to `authenticated` only:
+
+| Function | Purpose |
+|----------|---------|
+| `mark_stage_done` | Records a completion and updates `farms.planting_date` when the planting stage is completed. |
+| `undo_stage_done` | Clears completion fields; planting cannot be undone while a later after-planting stage is done. |
+| `set_planting_date` | Updates a completed planting stage and farm date when completed later work remains on or after that date. |
+| `set_stage_due_override` | Sets or clears an open stage's manual due date. |
+
+Function exceptions begin with stable codes for friendly app messages. `supabase/checks/0006_checks.sql` verifies the four functions, execute grants, and the author-name column.
+
 ## RLS policies
 
 Every table has row-level security enabled. No table is accessible to the `anon` role. Every authenticated policy (including storage) also rejects a JWT whose `is_anonymous` claim is true, so anonymous sign-ins cannot read or write data.
@@ -94,7 +109,7 @@ The two invited users have equal permissions. The alert job will write to `notif
 
 - `src/lib/supabase/client.ts` — browser client using `createBrowserClient` from `@supabase/ssr`.
 - `src/lib/supabase/server.ts` — server client using `createServerClient` with Next.js `cookies()`.
-- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema, including the 0005 columns. Regenerate later with `npx supabase gen types typescript`.
+- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema, including the 0006 columns and functions. Regenerate later with `npx supabase gen types typescript`.
 - `.env.example` — placeholder variable names. Copy to `.env.local` and fill in real values.
 
 ## Environment variables

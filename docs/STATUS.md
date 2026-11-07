@@ -15,8 +15,9 @@ Last updated: 2026-11-07
 - Database schema written and security-reviewed, then applied in Supabase (`0001_schema.sql`, `0002_seed.sql`, `checks.sql`). See `docs/SCHEMA.md` for tables, RLS, grants, storage bucket, and how to apply.
 - Auth and login: route groups `(auth)` and `(app)`, login and forgot-password screens, proxy session refresh and redirects, server-side `getUser()` validation, sign out, Account section with change password, `next` sanitiser and password validator tests. See `docs/AUTH.md`.
 - Step 5a built: data layer (`src/lib/data`) with a pure row mapper and summary builder, real farm panel, `/farms` grid, Add farm dialog/sheet, bulk add, Edit farm, Toast, UK date formatting, pure validation and bulk parsing, and the 0004 farm functions with checks. Mock farms removed. All 89 tests pass, including the original 30.
-- Step 5b built: the Dashboard at "/" (`src/app/(app)/page.tsx`, `src/components/dashboard/`, `src/lib/data/dashboard.ts`, `build-dashboard.ts`, `timeline.ts`, and phrase/greeting pure functions in `src/lib/format/`). Real data through the existing session-scoped Supabase server client. `buildDashboard(input, today)` is pure and tested, plus `buildSeasonTimeline`, window/date stage phrases, and the London-hour greeting. Screen matches the Dashboard exports: KPI cards (Overdue, Next 14 days, Done this month, Farms), Needs attention, Farm progress, Season timeline, Coming up, both themes, 8-row caps with "+ N more" and "View all N farms". No Mark done buttons yet. Add farm and Edit farm already revalidate "/" and "/farms" via `refreshFarmLists`.
-- Step 5c built: the Farm detail page at `/farms/[id]` (header, read-only stage timeline, Notes and Photos). `getFarmDetail` loads the farm, templates, windows, alert settings, stages, 50 newest notes and 60 newest photos in parallel, then runs the schedule engine. `buildStageRows` is pure and tested (rule text from templates, done with and without dates, date and window text, overrides, unscheduled, overdue, open window, next up, all done). Photos use server-signed URLs in one batch with a 1 hour expiry. Notes and photos are added and deleted through server actions that call `auth.getUser()`, validate with pure functions, and revalidate the farm page. The upload flow shrinks each image in the browser to 1600px JPEG at 0.8, asks the server for a UUID path, uploads with the user's session, then registers the row with `author_name`; failures delete the object. Settings has a Display name field. The `unscheduled` StatusPill variant is added. Stage progress stays read-only: no Mark done, no date editing, no Costs. Step 5c is awaiting application of `0005_notes_photos_author.sql` and a pass of `supabase/checks/0005_checks.sql`.
+- Step 5b built: the Dashboard at "/" (`src/app/(app)/page.tsx`, `src/components/dashboard/`, `src/lib/data/dashboard.ts`, `build-dashboard.ts`, `timeline.ts`, and phrase/greeting pure functions in `src/lib/format/`). Real data through the existing session-scoped Supabase server client. `buildDashboard(input, today)` is pure and tested, plus `buildSeasonTimeline`, window/date stage phrases, and the London-hour greeting. Screen matches the Dashboard exports: KPI cards (Overdue, Next 14 days, Done this month, Farms), Needs attention, Farm progress, Season timeline, Coming up, both themes, 8-row caps with "+ N more" and "View all N farms". Add farm and Edit farm already revalidate "/" and "/farms" via `refreshFarmLists`.
+- Step 5c built: the Farm detail page at `/farms/[id]` (header, stage timeline, Notes and Photos). `getFarmDetail` loads the farm, templates, windows, alert settings, stages, 50 newest notes and 60 newest photos in parallel, then runs the schedule engine. `buildStageRows` is pure and tested (rule text from templates, done with and without dates, date and window text, overrides, unscheduled, overdue, open window, next up, all done). Photos use server-signed URLs in one batch with a 1 hour expiry. Notes and photos are added and deleted through server actions that call `auth.getUser()`, validate with pure functions, and revalidate the farm page. The upload flow shrinks each image in the browser to 1600px JPEG at 0.8, asks the server for a UUID path, uploads with the user's session, then registers the row with `author_name`; failures delete the object. Settings has a Display name field. The `unscheduled` StatusPill variant is added. Step 5c is awaiting application of `0005_notes_photos_author.sql` and a pass of `supabase/checks/0005_checks.sql`.
+- Step 5d implementation is ready: Mark done, undo, manual stage dates, planting-date changes, Dashboard actions, completion author names, notes and photo linking, plus migration-specific checks. Step 5d is done once `0006_mark_done.sql` is applied and its checks pass.
 - `0004_farm_functions.sql` is written but NOT applied yet. Adding one farm or several farms needs it applied first. Step 5a is done once it has been applied.
 - `0005_notes_photos_author.sql` is written but NOT applied yet. Step 5c is done once it has been applied and `supabase/checks/0005_checks.sql` has been run.
 
@@ -26,16 +27,15 @@ Last updated: 2026-11-07
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Mark done (also adds changing the planting date and manual stage dates, and the Mark done button on the Dashboard's Needs attention rows and on the farm page)
-2. Alert settings
-3. Stage template
-4. Daily email alert job with Resend (needs the project domain verified)
-5. Deploy
+1. Alert settings
+2. Stage template editor
+3. Daily email alert job with Resend (needs the project domain verified)
+4. Deploy
 
 ## Waiting on
 - Apply `supabase/migrations/0005_notes_photos_author.sql` and run `supabase/checks/0005_checks.sql`, then test adding and deleting notes and photos.
 - Apply `supabase/migrations/0004_farm_functions.sql` and run `supabase/checks.sql`, then test Add farm and bulk add.
-- The Mark done step must add the button to the Dashboard's Needs attention rows and farm page, along with planting-date and manual stage-date editing.
+- Apply `supabase/migrations/0006_mark_done.sql` and run `supabase/checks/0006_checks.sql`, then test Mark done and stage actions. This completes step 5d.
 - The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub

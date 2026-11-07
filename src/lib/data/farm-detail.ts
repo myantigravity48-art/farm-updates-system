@@ -105,6 +105,12 @@ export async function getFarmDetail(id: string): Promise<FarmDetailView> {
   const overrideByPosition = new Map(
     states.map((state) => [state.position, state.dueDateOverride] as const),
   );
+  const rowByPosition = new Map(
+    stageRows.flatMap((row) => {
+      const position = templateRows.find((template) => template.id === row.template_id)?.position;
+      return position === undefined ? [] : [[position, row] as const];
+    }),
+  );
   const scheduledByPosition = new Map(
     scheduled.map((stage) => [stage.position, stage] as const),
   );
@@ -118,6 +124,9 @@ export async function getFarmDetail(id: string): Promise<FarmDetailView> {
           template,
           scheduled: stage,
           dueDateOverride: overrideByPosition.get(template.position) ?? null,
+          id: rowByPosition.get(template.position)?.id,
+          doneByName: rowByPosition.get(template.position)?.done_by_name,
+          doneNote: rowByPosition.get(template.position)?.done_note,
         },
       ];
     }),
@@ -171,6 +180,7 @@ export async function getFarmDetail(id: string): Promise<FarmDetailView> {
     caption: row.caption,
     takenOn: (row.taken_on as CalendarDate | null) ?? null,
     authorName: row.author_name ?? null,
+    stageName: row.farm_stage_id ? (stageNameById.get(row.farm_stage_id) ?? null) : null,
     url: signedByPath.get(row.storage_path) ?? null,
   }));
 

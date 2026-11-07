@@ -7,10 +7,14 @@ export interface StageRowInput {
   template: StageTemplate;
   scheduled: ScheduledStage;
   dueDateOverride: CalendarDate | null;
+  id?: string;
+  doneByName?: string | null;
+  doneNote?: string | null;
 }
 
 /** A read-only row for the Farm detail stage timeline. */
 export interface StageRow {
+  id: string | null;
   position: number;
   name: string;
   ruleText: string;
@@ -20,6 +24,12 @@ export interface StageRow {
   pillLabel: string;
   /** True for the first stage that is not done. */
   nextUp: boolean;
+  doneByName: string | null;
+  doneNote: string | null;
+  doneDate: CalendarDate | null;
+  dueDate: CalendarDate | null;
+  dueDateOverride: CalendarDate | null;
+  windowKey?: string;
 }
 
 export const STATUS_LABELS: Record<Status, string> = {
@@ -105,6 +115,7 @@ export function buildStageRows(
     if (nextUp) nextUpPosition = input.template.position;
 
     return {
+      id: input.id ?? null,
       position: input.template.position,
       name: input.template.name,
       ruleText: stageRuleText(input.template),
@@ -112,6 +123,12 @@ export function buildStageRows(
       state,
       pillLabel: STATUS_LABELS[state],
       nextUp,
+      doneByName: input.doneByName ?? null,
+      doneNote: input.doneNote ?? null,
+      doneDate: input.scheduled.doneDate,
+      dueDateOverride: input.dueDateOverride,
+      dueDate: input.scheduled.dueDate ?? input.scheduled.windowStart ?? null,
+      windowKey: input.template.windowKey,
     };
   });
 

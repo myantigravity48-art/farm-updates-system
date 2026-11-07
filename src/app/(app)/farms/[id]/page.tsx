@@ -3,6 +3,7 @@ import { FarmDetailTabs } from "@/components/farms/farm-detail-tabs";
 import { NotesPanel } from "@/components/farms/notes-panel";
 import { PhotosPanel } from "@/components/farms/photos-panel";
 import { StageTimeline } from "@/components/farms/stage-timeline";
+import { MarkDoneProvider } from "@/components/mark-done/mark-done-provider";
 import { getFarmDetail } from "@/lib/data/farm-detail";
 
 export default async function FarmDetailPage({
@@ -14,11 +15,11 @@ export default async function FarmDetailPage({
   const farm = await getFarmDetail(id);
 
   return (
-    <>
+    <MarkDoneProvider>
       <FarmDetailHeader farm={farm} />
 
       <FarmDetailTabs
-        timeline={<StageTimeline rows={farm.stages} />}
+        timeline={<StageTimeline rows={farm.stages} farmId={farm.id} today={farm.today} plantingDate={farm.plantingDate} />}
         notes={
           <NotesPanel
             farmId={farm.id}
@@ -35,6 +36,6 @@ export default async function FarmDetailPage({
           />
         }
       />
-    </>
+    </MarkDoneProvider>
   );
 }

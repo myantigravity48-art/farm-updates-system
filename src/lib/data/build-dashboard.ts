@@ -16,6 +16,7 @@ const COMING_UP_ROWS = 4;
 
 export interface DashboardStageInput {
   position: number;
+  stageId?: string;
   name: string;
   kind: "window" | "date" | "unscheduled";
   isDone: boolean;
@@ -51,6 +52,7 @@ export interface DashboardKpis {
 
 export interface AttentionRow {
   farmId: string;
+  stageId: string | null;
   farmName: string;
   stageName: string;
   status: Extract<FarmStatus, "overdue" | "due-soon">;
@@ -164,6 +166,7 @@ export function buildDashboard(input: DashboardRequest, today: CalendarDate): Da
         if (sortDate && stage.dueDate) {
           attention.push({
             farmId: farm.id,
+            stageId: stage.stageId ?? null,
             farmName: farm.name,
             stageName: stage.name,
             status: status === "overdue" ? "overdue" : "due-soon",

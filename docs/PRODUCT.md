@@ -65,6 +65,8 @@ Each email links to the farm's page in the app.
 7. Stage template editor with season windows
 8. Daily email alert job, logged and idempotent
 
+Mark done records the completion date, optional note and the signed-in user's display name, then previews the next scheduled stage. A completion can be undone unless later after-planting stages are still done; manual due dates override the schedule until cleared, and changing a completed planting date reschedules open later stages while refusing dates that precede completed work.
+
 ## Phase 2 (designed, not built yet)
 - Cost tracking per farm (expenses by category, per stage, receipts, in naira)
 - Workers and worker payments. The app records payments only and never moves money. A worker payment automatically appears in Costs as Labour for that farm, so nothing is entered twice. Paid and Owed status is tentative.

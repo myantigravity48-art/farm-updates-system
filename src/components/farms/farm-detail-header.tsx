@@ -40,8 +40,9 @@ export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Primary Mark done button arrives with the Mark done step */}
           <FarmDetailActions
+            nextStageId={farm.stages.find((stage) => stage.state !== "done")?.id ?? null}
+            allStagesDone={farm.doneCount === farm.totalStages}
             farm={{
               id: farm.id,
               name: farm.name,

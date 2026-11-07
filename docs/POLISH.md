@@ -3,6 +3,7 @@
 Do not work on this until every v1 feature is built and working (see `STATUS.md`). The polish pass comes last. Polishing screens that still say "Coming soon" wastes effort.
 
 ## Known issues to fix in the polish pass
+- The Mark done panel and stage actions menu are intentionally plain. Polish their spacing and hierarchy after every v1 feature is built and working.
 - Farms has no dedicated design export. The page currently reuses the shared cards, tokens and layout; give it a proper visual pass for both themes at desktop and mobile widths.
 - Farm detail: the stage timeline and photo grid are plain. Polish them last, after every v1 feature works: spacing and hierarchy on the 8 stage rows, the done and next-up treatments, the empty notes and photos states, and the tile hover and focus states.
 - Icons feel generic. Choose ONE icon family and apply it everywhere (candidates: Phosphor, Tabler, or Lucide at a different weight). Decide once.

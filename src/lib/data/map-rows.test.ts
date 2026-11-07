@@ -41,6 +41,7 @@ function stageRow(overrides: Partial<FarmStageRow> & Pick<FarmStageRow, "templat
     is_done: false,
     done_date: null,
     done_by: null,
+    done_by_name: null,
     done_note: null,
     due_date_override: null,
     ...overrides,

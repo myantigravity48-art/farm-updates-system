@@ -113,7 +113,7 @@ export function NotesPanel({
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <span className="text-sm text-muted">Visible to both users.</span>
-          <Button type="submit" disabled={pending} aria-busy={pending}>
+          <Button type="submit" variant="secondary" disabled={pending} aria-busy={pending}>
             {pending ? "Adding…" : "Add note"}
           </Button>
         </div>

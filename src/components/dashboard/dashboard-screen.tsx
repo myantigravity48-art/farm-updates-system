@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { AlertCircle, ChevronRight, Clock3, type LucideIcon } from "lucide-react";
+import { AlertCircle, Check, ChevronRight, Clock3, type LucideIcon } from "lucide-react";
 import { SeasonTimelineStrip } from "@/components/dashboard/season-timeline-strip";
 import { StatusPill } from "@/components/status-pill";
 import { formatUkShortDate } from "@/lib/format/dates";
@@ -9,6 +11,7 @@ import type {
   DashboardModel,
   ProgressList,
 } from "@/lib/data/build-dashboard";
+import { useMarkDone } from "@/components/mark-done/mark-done-provider";
 
 const kpiTones = {
   overdue: "text-overdue",
@@ -49,25 +52,25 @@ const attentionEdgeClasses = {
   "due-soon": "bg-due-soon",
 } as const;
 
-/** Mark done button arrives with the Mark done step */
-function AttentionRowLink({ row }: { row: AttentionList["rows"][number] }) {
+function AttentionRow({ row }: { row: AttentionList["rows"][number] }) {
+  const { openMarkDone } = useMarkDone();
   return (
-    <Link
-      href={`/farms/${row.farmId}`}
-      className="relative flex min-h-16 flex-wrap items-center justify-between gap-x-3 gap-y-1 overflow-hidden rounded-[10px] bg-raised py-3 pl-5 pr-4 hover:bg-border/40"
-    >
+    <div className="relative flex min-h-16 items-center gap-2 overflow-hidden rounded-[10px] bg-raised pl-5 pr-2 hover:bg-border/40">
       <span
         aria-hidden="true"
         className={`absolute inset-y-0 left-0 w-1 ${attentionEdgeClasses[row.status]}`}
       />
-      <span className="min-w-0">
-        <span className="block font-display text-lg font-light leading-tight">{row.farmName}</span>
-        <span className="block text-sm text-muted">{row.stageName}</span>
-      </span>
-      <span className="flex-none">
+      <Link href={`/farms/${row.farmId}`} className="flex min-h-14 min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2">
+        <span className="min-w-0">
+          <span className="block font-display text-lg font-light leading-tight">{row.farmName}</span>
+          <span className="block text-sm text-muted">{row.stageName}</span>
+        </span>
         <StatusPill status={row.status} label={row.phrase} />
-      </span>
-    </Link>
+      </Link>
+      <button type="button" disabled={!row.stageId} onClick={() => openMarkDone(row.stageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-primary hover:bg-surface disabled:opacity-50">
+        <Check aria-hidden="true" size={20} strokeWidth={1.7} />
+      </button>
+    </div>
   );
 }
 
@@ -152,7 +155,7 @@ export function DashboardScreen({
                 <ul className="mt-4 space-y-2">
                   {attention.rows.map((row) => (
                     <li key={`${row.farmId}-${row.stageName}`}>
-                      <AttentionRowLink row={row} />
+                      <AttentionRow row={row} />
                     </li>
                   ))}
                 </ul>

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AddFarmCta } from "@/components/dashboard/add-farm-cta";
 import { DashboardScreen } from "@/components/dashboard/dashboard-screen";
+import { MarkDoneProvider } from "@/components/mark-done/mark-done-provider";
 import { ConfigError } from "@/components/auth/config-error";
 import { readSession } from "@/lib/auth/session";
 import { getDashboardData } from "@/lib/data/dashboard";
@@ -59,7 +60,7 @@ export default async function DashboardPage() {
   return (
     <>
       {dashboardHeader}
-      <DashboardScreen model={model} />
+      <MarkDoneProvider><DashboardScreen model={model} /></MarkDoneProvider>
     </>
   );
 }

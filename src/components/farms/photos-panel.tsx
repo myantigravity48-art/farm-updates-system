@@ -118,6 +118,7 @@ export function PhotosPanel({
                   {photo.caption?.trim() ? (
                     <span className="mt-2 line-clamp-2 block text-sm">{photo.caption.trim()}</span>
                   ) : null}
+                  {photo.stageName ? <span className="mt-1 block text-sm text-text">{photo.stageName}</span> : null}
                   <span className="mt-1 block text-sm text-muted tabular-nums">
                     {photo.takenOn ? formatUkShortDate(photo.takenOn) : "Date not set"}
                   </span>

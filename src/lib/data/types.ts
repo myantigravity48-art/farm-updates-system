@@ -58,6 +58,7 @@ export interface FarmPhoto {
   caption: string | null;
   takenOn: CalendarDate | null;
   authorName: string | null;
+  stageName: string | null;
   /** Null when the signed URL could not be created; the tile shows a placeholder. */
   url: string | null;
 }
@@ -68,7 +69,7 @@ export interface FarmStageOption {
   name: string;
 }
 
-/** Everything the Farm detail page renders. Stage progress is read-only here. */
+/** Everything the Farm detail page renders. */
 export interface FarmDetailView {
   id: string;
   name: string;
