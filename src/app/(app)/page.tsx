@@ -21,17 +21,26 @@ export default async function DashboardPage() {
 
   const now = new Date();
   const today = todayInLondon(now);
-  // The name is highlighted separately by DashboardScreen, so the greeting
-  // itself stays name-free to avoid showing it twice.
-  const greeting = getGreeting(now);
+  const greeting = getGreeting(now, session.user.displayName);
+  const dashboardHeader = (
+    <header className="mb-7">
+      <p className="text-sm text-muted tabular-nums">{formatUkDate(today)}</p>
+      <h1 className="mt-3 font-display text-4xl font-light tracking-tight min-[768px]:text-5xl">
+        {greeting}
+      </h1>
+    </header>
+  );
 
   const model = await getDashboardData().catch(() => null);
 
   if (!model) {
     return (
-      <div role="alert" className="rounded-[14px] border border-border bg-surface p-6 text-sm text-text">
-        Could not load the dashboard. Refresh the page to try again.
-      </div>
+      <>
+        {dashboardHeader}
+        <div role="alert" className="rounded-[14px] border border-border bg-surface p-6 text-sm text-text">
+          Could not load the dashboard. Refresh the page to try again.
+        </div>
+      </>
     );
   }
 
@@ -39,15 +48,18 @@ export default async function DashboardPage() {
     const stageConfig = await getStageConfig().catch(
       (): StageConfig | null => null,
     );
-    return <AddFarmCta stageConfig={stageConfig} />;
+    return (
+      <>
+        {dashboardHeader}
+        <AddFarmCta stageConfig={stageConfig} />
+      </>
+    );
   }
 
   return (
-    <DashboardScreen
-      model={model}
-      greeting={greeting}
-      greetingName={session.user.displayName}
-      todayLabel={formatUkDate(today)}
-    />
+    <>
+      {dashboardHeader}
+      <DashboardScreen model={model} />
+    </>
   );
 }

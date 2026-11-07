@@ -4,6 +4,7 @@ Last updated: 2026-11-07
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
+- Rendering fix 2: Dashboard now combines the London-hour greeting with the authenticated user's optional display name and renders the heading in both the populated and no-farms/error states. Greeting tests cover the named and unnamed forms.
 - Product defined: lifecycle, alert rules, v1 scope (see `PRODUCT.md`)
 - Design direction approved: dark-first deep forest with moss green, equal light mode (see `DESIGN.md`)
 - Designs made for all v1 screens: Dashboard, Farm detail, Add farm, Mark done, Alert settings, Stage template, Login

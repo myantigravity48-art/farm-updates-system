@@ -119,33 +119,13 @@ function ComingUpRowLink({ row }: { row: ComingUpRow }) {
 
 export function DashboardScreen({
   model,
-  greeting,
-  greetingName,
-  todayLabel,
 }: {
   model: DashboardModel;
-  greeting: string;
-  greetingName: string | null;
-  todayLabel: string;
 }) {
   const { kpis, attention, progress, comingUp, timeline } = model;
 
   return (
     <div>
-      <header className="mb-7">
-        <p className="text-sm text-muted tabular-nums">{todayLabel}</p>
-        <h1 className="mt-3 font-display text-4xl font-light tracking-tight min-[768px]:text-5xl">
-          {greetingName ? (
-            <>
-              {`${greeting}, `}
-              <span className="text-primary">{greetingName}</span>
-            </>
-          ) : (
-            greeting
-          )}
-        </h1>
-      </header>
-
       <section aria-label="This week at a glance" className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KpiCard label="Overdue" value={kpis.overdue} tone="overdue" Icon={AlertCircle} />
         <KpiCard label="Next 14 days" value={kpis.dueSoon} tone="due-soon" Icon={Clock3} />

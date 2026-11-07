@@ -48,9 +48,10 @@ describe("getGreeting", () => {
   });
 
   it("appends a display name when one exists", () => {
-    expect(getGreeting(new Date("2026-01-15T11:30:00Z"), "Sam Fields")).toBe(
-      "Good morning, Sam Fields",
-    );
+    const displayName = "Amina Example";
+    const now = new Date("2026-01-15T11:30:00Z");
+    expect(getGreeting(now, displayName)).toBe(`Good morning, ${displayName}`);
+    expect(getGreeting(now, null)).toBe("Good morning");
   });
 
   it("gives the greeting alone without a name", () => {
