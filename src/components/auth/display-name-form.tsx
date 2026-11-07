@@ -22,7 +22,7 @@ export function DisplayNameForm({ initialName }: { initialName: string | null })
   }, [state, router]);
 
   return (
-    <form action={action} className="mt-4 max-w-[416px]">
+    <form action={action} className="mt-4 w-full">
       <label htmlFor="display-name" className={labelClass}>
         Display name
       </label>

@@ -16,7 +16,7 @@ export function ChangePasswordForm() {
   const isSuccess = state.status === "success";
 
   return (
-    <form action={formAction} className="mt-4 max-w-[416px]">
+    <form action={formAction} className="mt-4 w-full">
       <div>
         <label htmlFor={newPasswordId} className="mb-2 block text-sm font-medium text-text">
           New password

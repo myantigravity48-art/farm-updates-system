@@ -5,6 +5,7 @@ Last updated: 2026-11-07
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
 - Rendering fix 2: Dashboard now combines the London-hour greeting with the authenticated user's optional display name and renders the heading in both the populated and no-farms/error states. Greeting tests cover the named and unnamed forms.
+- Rendering fix 3: the shared shell offsets desktop content beyond the icon rail and farm panel, with 24px desktop and 16px mobile gutters. Settings is centred at 640px max width and its account, display-name and password inputs fill the column.
 - Product defined: lifecycle, alert rules, v1 scope (see `PRODUCT.md`)
 - Design direction approved: dark-first deep forest with moss green, equal light mode (see `DESIGN.md`)
 - Designs made for all v1 screens: Dashboard, Farm detail, Add farm, Mark done, Alert settings, Stage template, Login

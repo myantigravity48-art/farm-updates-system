@@ -19,7 +19,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="max-w-[640px]">
+    <div className="mx-auto w-full max-w-[640px]">
       <PageHeader title="Settings" description="Your account and sign in details." />
 
       <section aria-labelledby="account-heading" className="rounded-[14px] border border-border bg-surface p-6">
@@ -27,7 +27,7 @@ export default async function SettingsPage() {
           Account
         </h2>
 
-        <div className="mt-6 max-w-[416px]">
+        <div className="mt-6 w-full">
           <label htmlFor="account-email" className="mb-2 block text-sm font-medium text-text">
             Signed in email
           </label>
