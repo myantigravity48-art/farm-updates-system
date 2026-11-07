@@ -46,6 +46,7 @@ Sent by a daily scheduled job at a fixed hour in Europe/London (default 08:00).
 | done_notice | when someone marks a stage done | Event-driven, sent to the other recipients |
 
 An alert is sent only if its occurrence key is not already in the notification log, so a missed daily run catches up without sending duplicates.
+Full email spec: docs/EMAILS.md (it supersedes the wording above).
 
 Email wording (plain and short, subject carries the point):
 - heads_up: subject `{{farm}}: {{stage}} is due in {{days}} days`. Body: `{{stage}} on {{farm}} is due on {{date}}. Open the app to see the schedule.`
