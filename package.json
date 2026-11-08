@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run",
+    "test": "vitest run --configLoader runner",
     "test:watch": "vitest",
     "test:tz": "node scripts/test-tz.mjs"
   },

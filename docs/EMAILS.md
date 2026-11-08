@@ -83,7 +83,8 @@ If the next stage has no date yet (planting date not set): `Next: {{next_stage}}
 - Inline all CSS. No external stylesheets, no web fonts, no images.
 
 ## Build notes (for step 6)
-- One pure function, `renderAlertEmail(alerts, context)`, returns `{ subject, text, html }`. It has no network and no database calls and takes the date in as an argument.
+- Plain-text rendering is implemented in `src/lib/email/`. The HTML version comes in the email job step.
+- The pure renderers return `{ subject, text }`. They have no network or database calls and take the date in as an argument.
 - Vitest tests for: digest subject variants (overdue only, due soon only, both, singular and plural), day phrases (today, tomorrow, in n days, 1 day late), date formatting (UK weekday format), sorting, single-alert forms for date and window stages, done_notice with and without a next date, and HTML escaping of farm names (a name containing & or < must not break the email).
 - A dev-only preview page at `/dev/emails` that renders each sample in both the HTML and text forms. Remove it before launch.
 - Send test emails only to the manager's own address until the domain is verified and the digest looks right on a real phone.

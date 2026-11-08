@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-07
+Last updated: 2026-11-08
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
@@ -18,6 +18,7 @@ Last updated: 2026-11-07
 - Step 5b built: the Dashboard at "/" (`src/app/(app)/page.tsx`, `src/components/dashboard/`, `src/lib/data/dashboard.ts`, `build-dashboard.ts`, `timeline.ts`, and phrase/greeting pure functions in `src/lib/format/`). Real data through the existing session-scoped Supabase server client. `buildDashboard(input, today)` is pure and tested, plus `buildSeasonTimeline`, window/date stage phrases, and the London-hour greeting. Screen matches the Dashboard exports: KPI cards (Overdue, Next 14 days, Done this month, Farms), Needs attention, Farm progress, Season timeline, Coming up, both themes, 8-row caps with "+ N more" and "View all N farms". Add farm and Edit farm already revalidate "/" and "/farms" via `refreshFarmLists`.
 - Step 5c built: the Farm detail page at `/farms/[id]` (header, stage timeline, Notes and Photos). `getFarmDetail` loads the farm, templates, windows, alert settings, stages, 50 newest notes and 60 newest photos in parallel, then runs the schedule engine. `buildStageRows` is pure and tested (rule text from templates, done with and without dates, date and window text, overrides, unscheduled, overdue, open window, next up, all done). Photos use server-signed URLs in one batch with a 1 hour expiry. Notes and photos are added and deleted through server actions that call `auth.getUser()`, validate with pure functions, and revalidate the farm page. The upload flow shrinks each image in the browser to 1600px JPEG at 0.8, asks the server for a UUID path, uploads with the user's session, then registers the row with `author_name`; failures delete the object. Settings has a Display name field. The `unscheduled` StatusPill variant is added. Step 5c is awaiting application of `0005_notes_photos_author.sql` and a pass of `supabase/checks/0005_checks.sql`.
 - Step 5d implementation is ready: Mark done, undo, manual stage dates, planting-date changes, Dashboard actions, completion author names, notes and photo linking, plus migration-specific checks. Step 5d is done once `0006_mark_done.sql` is applied and its checks pass.
+- Step 5e built: `/alerts` loads recipients and timing through the signed-in Supabase session, supports recipient changes and timing saves, shows an email preview from the pure plain-text email renderers, and handles missing alert settings with the required seed migration message. `src/lib/email/` and `src/lib/alerts/validate.ts` have focused Vitest coverage. No SQL or sending code was added. The Alert settings export images were not present in `design/` when checked; the page follows `DESIGN.md` and `EMAILS.md`.
 - `0004_farm_functions.sql` is written but NOT applied yet. Adding one farm or several farms needs it applied first. Step 5a is done once it has been applied.
 - `0005_notes_photos_author.sql` is written but NOT applied yet. Step 5c is done once it has been applied and `supabase/checks/0005_checks.sql` has been run.
 
@@ -27,10 +28,9 @@ Last updated: 2026-11-07
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Alert settings
-2. Stage template editor
-3. Daily email alert job with Resend (needs the project domain verified)
-4. Deploy
+1. Stage template editor
+2. Daily email alert job with Resend (needs the project domain verified)
+3. Deploy
 
 ## Waiting on
 - Apply `supabase/migrations/0005_notes_photos_author.sql` and run `supabase/checks/0005_checks.sql`, then test adding and deleting notes and photos.
@@ -42,6 +42,7 @@ Last updated: 2026-11-07
 - Phase 2 designs (Costs, Workers) not made yet
 
 ## Open items
+- `renderDoneNotice` inputs omit `farmId`, while the email-link rule says each message links to `/farms/${farmId}`. The current done notice links to `appUrl` until that contract is clarified.
 - `/forgot-password` is a stub with no email. Replace it after Resend SMTP is set up (TODO in the page and `docs/AUTH.md`).
 - The login desktop panel uses `public/login-moss.jpg` when present. The real photograph still needs to be added.
 - The Farms page has no dedicated design export. It reuses the shared cards and tokens for now and is on the polish list in `docs/POLISH.md`.
