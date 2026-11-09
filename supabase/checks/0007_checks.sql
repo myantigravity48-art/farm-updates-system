@@ -15,6 +15,12 @@ from information_schema.columns
 where table_schema='public' and table_name in ('stage_templates','season_windows') and column_name in ('updated_at','updated_by_name')
 order by table_name,column_name;
 
+-- 5. February-fixed month helper
+-- EXPECT: 1 row
+select n.nspname as schema_name,p.proname as function_name,pg_get_function_identity_arguments(p.oid) as arguments
+from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+where n.nspname='public' and p.proname='lifecycle_days_in_month' and p.prorettype='integer'::regtype;
+
 -- 4. Exact authenticated UPDATE column grants
 -- EXPECT: 4 rows for stage_templates and 6 for season_windows, naming exactly the columns above
 select table_name,column_name,privilege_type
