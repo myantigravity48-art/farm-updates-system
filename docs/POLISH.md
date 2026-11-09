@@ -34,3 +34,6 @@ Rules for skills:
 5. Re-run the audits. Test both themes at 390, 900 and 1440 widths. All tests must still pass.
 
 Rules for the pass: tokens only, no behaviour changes, one screen per commit.
+# Lifecycle editor
+
+- The lifecycle page is plain and has no dedicated Stage template design export. Polish it later.

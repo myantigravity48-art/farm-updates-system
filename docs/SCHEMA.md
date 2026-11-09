@@ -82,6 +82,14 @@ Function exceptions begin with stable codes for friendly app messages. `supabase
 
 ## RLS policies
 
+## Lifecycle editor additions (0007)
+
+`0007_lifecycle_editor.sql` adds nullable `updated_at` and `updated_by_name` columns to `stage_templates` and `season_windows`. It revokes table-level UPDATE for `authenticated` and grants column-level UPDATE only to the four stage fields (`name`, `offset_months`, `updated_at`, `updated_by_name`) and six season-window fields (`start_month`, `start_day`, `end_month`, `end_day`, `updated_at`, `updated_by_name`). SELECT grants and the existing RLS policies remain in place; those policies continue rejecting anonymous JWTs.
+
+The `SECURITY INVOKER` function `public.save_lifecycle(jsonb,jsonb,text)` validates the full lifecycle and updates both tables atomically. Its execution is revoked from `public` and `anon`, and granted to `authenticated`. Run `supabase/checks/0007_checks.sql` after applying it. Step 5f is complete once 0007 is applied and all its checks pass.
+
+The timings described as placeholders in `PRODUCT.md` are now editable in the app. `src/lib/schedule/defaults.ts` remains only a seed and test reference and may differ from the live database values.
+
 Every table has row-level security enabled. No table is accessible to the `anon` role. Every authenticated policy (including storage) also rejects a JWT whose `is_anonymous` claim is true, so anonymous sign-ins cannot read or write data.
 
 | Table | authenticated | service_role |

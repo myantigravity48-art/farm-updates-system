@@ -14,6 +14,8 @@ function templateRow(overrides: Partial<TemplateRow> & Pick<TemplateRow, "id" | 
     trigger_type: "after_planting",
     offset_months: 3,
     window_key: null,
+    updated_at: null,
+    updated_by_name: null,
     ...overrides,
   };
 }
@@ -54,6 +56,8 @@ const dryWindow: WindowRow = {
   start_day: 1,
   end_month: 3,
   end_day: 31,
+  updated_at: null,
+  updated_by_name: null,
 };
 
 const plantingWindow: WindowRow = {
@@ -62,6 +66,8 @@ const plantingWindow: WindowRow = {
   start_day: 25,
   end_month: 7,
   end_day: 15,
+  updated_at: null,
+  updated_by_name: null,
 };
 
 describe("row-to-engine mapper", () => {

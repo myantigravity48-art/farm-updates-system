@@ -6,6 +6,7 @@ import { ConfigError } from "@/components/auth/config-error";
 import { signOut } from "@/lib/auth/actions";
 import { readSession } from "@/lib/auth/session";
 import { LogOut } from "lucide-react";
+import Link from "next/link";
 
 export default async function SettingsPage() {
   const session = await readSession();
@@ -21,6 +22,12 @@ export default async function SettingsPage() {
   return (
     <div className="mx-auto w-full max-w-[640px]">
       <PageHeader title="Settings" description="Your account and sign in details." />
+
+      <section className="mb-6 rounded-[14px] border border-border bg-surface p-6">
+        <h2 className="font-display text-2xl font-light">Lifecycle and season windows</h2>
+        <p className="mt-2 text-sm text-muted">Edit the stage timings used to schedule every farm.</p>
+        <Link href="/settings/lifecycle" className="mt-3 inline-flex min-h-11 items-center rounded-[10px] text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-primary">Edit lifecycle</Link>
+      </section>
 
       <section aria-labelledby="account-heading" className="rounded-[14px] border border-border bg-surface p-6">
         <h2 id="account-heading" className="font-display text-2xl font-light">

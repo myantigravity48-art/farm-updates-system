@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005 and 0006.
+ * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005, 0006 and 0007.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 
@@ -15,6 +15,8 @@ export interface Database {
           start_day: number;
           end_month: number;
           end_day: number;
+          updated_at: string | null;
+          updated_by_name: string | null;
         };
         Insert: {
           key: "dry_season" | "planting";
@@ -22,6 +24,8 @@ export interface Database {
           start_day: number;
           end_month: number;
           end_day: number;
+          updated_at?: string | null;
+          updated_by_name?: string | null;
         };
         Update: {
           key?: "dry_season" | "planting";
@@ -29,6 +33,8 @@ export interface Database {
           start_day?: number;
           end_month?: number;
           end_day?: number;
+          updated_at?: string | null;
+          updated_by_name?: string | null;
         };
         Relationships: [];
       };
@@ -40,6 +46,8 @@ export interface Database {
           trigger_type: "season_window" | "after_planting";
           offset_months: number | null;
           window_key: string | null;
+          updated_at: string | null;
+          updated_by_name: string | null;
         };
         Insert: {
           id?: string;
@@ -48,6 +56,8 @@ export interface Database {
           trigger_type: "season_window" | "after_planting";
           offset_months?: number | null;
           window_key?: string | null;
+          updated_at?: string | null;
+          updated_by_name?: string | null;
         };
         Update: {
           id?: string;
@@ -56,6 +66,8 @@ export interface Database {
           trigger_type?: "season_window" | "after_planting";
           offset_months?: number | null;
           window_key?: string | null;
+          updated_at?: string | null;
+          updated_by_name?: string | null;
         };
         Relationships: [];
       };
@@ -327,6 +339,10 @@ export interface Database {
       };
       set_stage_due_override: {
         Args: { p_farm_stage_id: string; p_date: string | null };
+        Returns: undefined;
+      };
+      save_lifecycle: {
+        Args: { p_stages: Json; p_windows: Json; p_updated_by_name: string };
         Returns: undefined;
       };
     };
