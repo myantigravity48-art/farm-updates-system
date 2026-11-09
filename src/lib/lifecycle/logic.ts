@@ -3,6 +3,16 @@ import { computeSchedule, type FarmInput, type StageState, type SeasonWindow, ty
 export type LifecycleStageDraft = { id: string; position: number; name: string; trigger_type: "season_window" | "after_planting"; offset_months: number | null; window_key: "dry_season" | "planting" | null };
 export type LifecycleWindowDraft = { key: "dry_season" | "planting"; start_month: number; start_day: number; end_month: number; end_day: number };
 export type LifecycleDraft = { stages: LifecycleStageDraft[]; windows: LifecycleWindowDraft[] };
+export type LifecycleSaveState = "idle" | "previewing" | "confirming" | "saving" | "done" | "error";
+export type LifecycleSaveEvent = "preview" | "preview_ok" | "preview_failed" | "save" | "save_ok" | "save_failed" | "reset";
+export function lifecycleSaveTransition(state: LifecycleSaveState, event: LifecycleSaveEvent): LifecycleSaveState {
+  if (event === "reset") return "idle";
+  const transitions: Record<LifecycleSaveState, Partial<Record<LifecycleSaveEvent, LifecycleSaveState>>> = {
+    idle: { preview: "previewing", preview_failed: "error" }, previewing: { preview_ok: "confirming", preview_failed: "error" },
+    confirming: { save: "saving" }, saving: { save_ok: "done", save_failed: "error" }, done: { reset: "idle" }, error: { preview: "previewing", save: "saving" },
+  };
+  return transitions[state][event] ?? state;
+}
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 export function daysInMonth(month: number): number { return [31,28,31,30,31,30,31,31,30,31,30,31][month - 1] ?? 0; }
 export function monthDayLabel(month: number, day: number): string { return `${day} ${MONTHS[month - 1] ?? ""}`.trim(); }
