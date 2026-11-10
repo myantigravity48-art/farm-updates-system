@@ -2,7 +2,7 @@ import type { AlertSettings, SeasonWindow, StageTemplate } from "./types";
 
 // These are placeholders pending the owner's corrected timings. The engine never imports this file; callers pass the data in.
 export const defaultStageTemplates: StageTemplate[] = [
-  { position: 1, name: "Land clearing (cut trees, gather weeds, isolate wood, burn weeds, clear log remnants)", triggerType: "season_window", windowKey: "dry_season" },
+  { position: 1, name: "Land clearing", triggerType: "season_window", windowKey: "dry_season" },
   { position: 2, name: "Planting (acquire and plant seedlings)", triggerType: "season_window", windowKey: "planting" },
   { position: 3, name: "First round-weeding", triggerType: "after_planting", offsetMonths: 3 },
   { position: 4, name: "Herbicide on surrounding weeds", triggerType: "after_planting", offsetMonths: 3 },

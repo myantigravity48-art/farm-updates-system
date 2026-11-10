@@ -37,3 +37,6 @@ Rules for the pass: tokens only, no behaviour changes, one screen per commit.
 # Lifecycle editor
 
 - The lifecycle page is plain and has no dedicated Stage template design export. Polish it later.
+# Stage descriptions
+
+Stage descriptions: the detail text for Land clearing (cut trees, gather weeds, isolate wood, burn weeds, clear log remnants) was removed from the stage name. Add a description column and show it as helper text under the stage name.

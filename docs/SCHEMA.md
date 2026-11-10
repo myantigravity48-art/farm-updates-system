@@ -82,6 +82,10 @@ Function exceptions begin with stable codes for friendly app messages. `supabase
 
 ## RLS policies
 
+## Stage-name cleanup (0008)
+
+`0008_shorten_stage_names.sql` shortens the seeded stage at position 1 to `Land clearing` when its current name exceeds 60 characters. It is safe to run after the app-side rename. Run `supabase/checks/0008_checks.sql`; it should return no stage names over 60 characters or blank names.
+
 ## Lifecycle editor additions (0007)
 
 `0007_lifecycle_editor.sql` adds nullable `updated_at` and `updated_by_name` columns to `stage_templates` and `season_windows`. It revokes table-level UPDATE for `authenticated` and grants column-level UPDATE only to the four stage fields (`name`, `offset_months`, `updated_at`, `updated_by_name`) and six season-window fields (`start_month`, `start_day`, `end_month`, `end_day`, `updated_at`, `updated_by_name`). SELECT grants and the existing RLS policies remain in place; those policies continue rejecting anonymous JWTs.

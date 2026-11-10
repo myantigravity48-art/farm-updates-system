@@ -23,11 +23,11 @@ export function validateLifecycleDraft(draft: LifecycleDraft) {
   const windows = Array.isArray(draft?.windows) ? draft.windows : [];
   if (stages.length !== 8 || new Set(stages.map(s => s.id)).size !== stages.length || stages.some(s => !s.id)) errors.stages = "Keep all eight stages in the list.";
   const names = stages.map(s => typeof s.name === "string" ? s.name.trim() : "");
-  stages.forEach((s,i) => { if (!names[i] || names[i].length > 60) errors[`name:${s.id}`] = "Enter a name from 1 to 60 characters."; });
+  stages.forEach((s,i) => { if (!names[i] || names[i].length > 60) { const label=s.name.length>30?`${s.name.slice(0,30)}...`:s.name; errors[`name:${s.id}`]=`Stage ${s.position} (${label}): ${names[i].length} characters. Use 60 or fewer.`; } });
   if (new Set(names.map(n => n.toLocaleLowerCase("en-GB"))).size !== names.length) errors.duplicate_name = "Two stages have the same name. Names must be different.";
   for (const s of stages) if (s.trigger_type === "after_planting" ? !Number.isInteger(s.offset_months) || (s.offset_months as number) < 0 || (s.offset_months as number) > 60 : s.offset_months !== null) errors[`offset:${s.id}`] = "Use a whole number from 0 to 60 for after-planting stages.";
   if (windows.length !== 2 || new Set(windows.map(w => w.key)).size !== 2 || !["dry_season","planting"].every(k => windows.some(w => w.key === k))) errors.windows = "Include the dry season and planting windows.";
-  for (const w of windows) if (![w.start_month,w.end_month].every(m => Number.isInteger(m) && m >= 1 && m <= 12) || !Number.isInteger(w.start_day) || w.start_day < 1 || w.start_day > daysInMonth(w.start_month) || !Number.isInteger(w.end_day) || w.end_day < 1 || w.end_day > daysInMonth(w.end_month)) errors[`window:${w.key}`] = "That date doesn't exist. Use a day that is in the month (29 February isn't allowed).";
+  for (const w of windows) if (![w.start_month,w.end_month].every(m => Number.isInteger(m) && m >= 1 && m <= 12) || !Number.isInteger(w.start_day) || w.start_day < 1 || w.start_day > daysInMonth(w.start_month) || !Number.isInteger(w.end_day) || w.end_day < 1 || w.end_day > daysInMonth(w.end_month)) errors[`window:${w.key}`] = `${w.key === "planting" ? "Planting window" : "Dry season window"}: that date doesn't exist.`;
   const valid = (w: LifecycleWindowDraft) => !errors[`window:${w.key}`];
   if (windows.length === 2 && windows.every(valid)) {
     const [a,b] = windows; const ordinal = (m:number,d:number) => Array.from({length:m-1},(_,i)=>daysInMonth(i+1)).reduce((sum,n)=>sum+n,0)+d;

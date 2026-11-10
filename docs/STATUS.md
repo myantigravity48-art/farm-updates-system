@@ -2,6 +2,9 @@
 
 Last updated: 2026-11-09
 
+## Recent update
+- Stage 1's oversized seeded label was verified at 85 characters; lifecycle name validation includes its stage location. Migration 0008 shortens that legacy value idempotently. Apply it and run `supabase/checks/0008_checks.sql`.
+
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
 - Rendering fix 2: Dashboard now combines the London-hour greeting with the authenticated user's optional display name and renders the heading in both the populated and no-farms/error states. Greeting tests cover the named and unnamed forms.
