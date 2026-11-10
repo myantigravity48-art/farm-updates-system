@@ -40,6 +40,7 @@ OVERDUE
 DUE SOON
 - Iyanuole: Second round-weeding. Due Fri 23 Oct 2026 (in 9 days).
 - Obaoba: First fertilizer. Due Mon 26 Oct 2026 (in 12 days).
+- {{farm}}: {{stage}}. Window open until {{window_end}} ({{n}} days left).
 
 Open the app: {{app_url}}
 
@@ -63,6 +64,7 @@ Used when a recipient has exactly one alert on a run.
 | heads_up | `{{farm}}: {{stage}} window opens in {{days}} days` | `The {{stage}} window on {{farm}} opens on {{date}} and closes on {{window_end}}.` |
 | reminder | `{{farm}}: {{stage}} window opens {{day phrase}}` | `The {{stage}} window on {{farm}} opens on {{date}} and closes on {{window_end}}.` |
 | overdue | `Overdue: {{farm}}, {{stage}} window closed` | `The {{stage}} window on {{farm}} closed on {{window_end}} and the stage is not marked done.` |
+| window_open | `{{farm}}: {{stage}} window is open until {{window_end}}` | `The {{stage}} window on {{farm}} is open until {{window_end}} and the stage is not marked done.` |
 
 Every single-alert email ends with: `Open {{farm}}: {{link}}` and the footer line.
 

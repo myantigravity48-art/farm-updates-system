@@ -21,11 +21,11 @@ interface ActionResult {
   message: string;
 }
 
-function messageForError(error: unknown, plantingDate?: CalendarDate | null): string {
+function messageForError(error: unknown, plantingDate?: CalendarDate | null, anchorName?: string): string {
   if (typeof error === "object" && error !== null && "message" in error) {
     const message = String((error as { message: unknown }).message);
     const code = message.split(":", 1)[0];
-    if (/^[a-z_]+$/.test(code)) return stageActionErrorMessage(code, plantingDate);
+    if (/^[a-z_]+$/.test(code)) return stageActionErrorMessage(code, plantingDate, anchorName);
   }
   return UNKNOWN_ERROR;
 }
@@ -126,7 +126,7 @@ export async function markStageDone(
       .from("farm_stages").select("id, farm_id, template_id, is_done").eq("id", id).maybeSingle();
     if (stageError || !stage) return { ok: false, message: "This stage could not be found. Refresh the page." };
     const [{ data: template }, { data: farm }] = await Promise.all([
-      supabase.from("stage_templates").select("trigger_type").eq("id", stage.template_id).maybeSingle(),
+      supabase.from("stage_templates").select("trigger_type, anchor_window_key").eq("id", stage.template_id).maybeSingle(),
       supabase.from("farms").select("planting_date").eq("id", stage.farm_id).maybeSingle(),
     ]);
     if (!template || !farm) return { ok: false, message: UNKNOWN_ERROR };
@@ -147,7 +147,14 @@ export async function markStageDone(
       p_done_by_name: authorNameFromUser(authData.user),
       p_today: today,
     });
-    if (error) return { ok: false, message: messageForError(error, plantingDate) };
+    if (error) {
+      let anchorName: string | undefined;
+      if (template.trigger_type === "after_stage_done" && template.anchor_window_key) {
+        const { data: anchor } = await supabase.from("stage_templates").select("name").eq("window_key", template.anchor_window_key).maybeSingle();
+        anchorName = anchor?.name;
+      }
+      return { ok: false, message: messageForError(error, plantingDate, anchorName) };
+    }
     revalidateFarm(stage.farm_id);
     return { ok: true, message: "Stage marked done." };
   } catch {

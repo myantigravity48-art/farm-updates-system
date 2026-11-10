@@ -32,9 +32,10 @@ Pure date-computation module in `src/lib/schedule/`. No database, network, React
 - **Inputs**: stage templates, season windows, farm input (plantingDate, anchorDate), stage states (isDone, doneDate, dueDateOverride).
 - **Outputs**: array of `ScheduledStage`, one per template.
 - **Planting date**: `farm.plantingDate`, else the done date of the planting stage (the template with `windowKey === "planting"`), else `null`.
-- **Planting window anchor**: the clearing stage's done date if it has one, else `farm.anchorDate`. The clearing stage is the first template with `triggerType === "season_window"` and `windowKey !== "planting"`.
+- **Planting window anchor**: the clearing stage's done date if it has one, else `farm.anchorDate`. Find clearing by `windowKey === "dry_season"`, never by position.
 - **Due date override**: if a stage has `dueDateOverride`, it replaces any computed date. The stage is returned with `kind: "date"`.
 - **After-planting stages**: `dueDate = addMonths(plantingDate, offsetMonths)`. If planting date is null, the stage is `kind: "unscheduled"`. Stages anchor to the planting date, never to the previous stage's completion.
+- **After-stage-done stages**: find the anchor by its template `windowKey === anchorWindowKey`. If the anchor is done with a completion date, schedule this stage at `addDays(anchorDoneDate, offsetDays)`; otherwise it is unscheduled with `needs_anchor_stage` and `waitingForStage`. A due-date override takes precedence, and completed stages retain their dates. `needs_planting_date` remains the reason for unscheduled after-planting jobs.
 - **Season-window stages**: resolved via `resolveWindow` using the appropriate anchor.
 
 ### Status (`getStatus`)
@@ -58,6 +59,7 @@ Pure date-computation module in `src/lib/schedule/`. No database, network, React
 - Already-sent keys are filtered out for idempotency.
 - `done_notice` is not in the engine (it is event-driven, handled at the app layer).
 - During an open window (past the opening, before closing), no alerts fire — the reminder window has passed and overdue has not started.
+- **window_open**: for each open, incomplete window stage with `windowNudgeDays > 0`, send only if it is first by position or every earlier stage is done. Let `k = floor(diffInDays(windowStart, today) / windowNudgeDays)`; emit only for `k >= 1`, with key `{position}:window_open:{windowStart}:{k}` and `days = diffInDays(today, windowEnd)`. This catches up missed days and respects already-sent keys. Zero disables nudges.
 
 ## Alert occurrence key format
 
@@ -71,6 +73,7 @@ Pure date-computation module in `src/lib/schedule/`. No database, network, React
 | `heads_up` | `{position}:heads_up:{R}` | `1:heads_up:2027-06-15` |
 | `reminder` | `{position}:reminder:{R}` | `1:reminder:2027-06-15` |
 | `overdue` | `{position}:overdue:{C}:{n}` | `1:overdue:2027-06-15:0` |
+| `window_open` | `{position}:window_open:{windowStart}:{k}` | `1:window_open:2027-06-15:1` |
 
 Where R is the due date or window opening date, C is the due date or window closing date, and n is the repeat index (0-based, increments every `overdueRepeatDays` days).
 

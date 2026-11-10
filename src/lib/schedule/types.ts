@@ -5,9 +5,11 @@ export type CalendarDate = `${number}-${number}-${number}`;
 export interface StageTemplate {
   position: number;
   name: string;
-  triggerType: "season_window" | "after_planting";
+  triggerType: "season_window" | "after_planting" | "after_stage_done";
   windowKey?: "dry_season" | "planting";
   offsetMonths?: number;
+  anchorWindowKey?: "dry_season" | "planting";
+  offsetDays?: number;
 }
 
 /** A recurring date range, which may cross a calendar year. */
@@ -26,7 +28,7 @@ export interface FarmInput { plantingDate: CalendarDate | null; anchorDate: Cale
 export interface StageState { position: number; isDone: boolean; doneDate: CalendarDate | null; dueDateOverride: CalendarDate | null; }
 
 /** Configures the heads-up, reminder, and overdue alert rules. */
-export interface AlertSettings { headsUpDays: number; reminderDays: number; overdueEnabled: boolean; overdueRepeatDays: number; }
+export interface AlertSettings { headsUpDays: number; reminderDays: number; overdueEnabled: boolean; overdueRepeatDays: number; windowNudgeDays: number; }
 
 /** A stage enriched with its derived schedule. */
 export interface ScheduledStage {
@@ -38,13 +40,15 @@ export interface ScheduledStage {
   dueDate?: CalendarDate;
   isDone: boolean;
   doneDate: CalendarDate | null;
+  unscheduledReason?: "needs_planting_date" | "needs_anchor_stage";
+  waitingForStage?: string;
 }
 
 /** A derived schedule status, never persisted. */
 export type Status = "done" | "unscheduled" | "on_track" | "due_soon" | "overdue";
 
 /** A type of scheduled email notification. */
-export type AlertType = "heads_up" | "reminder" | "overdue";
+export type AlertType = "heads_up" | "reminder" | "overdue" | "window_open";
 
 /** An idempotent alert occurrence ready for a caller to deliver. */
-export interface DueAlert { position: number; type: AlertType; occurrenceKey: string; }
+export interface DueAlert { position: number; type: AlertType; occurrenceKey: string; days?: number; }

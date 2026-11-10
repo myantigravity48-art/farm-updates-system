@@ -9,6 +9,6 @@ export default async function LifecyclePage(){
  const session=await readSession(); if(session.status==="signed-out")redirect("/login");
  const result=await getLifecycleData();
  if(!result.ok)return <main className="mx-auto w-full max-w-[720px]" role="alert">{result.message}</main>;
- const stages:LifecycleStageDraft[]=result.stages.map(s=>({...s,window_key:s.window_key==="dry_season"||s.window_key==="planting"?s.window_key:null}));
+ const stages:LifecycleStageDraft[]=result.stages.map(s=>({...s,window_key:s.window_key==="dry_season"||s.window_key==="planting"?s.window_key:null,anchor_window_key:s.anchor_window_key==="dry_season"||s.anchor_window_key==="planting"?s.anchor_window_key:null,offset_days:s.offset_days??null}));
  return <LifecycleScreen stages={stages} windows={result.windows} today={todayInLondon(new Date())}/>;
 }

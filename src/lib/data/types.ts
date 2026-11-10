@@ -33,6 +33,9 @@ export interface FarmDetail extends FarmSummary {
 export interface StageOption {
   position: number;
   name: string;
+  triggerType?: "season_window" | "after_planting" | "after_stage_done";
+  anchorWindowKey?: "dry_season" | "planting";
+  offsetDays?: number;
 }
 
 export interface StageConfig {

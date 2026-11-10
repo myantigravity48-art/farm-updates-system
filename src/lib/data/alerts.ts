@@ -12,6 +12,7 @@ export interface AlertRecipient {
 export interface AlertsPageData {
   recipients: AlertRecipient[];
   settings: TimingValues & { sendHourLondon: number };
+  windowNudgeDays: number;
   today: ReturnType<typeof todayInLondon>;
 }
 
@@ -22,7 +23,7 @@ export async function getAlertsPageData(): Promise<AlertsPageData> {
 
   const [recipientsResult, settingsResult] = await Promise.all([
     supabase.from("recipients").select("id, name, email, enabled").order("name", { ascending: true }),
-    supabase.from("alert_settings").select("heads_up_days, reminder_days, overdue_enabled, overdue_repeat_days, send_hour_london").limit(1).maybeSingle(),
+    supabase.from("alert_settings").select("heads_up_days, reminder_days, overdue_enabled, overdue_repeat_days, window_nudge_days, send_hour_london").limit(1).maybeSingle(),
   ]);
 
   if (settingsResult.error) throw new Error("Could not load alert settings. Refresh the page and try again.");
@@ -31,6 +32,7 @@ export async function getAlertsPageData(): Promise<AlertsPageData> {
 
   return {
     recipients: recipientsResult.data,
+    windowNudgeDays: settingsResult.data.window_nudge_days,
     settings: {
       headsUpDays: settingsResult.data.heads_up_days,
       reminderDays: settingsResult.data.reminder_days,

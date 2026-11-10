@@ -50,21 +50,21 @@ const previewBase = {
 
 describe("previewAfterDone", () => {
   it("shows a normal next stage", () => {
-    expect(previewAfterDone({ ...previewBase, stagePosition: 1 }, today)).toContain("Next: Planting");
+    expect(previewAfterDone({ ...previewBase, stagePosition: 1 }, today)).toBe("Next: Order seedlings, due 7 Nov 2026.");
   });
   it("reports completion on the last stage", () => {
-    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 8 }));
-    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 8 }, today)).toBe("This completes every stage for this farm.");
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 9 }));
+    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 9 }, today)).toBe("This completes every stage for this farm.");
   });
   it("schedules later stages from the hypothetical planting date", () => {
-    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position === 1 }));
-    const result = previewAfterDone({ ...previewBase, stages, stagePosition: 2 }, "2026-06-15");
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 3 }));
+    const result = previewAfterDone({ ...previewBase, stages, stagePosition: 3 }, "2026-06-15");
     expect(result).toContain("Next: First round-weeding");
     expect(result).toContain("15 Sept 2026");
   });
   it("keeps a later stage unscheduled without a planting date", () => {
-    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 3 }));
-    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 3 }, today)).toBe("Next: Herbicide on surrounding weeds, date set once planting is done.");
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 4 }));
+    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 4 }, today)).toBe("Next: Herbicide, date set once planting is done.");
   });
 });
 
@@ -93,6 +93,7 @@ describe("stageActionErrorMessage", () => {
     ["invalid_date", "Enter a valid date in the supported range."],
     ["invalid_note", "Keep the note to 1000 characters or fewer."],
     ["before_planting", "This job can't be done before planting. Set the planting date first."],
+    ["before_anchor", "This job can't be done before the anchor stage was marked done."],
     ["not_done", "This stage is already not done. Refresh the page."],
     ["later_stages_done", "Mark the later stages as not done first."],
     ["planting_not_done", "Mark planting done first."],
@@ -102,5 +103,8 @@ describe("stageActionErrorMessage", () => {
   it("uses the planting date and has a fallback", () => {
     expect(stageActionErrorMessage("before_planting", "2026-04-20")).toContain("20 Apr 2026");
     expect(stageActionErrorMessage("anything-else")).toBe("Something went wrong. Try again.");
+  });
+  it("maps before_anchor with the anchor stage name", () => {
+    expect(stageActionErrorMessage("before_anchor", null, "Land clearing")).toBe("This job can't be done before Land clearing was marked done.");
   });
 });

@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005, 0006 and 0007.
+ * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005, 0006, 0007 and 0009.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 
@@ -43,9 +43,11 @@ export interface Database {
           id: string;
           position: number;
           name: string;
-          trigger_type: "season_window" | "after_planting";
+          trigger_type: "season_window" | "after_planting" | "after_stage_done";
           offset_months: number | null;
           window_key: string | null;
+          anchor_window_key: string | null;
+          offset_days: number | null;
           updated_at: string | null;
           updated_by_name: string | null;
         };
@@ -53,9 +55,11 @@ export interface Database {
           id?: string;
           position: number;
           name: string;
-          trigger_type: "season_window" | "after_planting";
+          trigger_type: "season_window" | "after_planting" | "after_stage_done";
           offset_months?: number | null;
           window_key?: string | null;
+          anchor_window_key?: string | null;
+          offset_days?: number | null;
           updated_at?: string | null;
           updated_by_name?: string | null;
         };
@@ -63,9 +67,11 @@ export interface Database {
           id?: string;
           position?: number;
           name?: string;
-          trigger_type?: "season_window" | "after_planting";
+          trigger_type?: "season_window" | "after_planting" | "after_stage_done";
           offset_months?: number | null;
           window_key?: string | null;
+          anchor_window_key?: string | null;
+          offset_days?: number | null;
           updated_at?: string | null;
           updated_by_name?: string | null;
         };
@@ -240,6 +246,7 @@ export interface Database {
           reminder_days: number;
           overdue_enabled: boolean;
           overdue_repeat_days: number;
+          window_nudge_days: number;
           send_hour_london: number;
         };
         Insert: {
@@ -248,6 +255,7 @@ export interface Database {
           reminder_days?: number;
           overdue_enabled?: boolean;
           overdue_repeat_days?: number;
+          window_nudge_days?: number;
           send_hour_london?: number;
         };
         Update: {
@@ -256,6 +264,7 @@ export interface Database {
           reminder_days?: number;
           overdue_enabled?: boolean;
           overdue_repeat_days?: number;
+          window_nudge_days?: number;
           send_hour_london?: number;
         };
         Relationships: [];
@@ -265,7 +274,7 @@ export interface Database {
           id: string;
           farm_stage_id: string;
           recipient_id: string;
-          alert_type: "heads_up" | "reminder" | "overdue" | "done_notice";
+          alert_type: "heads_up" | "reminder" | "overdue" | "window_open" | "done_notice";
           occurrence_key: string;
           status: "sent" | "failed";
           provider_message_id: string | null;
@@ -276,7 +285,7 @@ export interface Database {
           id?: string;
           farm_stage_id: string;
           recipient_id: string;
-          alert_type: "heads_up" | "reminder" | "overdue" | "done_notice";
+          alert_type: "heads_up" | "reminder" | "overdue" | "window_open" | "done_notice";
           occurrence_key: string;
           status: "sent" | "failed";
           provider_message_id?: string | null;
@@ -287,7 +296,7 @@ export interface Database {
           id?: string;
           farm_stage_id?: string;
           recipient_id?: string;
-          alert_type?: "heads_up" | "reminder" | "overdue" | "done_notice";
+          alert_type?: "heads_up" | "reminder" | "overdue" | "window_open" | "done_notice";
           occurrence_key?: string;
           status?: "sent" | "failed";
           provider_message_id?: string | null;

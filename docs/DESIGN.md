@@ -66,7 +66,7 @@ Status is never shown by colour alone: always icon plus text. Tint backgrounds f
 A 12-month strip. The dry season is shown in `--raised`, the planting window in `--primary` at about 38% opacity, and a "today" marker in `--text`. Built from the `season_windows` data, not hard-coded.
 
 ## Charts
-Only the season timeline and the 8-segment stage progress bars in v1. Phase 2 may add simple horizontal bars and one segmented bar for costs. No line charts, pies or donuts.
+Only the season timeline and the 9-segment stage progress bars in v1. Phase 2 may add simple horizontal bars and one segmented bar for costs. No line charts, pies or donuts.
 
 ## Accessibility
 WCAG AA contrast in both modes. Visible focus rings. Status never by colour alone. Money is never coloured red or green (phase 2).

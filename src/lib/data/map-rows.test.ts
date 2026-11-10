@@ -14,6 +14,8 @@ function templateRow(overrides: Partial<TemplateRow> & Pick<TemplateRow, "id" | 
     trigger_type: "after_planting",
     offset_months: 3,
     window_key: null,
+    anchor_window_key: null,
+    offset_days: null,
     updated_at: null,
     updated_by_name: null,
     ...overrides,
@@ -73,6 +75,7 @@ const plantingWindow: WindowRow = {
 describe("row-to-engine mapper", () => {
   it("maps templates in position order", () => {
     const templates = mapTemplates([
+      templateRow({ id: "t2", position: 2, trigger_type: "after_stage_done", offset_months: null, offset_days: 14, anchor_window_key: "dry_season" }),
       templateRow({ id: "t3", position: 3, offset_months: 3, name: "First weeding" }),
       templateRow({
         id: "t1",
@@ -83,13 +86,18 @@ describe("row-to-engine mapper", () => {
       }),
     ]);
 
-    expect(templates.map((template) => template.position)).toEqual([1, 3]);
+    expect(templates.map((template) => template.position)).toEqual([1, 2, 3]);
     expect(templates[0]).toMatchObject({
       triggerType: "season_window",
       windowKey: "dry_season",
       offsetMonths: undefined,
     });
     expect(templates[1]).toMatchObject({
+      triggerType: "after_stage_done",
+      anchorWindowKey: "dry_season",
+      offsetDays: 14,
+    });
+    expect(templates[2]).toMatchObject({
       triggerType: "after_planting",
       windowKey: undefined,
       offsetMonths: 3,

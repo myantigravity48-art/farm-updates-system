@@ -27,12 +27,12 @@ function stage(
   };
 }
 
-function eightStages(
+function nineStages(
   status: Status,
   dueDate: CalendarDate | null,
   doneThrough = 0,
 ): SummaryStage[] {
-  return Array.from({ length: 8 }, (_, index) => {
+  return Array.from({ length: 9 }, (_, index) => {
     const position = index + 1;
     const isDone = position <= doneThrough;
     return stage(
@@ -77,8 +77,8 @@ describe("aggregateFarmStatus", () => {
   });
 
   it("is done only when every stage is done", () => {
-    expect(aggregateFarmStatus(eightStages("done", null, 8))).toBe("done");
-    expect(aggregateFarmStatus(eightStages("on_track", "2027-01-01", 7))).toBe(
+    expect(aggregateFarmStatus(nineStages("done", null, 9))).toBe("done");
+    expect(aggregateFarmStatus(nineStages("on_track", "2027-01-01", 8))).toBe(
       "on-track",
     );
   });
@@ -88,7 +88,7 @@ describe("buildFarmSummary", () => {
   it("describes a farm that has not started", () => {
     const summary = buildFarmSummary(
       farm,
-      eightStages("on_track", "2027-01-15"),
+      nineStages("on_track", "2027-01-15"),
       today,
     );
 
@@ -99,7 +99,7 @@ describe("buildFarmSummary", () => {
       sizeLabel: "2 hectares",
       status: "on-track",
       doneCount: 0,
-      totalStages: 8,
+      totalStages: 9,
       currentStageName: "Stage 1",
       nextStageName: "Stage 1",
       nextDueDate: "2027-01-15",
@@ -109,7 +109,7 @@ describe("buildFarmSummary", () => {
   });
 
   it("describes a farm part-way through, with the earliest stage first", () => {
-    const stages = eightStages("on_track", "2027-01-15", 3);
+    const stages = nineStages("on_track", "2027-01-15", 3);
     stages[3] = stage(4, "due_soon", "2026-10-23");
     stages[4] = stage(5, "on_track", "2026-11-25");
 
@@ -125,7 +125,7 @@ describe("buildFarmSummary", () => {
   });
 
   it("describes an overdue farm", () => {
-    const stages = eightStages("on_track", "2026-11-25", 1);
+    const stages = nineStages("on_track", "2026-11-25", 1);
     stages[1] = stage(2, "overdue", "2026-10-18");
 
     const summary = buildFarmSummary(farm, stages, today);
@@ -139,7 +139,7 @@ describe("buildFarmSummary", () => {
   });
 
   it("skips unscheduled stages when picking the next job", () => {
-    const stages = eightStages("on_track", "2026-11-25", 2);
+    const stages = nineStages("on_track", "2026-11-25", 2);
     stages[2] = stage(3, "unscheduled", null);
     stages[3] = stage(4, "on_track", "2026-11-10");
 
@@ -152,10 +152,10 @@ describe("buildFarmSummary", () => {
   });
 
   it("has no next job when every stage is done", () => {
-    const summary = buildFarmSummary(farm, eightStages("done", null, 8), today);
+    const summary = buildFarmSummary(farm, nineStages("done", null, 9), today);
 
     expect(summary.status).toBe("done");
-    expect(summary.doneCount).toBe(8);
+    expect(summary.doneCount).toBe(9);
     expect(summary.currentStageName).toBeNull();
     expect(summary.nextStageName).toBeNull();
     expect(summary.nextDueDate).toBeNull();

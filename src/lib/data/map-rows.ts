@@ -25,6 +25,8 @@ export function mapTemplates(rows: TemplateRow[]): StageTemplate[] {
           ? row.window_key
           : undefined,
       offsetMonths: row.offset_months ?? undefined,
+      anchorWindowKey: row.anchor_window_key === "dry_season" || row.anchor_window_key === "planting" ? row.anchor_window_key : undefined,
+      offsetDays: row.offset_days ?? undefined,
     }));
 }
 

@@ -11,20 +11,22 @@
 7. Paste and run `supabase/migrations/0006_mark_done.sql` to add completion author names and the stage action functions.
 8. In the SQL Editor, paste and run `supabase/checks/0006_checks.sql` to verify only the 0006 changes.
 9. Run `supabase/checks.sql` when you need to recheck the original schema security rules. It is not a substitute for migration-specific check files.
+10. After 0007 and 0008, paste and run `supabase/migrations/0009_order_seedlings_and_nudge.sql`.
+11. Run `supabase/checks/0009_checks.sql` to verify the 9-stage lifecycle, farm-stage coverage, privileges, alert settings and function grants.
 
 ## Tables
 
 | Table | Purpose |
 |-------|---------|
 | `season_windows` | Recurring date ranges for season-triggered stages. PK is the key (`dry_season`, `planting`). |
-| `stage_templates` | The 8-stage lifecycle definition. Position is unique. Check constraint ensures season_window rows have a window_key and no offset, and after_planting rows have an offset and no window_key. |
+| `stage_templates` | The 9-stage lifecycle definition. Position is unique. Season-window rows use `window_key`; after-planting rows use `offset_months`; after-stage-done rows use `anchor_window_key` and `offset_days`. |
 | `farms` | One row per farm plot. Unique index on `lower(name)`. `schedule_anchor_date` defaults to today but the app sets it explicitly. `created_by` references `auth.users`. |
 | `farm_stages` | One row per farm per stage template (auto-created by trigger). Tracks done state, done date, completion author and name, note, and due-date override. Unique on `(farm_id, template_id)`. |
 | `notes` | Free-text notes on a farm or a specific stage. `author_name` stores the writer's display name at the time of writing. |
 | `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. `author_name` stores the uploader's display name. |
 | `recipients` | Email recipients for alerts. Unique index on `lower(email)`. |
-| `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, overdue repeat, and London send hour. |
-| `notification_log` | One row per sent or failed alert. Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
+| `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, weekly overdue repeat, 14-day window nudges (0–60; 0 disables them), and London send hour. |
+| `notification_log` | One row per sent or failed alert (`heads_up`, `reminder`, `overdue`, `window_open`, or `done_notice`). Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
 
 All `auth.users` references (`created_by` and `done_by`) are nullable and use `ON DELETE SET NULL`, preserving farm records, notes, and photos when a user is deleted.
 
@@ -88,9 +90,11 @@ Function exceptions begin with stable codes for friendly app messages. `supabase
 
 ## Lifecycle editor additions (0007)
 
-`0007_lifecycle_editor.sql` adds nullable `updated_at` and `updated_by_name` columns to `stage_templates` and `season_windows`. It revokes table-level UPDATE for `authenticated` and grants column-level UPDATE only to the four stage fields (`name`, `offset_months`, `updated_at`, `updated_by_name`) and six season-window fields (`start_month`, `start_day`, `end_month`, `end_day`, `updated_at`, `updated_by_name`). SELECT grants and the existing RLS policies remain in place; those policies continue rejecting anonymous JWTs.
+`0007_lifecycle_editor.sql` adds nullable `updated_at` and `updated_by_name` columns to `stage_templates` and `season_windows`. Migration `0009_order_seedlings_and_nudge.sql` adds the Order seedlings trigger, nudge settings and updated lifecycle save/mark/undo functions. Authenticated UPDATE on stage templates is restricted to `name`, `offset_months`, `offset_days`, `updated_at`, and `updated_by_name`.
 
-The `SECURITY INVOKER` function `public.save_lifecycle(jsonb,jsonb,text)` validates the full lifecycle and updates both tables atomically. It calls `public.lifecycle_days_in_month(integer)`, an immutable SQL helper that uses February = 28 for window validation. The helper and save function revoke execution from `public` and `anon`, and grant it to `authenticated`. Run `supabase/checks/0007_checks.sql` after applying it. Step 5f is complete once 0007 is applied and all its checks pass.
+Migration 0009 inserts Order seedlings at position 2, finds its clearing anchor by `dry_season`, backfills one farm-stage row per existing farm, and makes `save_lifecycle` validate `offset_days` (0–365) for after-stage-done rows. `mark_stage_done` rejects completion before a dated anchor with `before_anchor`; `undo_stage_done` rejects undoing an anchor with completed dependent work. It changes overdue repeats to 7 days and adds `window_nudge_days` with a 14-day default and a 0–60 check. The migration also allows `window_open` in `notification_log.alert_type`.
+
+The `SECURITY INVOKER` function `public.save_lifecycle(jsonb,jsonb,text)` validates the full lifecycle and updates both tables atomically. It calls `public.lifecycle_days_in_month(integer)`, an immutable SQL helper that uses February = 28 for window validation. The helper and save function revoke execution from `public` and `anon`, and grant it to `authenticated`. Migration 0009 replaces `save_lifecycle` while preserving its validation rules and adding `offset_days` validation.
 
 The timings described as placeholders in `PRODUCT.md` are now editable in the app. `src/lib/schedule/defaults.ts` remains only a seed and test reference and may differ from the live database values.
 
@@ -121,7 +125,7 @@ The two invited users have equal permissions. The alert job will write to `notif
 
 - `src/lib/supabase/client.ts` — browser client using `createBrowserClient` from `@supabase/ssr`.
 - `src/lib/supabase/server.ts` — server client using `createServerClient` with Next.js `cookies()`.
-- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema, including the 0006 columns and functions. Regenerate later with `npx supabase gen types typescript`.
+- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0009. Regenerate later with `npx supabase gen types typescript`.
 - `.env.example` — placeholder variable names. Copy to `.env.local` and fill in real values.
 
 ## Environment variables

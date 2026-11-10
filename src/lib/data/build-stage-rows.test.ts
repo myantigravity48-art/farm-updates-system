@@ -18,19 +18,20 @@ const clearing: StageTemplate = {
   windowKey: "dry_season",
 };
 const planting: StageTemplate = {
-  position: 2,
+  position: 3,
   name: "Planting",
   triggerType: "season_window",
   windowKey: "planting",
 };
 
+const orderSeedlings: StageTemplate = { position: 2, name: "Order seedlings", triggerType: "after_stage_done", anchorWindowKey: "dry_season", offsetDays: 0 };
 const afterTemplates: StageTemplate[] = [
-  { position: 3, name: "First round-weeding", triggerType: "after_planting", offsetMonths: 3 },
-  { position: 4, name: "Herbicide on surrounding weeds", triggerType: "after_planting", offsetMonths: 3 },
-  { position: 5, name: "First fertilizer", triggerType: "after_planting", offsetMonths: 4 },
-  { position: 6, name: "Second round-weeding", triggerType: "after_planting", offsetMonths: 7 },
-  { position: 7, name: "Third round-weeding", triggerType: "after_planting", offsetMonths: 11 },
-  { position: 8, name: "Second fertilizer", triggerType: "after_planting", offsetMonths: 12 },
+  { position: 4, name: "First round-weeding", triggerType: "after_planting", offsetMonths: 3 },
+  { position: 5, name: "Herbicide", triggerType: "after_planting", offsetMonths: 3 },
+  { position: 6, name: "First fertilizer", triggerType: "after_planting", offsetMonths: 4 },
+  { position: 7, name: "Second round-weeding", triggerType: "after_planting", offsetMonths: 7 },
+  { position: 8, name: "Third round-weeding", triggerType: "after_planting", offsetMonths: 11 },
+  { position: 9, name: "Second fertilizer", triggerType: "after_planting", offsetMonths: 12 },
 ];
 
 function done(
@@ -120,6 +121,11 @@ describe("stageRuleText", () => {
     expect(stageRuleText(afterTemplates[0])).toBe("3 months after planting");
     expect(stageRuleText({ ...afterTemplates[0], offsetMonths: 1 })).toBe("1 month after planting");
   });
+  it("uses the after-stage-done anchor wording", () => {
+    expect(stageRuleText(orderSeedlings, "Land clearing")).toBe("Starts when Land clearing is marked done");
+    const scheduled = { template: orderSeedlings, scheduled: { position: 2, name: "Order seedlings", kind: "date" as const, dueDate: "2026-10-21" as CalendarDate, isDone: false, doneDate: null, waitingForStage: "Land clearing" }, dueDateOverride: null };
+    expect(buildStageRows([scheduled], today, headsUpDays)[0].dateText).toContain(`Due ${formatUkDate("2026-10-21")} · Set from Land clearing done date`);
+  });
 });
 
 describe("buildStageRows", () => {
@@ -127,6 +133,7 @@ describe("buildStageRows", () => {
     const rows = buildStageRows(
       [
         windowRow(clearing, "2026-11-01", "2027-03-31"),
+        { template: orderSeedlings, scheduled: { position: 2, name: "Order seedlings", kind: "unscheduled", isDone: false, doneDate: null, unscheduledReason: "needs_anchor_stage", waitingForStage: "Land clearing" }, dueDateOverride: null },
         windowRow(planting, "2027-04-25", "2027-07-15"),
         unscheduledRow(afterTemplates[0]),
       ],
@@ -134,7 +141,7 @@ describe("buildStageRows", () => {
       headsUpDays,
     );
 
-    expect(rows.map((row) => row.position)).toEqual([1, 2, 3]);
+    expect(rows.map((row) => row.position)).toEqual([1, 2, 3, 4]);
     expect(rows[0]).toMatchObject({
       name: "Land clearing",
       ruleText: "Dry season window",
@@ -142,9 +149,9 @@ describe("buildStageRows", () => {
       pillLabel: "Due soon",
       nextUp: true,
     });
-    expect(rows[1].nextUp).toBe(false);
-    expect(rows[1].ruleText).toBe("Planting window");
-    expect(rows[2]).toMatchObject({
+    expect(rows[1]).toMatchObject({ ruleText: "Starts when Land clearing is marked done", dateText: "Starts when Land clearing is marked done", nextUp: false });
+    expect(rows[2].ruleText).toBe("Planting window");
+    expect(rows[3]).toMatchObject({
       state: "unscheduled",
       pillLabel: "Unscheduled",
       dateText: "Date set once planting is done",
@@ -242,6 +249,7 @@ describe("buildStageRows", () => {
     const rows = buildStageRows(
       [
         done(clearing, "2026-04-12"),
+        done(orderSeedlings, "2026-04-12"),
         done(planting, "2026-05-15"),
         ...afterTemplates.map((template) => done(template, "2026-10-02")),
       ],
@@ -249,7 +257,7 @@ describe("buildStageRows", () => {
       headsUpDays,
     );
 
-    expect(rows).toHaveLength(8);
+    expect(rows).toHaveLength(9);
     expect(rows.every((row) => row.state === "done")).toBe(true);
     expect(rows.some((row) => row.nextUp)).toBe(false);
   });
@@ -261,7 +269,7 @@ describe("buildStageRows", () => {
       headsUpDays,
     );
 
-    expect(rows.map((row) => row.position)).toEqual([1, 3]);
+    expect(rows.map((row) => row.position)).toEqual([1, 4]);
   });
 
   it("has a status label for every engine state", () => {

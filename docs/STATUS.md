@@ -1,9 +1,9 @@
 # Status
 
-Last updated: 2026-11-09
+Last updated: 2026-11-10
 
 ## Recent update
-- Stage 1's oversized seeded label was verified at 85 characters; lifecycle name validation includes its stage location. Migration 0008 shortens that legacy value idempotently. Apply it and run `supabase/checks/0008_checks.sql`.
+- Step 5g-1 implementation is ready: 9-stage Order seedlings lifecycle, weekly overdue reminders, clearing-window nudges, lifecycle editor support, and migration `0009_order_seedlings_and_nudge.sql` with `supabase/checks/0009_checks.sql`. This step is done once migration 0009 is applied and checks pass. No SQL was applied during implementation.
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
@@ -19,12 +19,11 @@ Last updated: 2026-11-09
 - Auth and login: route groups `(auth)` and `(app)`, login and forgot-password screens, proxy session refresh and redirects, server-side `getUser()` validation, sign out, Account section with change password, `next` sanitiser and password validator tests. See `docs/AUTH.md`.
 - Step 5a built: data layer (`src/lib/data`) with a pure row mapper and summary builder, real farm panel, `/farms` grid, Add farm dialog/sheet, bulk add, Edit farm, Toast, UK date formatting, pure validation and bulk parsing, and the 0004 farm functions with checks. Mock farms removed. All 89 tests pass, including the original 30.
 - Step 5b built: the Dashboard at "/" (`src/app/(app)/page.tsx`, `src/components/dashboard/`, `src/lib/data/dashboard.ts`, `build-dashboard.ts`, `timeline.ts`, and phrase/greeting pure functions in `src/lib/format/`). Real data through the existing session-scoped Supabase server client. `buildDashboard(input, today)` is pure and tested, plus `buildSeasonTimeline`, window/date stage phrases, and the London-hour greeting. Screen matches the Dashboard exports: KPI cards (Overdue, Next 14 days, Done this month, Farms), Needs attention, Farm progress, Season timeline, Coming up, both themes, 8-row caps with "+ N more" and "View all N farms". Add farm and Edit farm already revalidate "/" and "/farms" via `refreshFarmLists`.
-- Step 5c built: the Farm detail page at `/farms/[id]` (header, stage timeline, Notes and Photos). `getFarmDetail` loads the farm, templates, windows, alert settings, stages, 50 newest notes and 60 newest photos in parallel, then runs the schedule engine. `buildStageRows` is pure and tested (rule text from templates, done with and without dates, date and window text, overrides, unscheduled, overdue, open window, next up, all done). Photos use server-signed URLs in one batch with a 1 hour expiry. Notes and photos are added and deleted through server actions that call `auth.getUser()`, validate with pure functions, and revalidate the farm page. The upload flow shrinks each image in the browser to 1600px JPEG at 0.8, asks the server for a UUID path, uploads with the user's session, then registers the row with `author_name`; failures delete the object. Settings has a Display name field. The `unscheduled` StatusPill variant is added. Step 5c is awaiting application of `0005_notes_photos_author.sql` and a pass of `supabase/checks/0005_checks.sql`.
-- Step 5d implementation is ready: Mark done, undo, manual stage dates, planting-date changes, Dashboard actions, completion author names, notes and photo linking, plus migration-specific checks. Step 5d is done once `0006_mark_done.sql` is applied and its checks pass.
+- Step 5c built: the Farm detail page at `/farms/[id]` (header, stage timeline, Notes and Photos). `getFarmDetail` loads the farm, templates, windows, alert settings, stages, 50 newest notes and 60 newest photos in parallel, then runs the schedule engine. `buildStageRows` is pure and tested (rule text from templates, done with and without dates, date and window text, overrides, unscheduled, overdue, open window, next up, all done). Photos use server-signed URLs in one batch with a 1 hour expiry. Notes and photos are added and deleted through server actions that call `auth.getUser()`, validate with pure functions, and revalidate the farm page. The upload flow shrinks each image in the browser to 1600px JPEG at 0.8, asks the server for a UUID path, uploads with the user's session, then registers the row with `author_name`; failures delete the object. Settings has a Display name field. The `unscheduled` StatusPill variant is added.
+- Step 5d built: Mark done, undo, manual stage dates, planting-date changes, Dashboard actions, completion author names, notes and photo linking, plus migration-specific checks.
 - Step 5e built: `/alerts` loads recipients and timing through the signed-in Supabase session, supports recipient changes and timing saves, shows an email preview from the pure plain-text email renderers, and handles missing alert settings with the required seed migration message. `src/lib/email/` and `src/lib/alerts/validate.ts` have focused Vitest coverage. No SQL or sending code was added. The Alert settings export images were not present in `design/` when checked; the page follows `DESIGN.md` and `EMAILS.md`.
-- Step 5f implementation: lifecycle editor, server validation and impact preview, and migration `0007_lifecycle_editor.sql` are written. Step 5f is done once I apply 0007 and its checks pass. Timing placeholders in `PRODUCT.md` are now edited in the app; `src/lib/schedule/defaults.ts` is only a seed and test reference and may differ from live values. The lifecycle page has no dedicated design export and is plain; see `POLISH.md`.
-- `0004_farm_functions.sql` is written but NOT applied yet. Adding one farm or several farms needs it applied first. Step 5a is done once it has been applied.
-- `0005_notes_photos_author.sql` is written but NOT applied yet. Step 5c is done once it has been applied and `supabase/checks/0005_checks.sql` has been run.
+- Step 5f built: lifecycle editor, server validation and impact preview, and migration `0007_lifecycle_editor.sql`. Timing values are editable in the app; `src/lib/schedule/defaults.ts` is a test and seed reference and may differ from live values.
+- Migrations 0001–0008 are applied to the live database.
 
 ## Decisions
 - Alerts are email only (Resend). WhatsApp and SMS are dropped.
@@ -32,14 +31,13 @@ Last updated: 2026-11-09
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Apply `supabase/migrations/0007_lifecycle_editor.sql` and run `supabase/checks/0007_checks.sql`; test lifecycle editing on farms.
-2. Daily email alert job with Resend (needs the project domain verified)
-3. Deploy
+1. Apply `supabase/migrations/0009_order_seedlings_and_nudge.sql` and run `supabase/checks/0009_checks.sql`; test Order seedlings and lifecycle editing on farms (step 5g-1).
+2. Step 5g-2: Alerts page recipient editing, optional phone, and window reminder setting.
+3. Implement the email steps (plain text rendering updates, then scheduled delivery; no HTML email until the email step calls for it).
+4. Deploy
 
 ## Waiting on
-- Apply `supabase/migrations/0005_notes_photos_author.sql` and run `supabase/checks/0005_checks.sql`, then test adding and deleting notes and photos.
-- Apply `supabase/migrations/0004_farm_functions.sql` and run `supabase/checks.sql`, then test Add farm and bulk add.
-- Apply `supabase/migrations/0006_mark_done.sql` and run `supabase/checks/0006_checks.sql`, then test Mark done and stage actions. This completes step 5d.
+- Apply `supabase/migrations/0009_order_seedlings_and_nudge.sql` and run `supabase/checks/0009_checks.sql` to complete step 5g-1.
 - The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub
@@ -56,9 +54,8 @@ Last updated: 2026-11-09
 - Timing values for stages 1, 2 and 4 to 7 are placeholders until the owner confirms them. Keep them as editable data.
 - The screen exports folder is `design/`. If references to `designs/` remain anywhere, fix them.
 - Read `docs/ENGINE.md` for the schedule engine rules, public API, and alert key format.
-- Read `docs/SCHEMA.md` for the database schema, security policies and the 0004 and 0005 migrations.
+- Read `docs/SCHEMA.md` for the database schema, security policies and migration-specific check files.
 - Read `docs/AUTH.md` for the login flow, route groups, session validation, display name, and the no-sign-up rules.
 - Read `docs/STATUS.md` and `docs/POLISH.md` before starting a screen.
-- Farm detail stage progress is read-only. The next step adds Mark done plus planting-date and manual stage-date editing. Do not add stage writes to `src/lib/data/farm-detail.ts` or `buildStageRows` yet.
 - Photos live in the private `farm-photos` bucket. Sign paths on the server with `createSignedUrls`; never store or render a public URL.
 - The database types in `src/lib/supabase/database.types.ts` are hand-written. Regenerate with `npx supabase gen types typescript` once the CLI is connected.

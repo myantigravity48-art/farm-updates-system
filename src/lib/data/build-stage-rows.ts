@@ -51,9 +51,13 @@ function windowLabel(key: string | undefined): string {
  * The rule text always comes from the stage template, never from a position
  * literal, so edited templates change the timeline without code changes.
  */
-export function stageRuleText(template: StageTemplate): string {
+export function stageRuleText(template: StageTemplate, anchorName?: string): string {
   if (template.triggerType === "season_window") {
     return `${windowLabel(template.windowKey)} window`;
+  }
+  if (template.triggerType === "after_stage_done") {
+    const anchor = anchorName ?? (template.anchorWindowKey === "dry_season" ? "Land clearing" : "Planting");
+    return `Starts when ${anchor} is marked done`;
   }
 
   const months = template.offsetMonths ?? 0;
@@ -74,7 +78,9 @@ function buildDateText(
   }
 
   if (state === "unscheduled" || stage.kind === "unscheduled") {
-    return "Date set once planting is done";
+    return stage.unscheduledReason === "needs_anchor_stage"
+      ? `Starts when ${stage.waitingForStage ?? "the anchor stage"} is marked done`
+      : "Date set once planting is done";
   }
 
   const parts: string[] = [];
@@ -86,7 +92,8 @@ function buildDateText(
     parts.push(windowStagePhrase(today, stage.windowStart, stage.windowEnd));
   } else if (stage.dueDate) {
     parts.push(`Due ${formatUkDate(stage.dueDate)}`);
-    parts.push(dateStagePhrase(today, stage.dueDate));
+    if (input.template.triggerType === "after_stage_done") parts.push(`Set from ${stage.waitingForStage ?? (input.template.anchorWindowKey === "dry_season" ? "Land clearing" : "Planting")} done date`);
+    else parts.push(dateStagePhrase(today, stage.dueDate));
   }
 
   if (input.dueDateOverride) parts.push("Date set manually");
@@ -118,7 +125,7 @@ export function buildStageRows(
       id: input.id ?? null,
       position: input.template.position,
       name: input.template.name,
-      ruleText: stageRuleText(input.template),
+      ruleText: stageRuleText(input.template, ordered.find((candidate) => candidate.template.windowKey === input.template.anchorWindowKey)?.template.name),
       dateText: buildDateText(input, today, state),
       state,
       pillLabel: STATUS_LABELS[state],

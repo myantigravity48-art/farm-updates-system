@@ -11,7 +11,7 @@ import { formatUkShortDate } from "@/lib/format/dates";
 import { parseCalendarDate } from "@/lib/farms/validate";
 
 export interface DoneStageInput {
-  triggerType: "season_window" | "after_planting";
+  triggerType: "season_window" | "after_planting" | "after_stage_done";
 }
 
 export interface ValidateDoneInput {
@@ -35,6 +35,7 @@ export interface ActionableStage {
   name: string;
   isDone: boolean;
   windowKey?: string;
+  anchorWindowKey?: string;
   hasOverride?: boolean;
 }
 
@@ -136,6 +137,7 @@ export type StageActionErrorCode =
   | "invalid_date"
   | "invalid_note"
   | "before_planting"
+  | "before_anchor"
   | "not_done"
   | "later_stages_done"
   | "planting_not_done";
@@ -143,6 +145,7 @@ export type StageActionErrorCode =
 export function stageActionErrorMessage(
   code: string | null | undefined,
   plantingDate?: CalendarDate | null,
+  anchorName?: string,
 ): string {
   switch (code) {
     case "already_done":
@@ -159,6 +162,8 @@ export function stageActionErrorMessage(
       return plantingDate
         ? `This job can't be done before planting. Planting date: ${formatUkShortDate(plantingDate)}.`
         : "This job can't be done before planting. Set the planting date first.";
+    case "before_anchor":
+      return `This job can't be done before ${anchorName ?? "the anchor stage"} was marked done.`;
     case "not_done":
       return "This stage is already not done. Refresh the page.";
     case "later_stages_done":
