@@ -94,7 +94,7 @@ function alertLine(item: AlertItem): string {
   return `- ${item.farmName}: ${item.stageName}. ${when}`;
 }
 
-/** Plain-text rendering only. The HTML version will be built in the email job step. TODO: add HTML alongside this renderer then. */
+/** Plain-text rendering; see render-html.ts for HTML and plan.ts for daily batch planning. */
 export function renderAlertEmail({
   alerts,
   today,

@@ -85,8 +85,8 @@ If the next stage has no date yet (planting date not set): `Next: {{next_stage}}
 - Inline all CSS. No external stylesheets, no web fonts, no images.
 
 ## Build notes (for step 6)
-- Plain-text rendering, including the `window_open` alert type, is implemented in `src/lib/email/`. HTML email comes in the email job steps.
-- The pure renderers return `{ subject, text }`. They have no network or database calls and take the date in as an argument.
+- Plain-text rendering, including the `window_open` alert type, is implemented in `src/lib/email/render.ts`. HTML rendering is implemented in `src/lib/email/render-html.ts` with colours in `src/lib/email/email-theme.ts`; the daily alert planner is `src/lib/email/plan.ts`.
+- All renderers and the planner are pure: no network or database calls, and the calendar date is passed in as an argument. Plain-text renderers return `{ subject, text }`; HTML renderers return `{ subject, html }`.
 - Vitest tests for: digest subject variants (overdue only, due soon only, both, singular and plural), day phrases (today, tomorrow, in n days, 1 day late), date formatting (UK weekday format), sorting, single-alert forms for date and window stages, done_notice with and without a next date, and HTML escaping of farm names (a name containing & or < must not break the email).
-- A dev-only preview page at `/dev/emails` that renders each sample in both the HTML and text forms. Remove it before launch.
+- The dev-only preview page at `/dev/emails` renders fixed samples in HTML and plain text. Remove it before launch.
 - Send test emails only to the manager's own address until the domain is verified and the digest looks right on a real phone.

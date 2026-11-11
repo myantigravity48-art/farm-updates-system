@@ -3,7 +3,7 @@
 Last updated: 2026-11-11
 
 ## Recent update
-- Step 5g-2 implementation is complete and ready for migration `0010_recipient_phone.sql`: recipients can be edited in place, optional phone references are validated and displayed, window-open timing is editable, and plain-text `window_open` emails are rendered. No SQL was applied during implementation. Step 5g-2 is done once you apply 0010 and its checks pass.
+- Step 6a is done: pure HTML renderers, the per-recipient daily planner, and the logged-in `/dev/emails` preview are implemented and tested. No sending, Resend integration, API route or SQL was added.
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
@@ -24,6 +24,7 @@ Last updated: 2026-11-11
 - Step 5e built: `/alerts` loads recipients and timing through the signed-in Supabase session, supports recipient changes and timing saves, shows an email preview from the pure plain-text email renderers, and handles missing alert settings with the required seed migration message. `src/lib/email/` and `src/lib/alerts/validate.ts` have focused Vitest coverage. No SQL or sending code was added. The Alert settings export images were not present in `design/` when checked; the page follows `DESIGN.md` and `EMAILS.md`.
 - Step 5f built: lifecycle editor, server validation and impact preview, and migration `0007_lifecycle_editor.sql`. Timing values are editable in the app; `src/lib/schedule/defaults.ts` is a test and seed reference and may differ from live values.
 - Step 5g-1 done: Order seedlings lifecycle, weekly overdue reminders, clearing-window nudges, and migration `0009_order_seedlings_and_nudge.sql` are applied.
+- Step 6a done: HTML email rendering, the daily alert planner and the `/dev/emails` preview are implemented. The preview should be removed before launch.
 - Migrations 0001–0009 are applied to the live database.
 
 ## Decisions
@@ -32,9 +33,11 @@ Last updated: 2026-11-11
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Apply `supabase/migrations/0010_recipient_phone.sql` and run `supabase/checks/0010_checks.sql` to finish step 5g-2.
-2. Step 6a: HTML emails and the daily planner, including the `window_open` alert type.
+1. Step 6b: the daily job route, Resend sending, and a migration that adds a `pending` state to the send log.
+2. Step 6c.
 3. Deploy
+
+Before launch, remove `/dev/tokens` and `/dev/emails`.
 
 ## Waiting on
 - Apply `supabase/migrations/0010_recipient_phone.sql` and run `supabase/checks/0010_checks.sql` to complete step 5g-2.

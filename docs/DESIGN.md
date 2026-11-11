@@ -8,6 +8,8 @@ Deep forest at dusk with a moss glow; warm bone in light mode. Calm, glanceable,
 ## Tokens
 Define as CSS variables. Dark is the default theme. Light overrides under the theme switch (for example `.light` or `[data-theme="light"]`). Never hard-code colours in components.
 
+Email HTML uses client-safe inline styles; `src/lib/email/email-theme.ts` is the sole hard-coded hex colour exception.
+
 ```css
 :root, .dark {
   --bg: #0A110D;
