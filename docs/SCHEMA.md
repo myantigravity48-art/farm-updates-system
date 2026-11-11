@@ -13,6 +13,8 @@
 9. Run `supabase/checks.sql` when you need to recheck the original schema security rules. It is not a substitute for migration-specific check files.
 10. After 0007 and 0008, paste and run `supabase/migrations/0009_order_seedlings_and_nudge.sql`.
 11. Run `supabase/checks/0009_checks.sql` to verify the 9-stage lifecycle, farm-stage coverage, privileges, alert settings and function grants.
+12. Paste and run `supabase/migrations/0010_recipient_phone.sql` to add the optional recipient phone reference. It preserves authenticated CRUD on recipients and leaves the existing RLS policy unchanged; anon remains excluded.
+13. Run `supabase/checks/0010_checks.sql` to verify the phone column, anon exclusion and phone constraint.
 
 ## Tables
 
@@ -24,7 +26,7 @@
 | `farm_stages` | One row per farm per stage template (auto-created by trigger). Tracks done state, done date, completion author and name, note, and due-date override. Unique on `(farm_id, template_id)`. |
 | `notes` | Free-text notes on a farm or a specific stage. `author_name` stores the writer's display name at the time of writing. |
 | `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. `author_name` stores the uploader's display name. |
-| `recipients` | Email recipients for alerts. Unique index on `lower(email)`. |
+| `recipients` | Email recipients for alerts, with an optional phone reference. Unique index on `lower(email)`. Alerts are sent by email only. |
 | `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, weekly overdue repeat, 14-day window nudges (0–60; 0 disables them), and London send hour. |
 | `notification_log` | One row per sent or failed alert (`heads_up`, `reminder`, `overdue`, `window_open`, or `done_notice`). Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
 
@@ -96,6 +98,8 @@ Migration 0009 inserts Order seedlings at position 2, finds its clearing anchor 
 
 The `SECURITY INVOKER` function `public.save_lifecycle(jsonb,jsonb,text)` validates the full lifecycle and updates both tables atomically. It calls `public.lifecycle_days_in_month(integer)`, an immutable SQL helper that uses February = 28 for window validation. The helper and save function revoke execution from `public` and `anon`, and grant it to `authenticated`. Migration 0009 replaces `save_lifecycle` while preserving its validation rules and adding `offset_days` validation.
 
+Migration `0010_recipient_phone.sql` adds nullable `recipients.phone` with a trimmed length check of 1–30 characters when present. The original table-level grant gives authenticated users CRUD on all columns, including this one. Migration 0010 explicitly preserves that grant, revokes anon/public table privileges, and does not alter recipient RLS policies. `supabase/checks/0010_checks.sql` contains only its numbered checks.
+
 The timings described as placeholders in `PRODUCT.md` are now editable in the app. `src/lib/schedule/defaults.ts` remains only a seed and test reference and may differ from the live database values.
 
 Every table has row-level security enabled. No table is accessible to the `anon` role. Every authenticated policy (including storage) also rejects a JWT whose `is_anonymous` claim is true, so anonymous sign-ins cannot read or write data.
@@ -125,7 +129,7 @@ The two invited users have equal permissions. The alert job will write to `notif
 
 - `src/lib/supabase/client.ts` — browser client using `createBrowserClient` from `@supabase/ssr`.
 - `src/lib/supabase/server.ts` — server client using `createServerClient` with Next.js `cookies()`.
-- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0009. Regenerate later with `npx supabase gen types typescript`.
+- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0010. Regenerate later with `npx supabase gen types typescript`.
 - `.env.example` — placeholder variable names. Copy to `.env.local` and fill in real values.
 
 ## Environment variables

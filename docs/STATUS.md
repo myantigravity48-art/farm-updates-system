@@ -1,9 +1,9 @@
 # Status
 
-Last updated: 2026-11-10
+Last updated: 2026-11-11
 
 ## Recent update
-- Step 5g-1 implementation is ready: 9-stage Order seedlings lifecycle, weekly overdue reminders, clearing-window nudges, lifecycle editor support, and migration `0009_order_seedlings_and_nudge.sql` with `supabase/checks/0009_checks.sql`. This step is done once migration 0009 is applied and checks pass. No SQL was applied during implementation.
+- Step 5g-2 implementation is complete and ready for migration `0010_recipient_phone.sql`: recipients can be edited in place, optional phone references are validated and displayed, window-open timing is editable, and plain-text `window_open` emails are rendered. No SQL was applied during implementation. Step 5g-2 is done once you apply 0010 and its checks pass.
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
@@ -23,7 +23,8 @@ Last updated: 2026-11-10
 - Step 5d built: Mark done, undo, manual stage dates, planting-date changes, Dashboard actions, completion author names, notes and photo linking, plus migration-specific checks.
 - Step 5e built: `/alerts` loads recipients and timing through the signed-in Supabase session, supports recipient changes and timing saves, shows an email preview from the pure plain-text email renderers, and handles missing alert settings with the required seed migration message. `src/lib/email/` and `src/lib/alerts/validate.ts` have focused Vitest coverage. No SQL or sending code was added. The Alert settings export images were not present in `design/` when checked; the page follows `DESIGN.md` and `EMAILS.md`.
 - Step 5f built: lifecycle editor, server validation and impact preview, and migration `0007_lifecycle_editor.sql`. Timing values are editable in the app; `src/lib/schedule/defaults.ts` is a test and seed reference and may differ from live values.
-- Migrations 0001–0008 are applied to the live database.
+- Step 5g-1 done: Order seedlings lifecycle, weekly overdue reminders, clearing-window nudges, and migration `0009_order_seedlings_and_nudge.sql` are applied.
+- Migrations 0001–0009 are applied to the live database.
 
 ## Decisions
 - Alerts are email only (Resend). WhatsApp and SMS are dropped.
@@ -31,13 +32,12 @@ Last updated: 2026-11-10
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Apply `supabase/migrations/0009_order_seedlings_and_nudge.sql` and run `supabase/checks/0009_checks.sql`; test Order seedlings and lifecycle editing on farms (step 5g-1).
-2. Step 5g-2: Alerts page recipient editing, optional phone, and window reminder setting.
-3. Implement the email steps (plain text rendering updates, then scheduled delivery; no HTML email until the email step calls for it).
-4. Deploy
+1. Apply `supabase/migrations/0010_recipient_phone.sql` and run `supabase/checks/0010_checks.sql` to finish step 5g-2.
+2. Step 6a: HTML emails and the daily planner, including the `window_open` alert type.
+3. Deploy
 
 ## Waiting on
-- Apply `supabase/migrations/0009_order_seedlings_and_nudge.sql` and run `supabase/checks/0009_checks.sql` to complete step 5g-1.
+- Apply `supabase/migrations/0010_recipient_phone.sql` and run `supabase/checks/0010_checks.sql` to complete step 5g-2.
 - The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub

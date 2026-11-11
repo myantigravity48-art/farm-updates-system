@@ -55,6 +55,13 @@ describe("single alert emails", () => {
     expect(renderAlertEmail({ alerts: [item("overdue", "date", 5)], today, appUrl }).subject).toContain("5 days late");
   });
 
+  it("renders a window-open single alert with plural, singular and closing-today wording", () => {
+    const windowAlert = { ...item("window_open", "window", 10), stageName: "Land clearing", windowEnd: "2027-03-31" as CalendarDate };
+    expect(renderAlertEmail({ alerts: [windowAlert], today, appUrl }).subject).toBe("Iyanuole: Land clearing window is open until Wed 31 Mar 2027");
+    expect(renderAlertEmail({ alerts: [windowAlert], today, appUrl }).text).toContain("The Land clearing window on Iyanuole is open until Wed 31 Mar 2027 and the stage is not marked done.");
+    expect(renderAlertEmail({ alerts: [windowAlert], today, appUrl }).text).toContain("You get these emails because you are on the alert list for Farm updates system.");
+  });
+
   it("keeps names containing ampersands and angle brackets as plain text", () => {
     const alert = { ...item("reminder", "date", 2), farmName: "Uzor & <Timber>" };
     const { subject, text } = renderAlertEmail({ alerts: [alert], today, appUrl });
@@ -86,6 +93,22 @@ describe("digest emails", () => {
     expect(result.text.indexOf("Most late")).toBeLessThan(result.text.indexOf("Less late"));
     expect(result.text.indexOf("Earlier due")).toBeLessThan(result.text.indexOf("Later due"));
     expect(result.text.indexOf("OVERDUE")).toBeLessThan(result.text.indexOf("DUE SOON"));
+  });
+
+  it("counts and sorts window-open alerts in due soon with window end then farm name", () => {
+    const result = renderAlertEmail({ alerts: [
+      { ...item("window_open", "window", 10), farmName: "Zeta", windowEnd: "2026-10-22" },
+      { ...item("reminder", "date", 2), farmName: "Order seedlings", stageName: "Order seedlings", date: "2026-10-20" },
+      { ...item("window_open", "window", 3), farmName: "Alpha", windowEnd: "2026-10-22" },
+    ], today, appUrl });
+    expect(result.subject).toBe("Farm updates: 3 due soon");
+    expect(result.text.indexOf("Order seedlings")).toBeLessThan(result.text.indexOf("Alpha"));
+    expect(result.text.indexOf("Alpha")).toBeLessThan(result.text.indexOf("Zeta"));
+    expect(result.text).toContain("Window open until Thu 22 Oct 2026 (10 days left).");
+    const oneDayLeft = renderAlertEmail({ alerts: [{ ...item("window_open", "window", 1), windowEnd: "2026-10-22" }, item("reminder", "date", 2)], today, appUrl });
+    const closesToday = renderAlertEmail({ alerts: [{ ...item("window_open", "window", 0), windowEnd: "2026-10-22" }, item("reminder", "date", 2)], today, appUrl });
+    expect(oneDayLeft.text).toContain("Window open until Thu 22 Oct 2026 (1 day left).");
+    expect(closesToday.text).toContain("Window open until Thu 22 Oct 2026 (closes today).");
   });
 
   it("includes the exact footer", () => {

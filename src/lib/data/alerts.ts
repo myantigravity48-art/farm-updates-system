@@ -6,6 +6,7 @@ export interface AlertRecipient {
   id: string;
   name: string;
   email: string;
+  phone: string | null;
   enabled: boolean;
 }
 
@@ -22,7 +23,7 @@ export async function getAlertsPageData(): Promise<AlertsPageData> {
   if (authError || !authData.user) throw new Error("Your session has ended. Sign in again.");
 
   const [recipientsResult, settingsResult] = await Promise.all([
-    supabase.from("recipients").select("id, name, email, enabled").order("name", { ascending: true }),
+    supabase.from("recipients").select("id, name, email, phone, enabled").order("name", { ascending: true }),
     supabase.from("alert_settings").select("heads_up_days, reminder_days, overdue_enabled, overdue_repeat_days, window_nudge_days, send_hour_london").limit(1).maybeSingle(),
   ]);
 
@@ -38,6 +39,7 @@ export async function getAlertsPageData(): Promise<AlertsPageData> {
       reminderDays: settingsResult.data.reminder_days,
       overdueEnabled: settingsResult.data.overdue_enabled,
       overdueRepeatDays: settingsResult.data.overdue_repeat_days,
+      windowNudgeDays: settingsResult.data.window_nudge_days,
       sendHourLondon: settingsResult.data.send_hour_london,
     },
     // This page is request-rendered through the session-scoped server client; derive the date in London explicitly.

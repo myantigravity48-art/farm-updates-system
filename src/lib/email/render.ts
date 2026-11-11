@@ -1,7 +1,7 @@
 import type { CalendarDate } from "@/lib/schedule";
 import { formatUkDate } from "@/lib/format/dates";
 
-export type EmailAlertType = "heads_up" | "reminder" | "overdue";
+export type EmailAlertType = "heads_up" | "reminder" | "overdue" | "window_open";
 
 export interface AlertItem {
   type: EmailAlertType;
@@ -47,7 +47,10 @@ function renderSingle(item: AlertItem, appUrl: string): { subject: string; text:
   let subject: string;
   let line: string;
 
-  if (item.type === "heads_up") {
+  if (item.type === "window_open") {
+    subject = `${item.farmName}: ${item.stageName} window is open until ${formatUkDate(item.windowEnd!)}`;
+    line = `The ${item.stageName} window on ${item.farmName} is open until ${formatUkDate(item.windowEnd!)} and the stage is not marked done`;
+  } else if (item.type === "heads_up") {
     subject = windowed
       ? `${item.farmName}: ${item.stageName} window opens ${item.days === 0 ? "today" : item.days === 1 ? "tomorrow" : `in ${item.days} days`}`
       : `${item.farmName}: ${item.stageName} due ${formatEmailDayPhrase(item.days)}`;
@@ -74,6 +77,10 @@ function renderSingle(item: AlertItem, appUrl: string): { subject: string; text:
 }
 
 function alertLine(item: AlertItem): string {
+  if (item.type === "window_open") {
+    const until = item.days === 0 ? "closes today" : `${item.days} ${item.days === 1 ? "day" : "days"} left`;
+    return `- ${item.farmName}: ${item.stageName}. Window open until ${formatUkDate(item.windowEnd!)} (${until}).`;
+  }
   if (item.type === "overdue") {
     const when = item.kind === "window"
       ? `Window closed ${formatUkDate(item.windowEnd!)} (${item.days} ${item.days === 1 ? "day" : "days"} late).`
@@ -102,7 +109,11 @@ export function renderAlertEmail({
   if (alerts.length === 1) return renderSingle(alerts[0], appUrl);
 
   const overdue = alerts.filter((item) => item.type === "overdue").sort((a, b) => b.days - a.days);
-  const dueSoon = alerts.filter((item) => item.type !== "overdue").sort((a, b) => a.date.localeCompare(b.date));
+  const dueSoon = alerts.filter((item) => item.type !== "overdue").sort((a, b) => {
+    const dateA = a.type === "window_open" ? a.windowEnd! : a.date;
+    const dateB = b.type === "window_open" ? b.windowEnd! : b.date;
+    return dateA.localeCompare(dateB) || a.farmName.localeCompare(b.farmName);
+  });
   const subjectParts = [
     overdue.length ? `${overdue.length} overdue` : "",
     dueSoon.length ? `${dueSoon.length} due soon` : "",

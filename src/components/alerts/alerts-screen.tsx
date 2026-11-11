@@ -7,13 +7,13 @@ import { addDays, type CalendarDate } from "@/lib/schedule";
 import { renderAlertEmail, renderDoneNotice, type AlertItem } from "@/lib/email/render";
 import type { AlertRecipient, AlertsPageData } from "@/lib/data/alerts";
 import { validateRecipient, validateTiming, type TimingValues } from "@/lib/alerts/validate";
-import { addRecipient, removeRecipient, saveTimingSettings, setRecipientEnabled } from "@/lib/alerts/actions";
+import { addRecipient, removeRecipient, saveTimingSettings, setRecipientEnabled, updateRecipient } from "@/lib/alerts/actions";
 import { Modal } from "@/components/ui/modal";
 import { Toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 
-type PreviewChoice = "Digest" | "Heads-up" | "Reminder" | "Overdue" | "Marked done";
-const PREVIEW_CHOICES: PreviewChoice[] = ["Digest", "Heads-up", "Reminder", "Overdue", "Marked done"];
+type PreviewChoice = "Digest" | "Heads-up" | "Reminder" | "Overdue" | "Window open" | "Marked done";
+const PREVIEW_CHOICES: PreviewChoice[] = ["Digest", "Heads-up", "Reminder", "Overdue", "Window open", "Marked done"];
 const SAMPLE_APP_URL = "https://your-app-address";
 
 export function AlertsScreen({ data }: { data: AlertsPageData }) {
@@ -23,6 +23,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
     reminderDays: data.settings.reminderDays,
     overdueEnabled: data.settings.overdueEnabled,
     overdueRepeatDays: data.settings.overdueRepeatDays,
+    windowNudgeDays: data.settings.windowNudgeDays,
   });
   const [savedTiming, setSavedTiming] = useState(timing);
   const [timingErrors, setTimingErrors] = useState<Record<string, string>>({});
@@ -32,6 +33,8 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [editing, setEditing] = useState<AlertRecipient | null>(null);
   const [toast, setToast] = useState("");
   const [pending, startTransition] = useTransition();
   const changed = !sameTiming(timing, savedTiming);
@@ -65,13 +68,15 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
 
   function submitRecipient(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const localValidation = validateRecipient({ name, email }, data.recipients.length);
+    const localValidation = validateRecipient({ name, email, phone }, editing ? 0 : data.recipients.length);
     if (!localValidation.ok) {
       setRecipientErrors(localValidation.errors);
       return;
     }
     startTransition(async () => {
-      const result = await addRecipient({ name, email });
+      const result = editing
+        ? await updateRecipient({ id: editing.id, name, email, phone })
+        : await addRecipient({ name, email, phone });
       if (!result.ok) {
         setRecipientErrors(result.errors ?? {});
         setRecipientProblem(result.message);
@@ -80,11 +85,21 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
       setDialogOpen(false);
       setName("");
       setEmail("");
+      setPhone("");
+      setEditing(null);
       setRecipientErrors({});
       setRecipientProblem("");
-      setToast("Recipient added");
+      setToast(editing ? "Recipient updated" : "Recipient added");
       router.refresh();
     });
+  }
+
+  function openAddDialog() {
+    setEditing(null); setName(""); setEmail(""); setPhone(""); setRecipientErrors({}); setRecipientProblem(""); setDialogOpen(true);
+  }
+
+  function openEditDialog(recipient: AlertRecipient) {
+    setEditing(recipient); setName(recipient.name); setEmail(recipient.email); setPhone(recipient.phone ?? ""); setRecipientErrors({}); setRecipientProblem(""); setDialogOpen(true);
   }
 
   function toggleRecipient(recipient: AlertRecipient) {
@@ -127,7 +142,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
               <h2 id="recipients-title" className="text-xl font-medium">Recipients</h2>
               <p className="mt-1 text-sm text-muted">Email alerts go to the people on this list.</p>
             </div>
-            <Button variant="secondary" onClick={() => { setDialogOpen(true); setRecipientErrors({}); }} disabled={data.recipients.length >= 10}>
+            <Button variant="secondary" onClick={openAddDialog} disabled={data.recipients.length >= 10}>
               <Plus aria-hidden="true" size={18} /> Add recipient
             </Button>
           </div>
@@ -136,7 +151,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
           {nobody ? <InlineNotice>No one will receive alerts. Add a recipient or turn one on.</InlineNotice> : null}
           {data.recipients.length ? (
             <ul className="divide-y divide-border rounded-[14px] border border-border bg-surface">
-              {data.recipients.map((recipient) => <RecipientRow key={recipient.id} recipient={recipient} pending={pending} onToggle={toggleRecipient} onRemove={deleteRecipient} />)}
+              {data.recipients.map((recipient) => <RecipientRow key={recipient.id} recipient={recipient} pending={pending} onToggle={toggleRecipient} onRemove={deleteRecipient} onEdit={openEditDialog} />)}
             </ul>
           ) : null}
         </section>
@@ -153,6 +168,10 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
               <Switch checked={timing.overdueEnabled} label="Send overdue emails" onChange={(value) => update("overdueEnabled", value)} />
             </div>
             <NumberStepper label="Repeat overdue emails every n days" value={timing.overdueRepeatDays} error={timingErrors.overdueRepeatDays} min={1} max={30} disabled={!timing.overdueEnabled} onChange={(value) => update("overdueRepeatDays", value)} />
+            <div className="border-t border-border pt-4">
+              <NumberStepper label="While a season window is open, remind every n days" value={timing.windowNudgeDays} error={timingErrors.windowNudgeDays} min={0} max={60} onChange={(value) => update("windowNudgeDays", value)} />
+              <p className="mt-2 text-sm text-muted">For a job like Land clearing, while its window is open and it is not done. Set 0 to turn off.</p>
+            </div>
             {timingErrors.overdueEnabled ? <p role="alert" className="text-sm text-overdue">{timingErrors.overdueEnabled}</p> : null}
             <p className="border-t border-border pt-4 text-sm text-muted">Alerts send at {data.settings.sendHourLondon}:00 UK time</p>
             {timingErrors.reminderDays ? <p role="alert" className="text-sm text-overdue">{timingErrors.reminderDays}</p> : null}
@@ -187,10 +206,11 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
       </div>
 
       {dialogOpen ? (
-        <Modal onClose={() => setDialogOpen(false)} labelledBy="add-recipient-title">
+        <Modal onClose={() => { setDialogOpen(false); setEditing(null); }} labelledBy="add-recipient-title">
           <div className="overflow-y-auto p-6 pt-14">
-            <h2 id="add-recipient-title" className="text-xl font-medium">Add recipient</h2>
-            <p className="mt-2 text-sm text-muted">Add a name and email address for alerts.</p>
+            <h2 id="add-recipient-title" className="text-xl font-medium">{editing ? "Edit recipient" : "Add recipient"}</h2>
+            <p className="mt-2 text-sm text-muted">{editing ? "Update the name, email address or phone reference." : "Add a name and email address for alerts."}</p>
+            {editing && email.trim().toLowerCase() !== editing.email.toLowerCase() ? <p className="mt-3 rounded-[10px] border border-due-soon/40 bg-due-soon/10 px-3 py-2 text-sm">Alerts already sent stay recorded. The new address receives future alerts.</p> : null}
             <form className="mt-5 space-y-4" onSubmit={submitRecipient} noValidate>
               <div aria-live="polite" aria-atomic="true">
                 {Object.keys(recipientErrors).length || recipientProblem ? <div className="rounded-[10px] border border-overdue/40 bg-overdue/10 p-3 text-sm text-text"><p className="font-medium">Check these details</p><ul className="mt-1 list-inside list-disc">{Object.values(recipientErrors).map((message) => <li key={message}>{message}</li>)}{recipientProblem ? <li>{recipientProblem}</li> : null}</ul></div> : null}
@@ -201,9 +221,13 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
               <label className="block text-sm font-medium" htmlFor="recipient-email">Email</label>
               <input id="recipient-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={254} autoComplete="email" className="-mt-2 min-h-11 w-full rounded-[10px] border border-border bg-bg px-3 text-text" aria-invalid={Boolean(recipientErrors.email)} aria-describedby={recipientErrors.email ? "recipient-email-error" : undefined} />
               {recipientErrors.email ? <p id="recipient-email-error" className="-mt-3 text-sm text-overdue">{recipientErrors.email}</p> : null}
+              <label className="block text-sm font-medium" htmlFor="recipient-phone">Phone (optional)</label>
+              <input id="recipient-phone" type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} maxLength={30} autoComplete="tel" className="-mt-2 min-h-11 w-full rounded-[10px] border border-border bg-bg px-3 text-text" aria-invalid={Boolean(recipientErrors.phone)} aria-describedby={recipientErrors.phone ? "recipient-phone-error" : "recipient-phone-help"} />
+              <p id="recipient-phone-help" className="-mt-3 text-sm text-muted">Saved for reference. Alerts are sent by email only.</p>
+              {recipientErrors.phone ? <p id="recipient-phone-error" className="-mt-3 text-sm text-overdue">{recipientErrors.phone}</p> : null}
               <div className="flex justify-end gap-2 pt-2">
-                <Button variant="secondary" onClick={() => setDialogOpen(false)} disabled={pending}>Cancel</Button>
-                <Button type="submit" disabled={pending}>{pending ? "Adding…" : "Add recipient"}</Button>
+                <Button variant="secondary" onClick={() => { setDialogOpen(false); setEditing(null); }} disabled={pending}>Cancel</Button>
+                <Button type="submit" disabled={pending}>{pending ? "Saving…" : editing ? "Save recipient" : "Add recipient"}</Button>
               </div>
             </form>
           </div>
@@ -214,11 +238,12 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
   );
 }
 
-function RecipientRow({ recipient, pending, onToggle, onRemove }: { recipient: AlertRecipient; pending: boolean; onToggle: (recipient: AlertRecipient) => void; onRemove: (recipient: AlertRecipient) => void }) {
+function RecipientRow({ recipient, pending, onToggle, onRemove, onEdit }: { recipient: AlertRecipient; pending: boolean; onToggle: (recipient: AlertRecipient) => void; onRemove: (recipient: AlertRecipient) => void; onEdit: (recipient: AlertRecipient) => void }) {
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 min-[520px]:flex-nowrap">
-      <div className="min-w-0 flex-1"><p className="truncate font-medium">{recipient.name}</p><p className="truncate text-sm text-muted">{recipient.email}</p></div>
+      <div className="min-w-0 flex-1"><p className="truncate font-medium">{recipient.name}</p><p className="truncate text-sm text-muted">{recipient.email}</p>{recipient.phone ? <p className="truncate text-sm text-muted">{recipient.phone}</p> : null}</div>
       <Switch checked={recipient.enabled} label={`Send alerts to ${recipient.name}`} onChange={() => onToggle(recipient)} disabled={pending} compact />
+      <button type="button" onClick={() => onEdit(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Edit</button>
       <button type="button" onClick={() => onRemove(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Remove</button>
     </li>
   );
@@ -253,7 +278,7 @@ function InlineNotice({ children }: { children: React.ReactNode }) {
 }
 
 function sameTiming(a: TimingValues, b: TimingValues): boolean {
-  return a.headsUpDays === b.headsUpDays && a.reminderDays === b.reminderDays && a.overdueEnabled === b.overdueEnabled && a.overdueRepeatDays === b.overdueRepeatDays;
+  return a.headsUpDays === b.headsUpDays && a.reminderDays === b.reminderDays && a.overdueEnabled === b.overdueEnabled && a.overdueRepeatDays === b.overdueRepeatDays && a.windowNudgeDays === b.windowNudgeDays;
 }
 
 function buildPreview(choice: PreviewChoice, timing: TimingValues, today: CalendarDate) {
@@ -272,13 +297,17 @@ function buildPreview(choice: PreviewChoice, timing: TimingValues, today: Calend
     ? alert("heads_up", "sample-iyanuole", "Iyanuole", "Second round-weeding", headsUpDays, "window")
     : choice === "Reminder"
       ? alert("reminder", "sample-obi", "Obi-Umuagbogho", "Land clearing", reminderDays)
-      : choice === "Overdue"
+    : choice === "Overdue"
         ? alert("overdue", "sample-obaoba", "Obaoba", "First fertilizer", overdueDays)
+        : choice === "Window open"
+          ? { ...alert("window_open", "sample-iyanuole", "Iyanuole", "Land clearing", 10, "window"), date: today, windowEnd: "2027-03-31" as CalendarDate }
         : null;
   const alerts = item ? [item] : [
     alert("overdue", "sample-obi", "Obi-Umuagbogho", "Land clearing", overdueDays, "window"),
     alert("reminder", "sample-iyanuole", "Iyanuole", "Second round-weeding", reminderDays),
     alert("heads_up", "sample-obaoba", "Obaoba", "First fertilizer", headsUpDays),
+    { ...alert("window_open", "sample-iyanuole", "Iyanuole", "Land clearing", 10, "window"), date: today, windowEnd: "2027-03-31" as CalendarDate },
+    alert("reminder", "sample-iyanuole", "Iyanuole", "Order seedlings", reminderDays),
   ];
   return renderAlertEmail({ alerts, today, appUrl: SAMPLE_APP_URL });
 }

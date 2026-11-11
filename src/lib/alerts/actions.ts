@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { isDuplicateEmailError, validateRecipient, validateTiming, type RecipientInput, type TimingValues } from "./validate";
+import { isDuplicateEmailError, validateRecipient, validateRecipientUpdate, validateTiming, type RecipientInput, type TimingValues } from "./validate";
 
 type ActionResult = { ok: true; message?: string } | { ok: false; message: string; errors?: Record<string, string> };
 
@@ -14,7 +14,7 @@ export async function addRecipient(input: RecipientInput): Promise<ActionResult>
   const supabase = await createClient();
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData.user) return { ok: false, message: "Your session has ended. Sign in again." };
-  if (!input || typeof input.name !== "string" || typeof input.email !== "string") {
+  if (!input || typeof input.name !== "string" || typeof input.email !== "string" || (input.phone !== undefined && typeof input.phone !== "string")) {
     return { ok: false, message: "Check the recipient details and try again." };
   }
 
@@ -27,6 +27,26 @@ export async function addRecipient(input: RecipientInput): Promise<ActionResult>
   if (error) return { ok: false, message: isDuplicateEmailError(error.message) ? "That email address is already on the list." : "Could not add the recipient. Try again." };
   revalidatePath("/alerts");
   return { ok: true, message: "Recipient added." };
+}
+
+export async function updateRecipient(input: RecipientInput & { id: string }): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData.user) return { ok: false, message: "Your session has ended. Sign in again." };
+  if (!input || !validId(input.id) || typeof input.name !== "string" || typeof input.email !== "string" || (input.phone !== undefined && typeof input.phone !== "string")) {
+    return { ok: false, message: "Check the recipient details and try again." };
+  }
+  const { data: current, error: currentError } = await supabase.from("recipients").select("id").eq("id", input.id).maybeSingle();
+  if (currentError) return { ok: false, message: "Could not check the recipient. Try again." };
+  if (!current) return { ok: false, message: "That person no longer exists. Refresh the page." };
+  const { data: recipients, error: recipientsError } = await supabase.from("recipients").select("id, email");
+  if (recipientsError) return { ok: false, message: "Could not check the alert list. Try again." };
+  const validation = validateRecipientUpdate(input, input.id, recipients);
+  if (!validation.ok) return { ok: false, message: "Check the highlighted fields.", errors: validation.errors };
+  const { error } = await supabase.from("recipients").update(validation.value).eq("id", input.id);
+  if (error) return { ok: false, message: isDuplicateEmailError(error.message) ? "That email address is already on the list." : "Could not update the recipient. Try again." };
+  revalidatePath("/alerts");
+  return { ok: true, message: "Recipient updated." };
 }
 
 export async function setRecipientEnabled(id: string, enabled: boolean): Promise<ActionResult> {
@@ -68,6 +88,7 @@ export async function saveTimingSettings(input: TimingValues): Promise<ActionRes
       reminder_days: validation.value.reminderDays,
       overdue_enabled: validation.value.overdueEnabled,
       overdue_repeat_days: validation.value.overdueRepeatDays,
+      window_nudge_days: validation.value.windowNudgeDays,
     })
     .eq("id", true)
     .select("id");

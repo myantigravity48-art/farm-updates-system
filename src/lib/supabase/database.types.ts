@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005, 0006, 0007 and 0009.
+ * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005, 0006, 0007, 0009 and 0010.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 
@@ -223,18 +223,21 @@ export interface Database {
           id: string;
           name: string;
           email: string;
+          phone: string | null;
           enabled: boolean;
         };
         Insert: {
           id?: string;
           name: string;
           email: string;
+          phone?: string | null;
           enabled?: boolean;
         };
         Update: {
           id?: string;
           name?: string;
           email?: string;
+          phone?: string | null;
           enabled?: boolean;
         };
         Relationships: [];
