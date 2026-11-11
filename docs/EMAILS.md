@@ -90,3 +90,11 @@ If the next stage has no date yet (planting date not set): `Next: {{next_stage}}
 - Vitest tests for: digest subject variants (overdue only, due soon only, both, singular and plural), day phrases (today, tomorrow, in n days, 1 day late), date formatting (UK weekday format), sorting, single-alert forms for date and window stages, done_notice with and without a next date, and HTML escaping of farm names (a name containing & or < must not break the email).
 - The dev-only preview page at `/dev/emails` renders fixed samples in HTML and plain text. Remove it before launch.
 - Send test emails only to the manager's own address until the domain is verified and the digest looks right on a real phone.
+
+## Sending
+
+The daily sending side is implemented in `src/lib/alerts-job/` and the cron route at `/api/cron/daily-alerts`. It claims log rows before sending and marks each claimed row sent or failed. The event-driven `done_notice` sender is a later step and is not included in the daily job.
+
+## Sending
+
+The daily sending side is implemented in `src/lib/alerts-job/` and the authenticated cron route at `/api/cron/daily-alerts`. It claims log rows before sending and marks each claimed row sent or failed. The event-driven `done_notice` sender is a later step and is not included in the daily job.

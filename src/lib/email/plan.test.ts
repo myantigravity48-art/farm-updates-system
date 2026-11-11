@@ -69,6 +69,7 @@ describe("planDailyAlerts", () => {
     const planned = planDailyAlerts(input())[0];
     expect(planned.recipientId).toBe("recipient-a");
     expect(planned.items).toHaveLength(1);
+    expect(planned.entries).toEqual([{ item: planned.items[0], key: planned.keys[0] }]);
     expect(planned.items[0]).toMatchObject({ type: "heads_up", farmId: "farm-a", farmName: "Iyanuole", stageName: "First fertilizer", kind: "date", date: "2027-07-01", days: 14 });
     expect(planned.keys).toEqual([{ farmStageId: "farm-a-stage-1", alertType: "heads_up", occurrenceKey: "1:heads_up:2027-07-01" }]);
   });
@@ -81,7 +82,7 @@ describe("planDailyAlerts", () => {
       ],
       sent: [{ recipientId: "recipient-a", farmStageId: "farm-a-stage-1", alertType: "heads_up", occurrenceKey: "1:heads_up:2027-07-01" }],
     }));
-    expect(planned).toEqual([{ recipientId: "recipient-b", items: [expect.objectContaining({ type: "heads_up" })], keys: [expect.objectContaining({ farmStageId: "farm-a-stage-1" })] }]);
+    expect(planned).toEqual([{ recipientId: "recipient-b", items: [expect.objectContaining({ type: "heads_up" })], keys: [expect.objectContaining({ farmStageId: "farm-a-stage-1" })], entries: [{ item: expect.objectContaining({ type: "heads_up" }), key: expect.objectContaining({ farmStageId: "farm-a-stage-1" }) }] }]);
   });
 
   it("uses different sent sets for recipients independently", () => {

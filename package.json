@@ -9,7 +9,9 @@
     "lint": "eslint",
     "test": "vitest run --configLoader runner",
     "test:watch": "vitest",
-    "test:tz": "node scripts/test-tz.mjs"
+    "test:tz": "node scripts/test-tz.mjs",
+    "alerts:dry": "node --env-file=.env.local scripts/trigger-alerts.mjs --dry",
+    "alerts:send": "node --env-file=.env.local scripts/trigger-alerts.mjs --send"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

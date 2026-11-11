@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring migrations 0001, 0002, 0004, 0005, 0006, 0007, 0009 and 0010.
+ * Hand-written database types mirroring migrations through 0011.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 
@@ -282,6 +282,8 @@ export interface Database {
           status: "sent" | "failed";
           provider_message_id: string | null;
           error: string | null;
+          claimed_at: string;
+          attempts: number;
           sent_at: string;
         };
         Insert: {
@@ -290,10 +292,12 @@ export interface Database {
           recipient_id: string;
           alert_type: "heads_up" | "reminder" | "overdue" | "window_open" | "done_notice";
           occurrence_key: string;
-          status: "sent" | "failed";
+          status: "sent" | "failed" | "pending";
           provider_message_id?: string | null;
           error?: string | null;
           sent_at?: string;
+          claimed_at?: string;
+          attempts?: number;
         };
         Update: {
           id?: string;
@@ -301,10 +305,12 @@ export interface Database {
           recipient_id?: string;
           alert_type?: "heads_up" | "reminder" | "overdue" | "window_open" | "done_notice";
           occurrence_key?: string;
-          status?: "sent" | "failed";
+          status?: "sent" | "failed" | "pending";
           provider_message_id?: string | null;
           error?: string | null;
           sent_at?: string;
+          claimed_at?: string;
+          attempts?: number;
         };
         Relationships: [];
       };
@@ -355,6 +361,14 @@ export interface Database {
       };
       save_lifecycle: {
         Args: { p_stages: Json; p_windows: Json; p_updated_by_name: string };
+        Returns: undefined;
+      };
+      claim_alert_rows: {
+        Args: { p_rows: Json };
+        Returns: Array<{ id: string; farm_stage_id: string; recipient_id: string; alert_type: string; occurrence_key: string }>;
+      };
+      finish_alert_rows: {
+        Args: { p_ids: string[]; p_status: string; p_provider_message_id: string | null; p_error: string | null };
         Returns: undefined;
       };
     };

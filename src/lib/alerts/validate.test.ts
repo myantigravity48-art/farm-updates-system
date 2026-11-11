@@ -6,7 +6,7 @@ describe("validateRecipient", () => {
     expect(validateRecipient({ name: "  Obi  ", email: " OBI@EXAMPLE.COM " }, 0)).toEqual({ ok: true, value: { name: "Obi", email: "obi@example.com", phone: null } });
   });
   it("rejects a whitespace-only name and missing or malformed email", () => {
-    expect(validateRecipient({ name: "   ", email: "a@b.com" }, 0)).toMatchObject({ ok: false, errors: { name: "Enter a name." } });
+    expect(validateRecipient({ name: "   ", email: "not-an-email" }, 0)).toMatchObject({ ok: false, errors: { name: "Enter a name." } });
     expect(validateRecipient({ name: "A", email: " " }, 0)).toMatchObject({ ok: false, errors: { email: "Enter an email address." } });
     expect(validateRecipient({ name: "A", email: "not-an-email" }, 0).ok).toBe(false);
   });

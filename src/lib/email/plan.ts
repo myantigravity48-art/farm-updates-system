@@ -36,6 +36,7 @@ export interface PlannedRecipientAlerts {
   recipientId: string;
   items: AlertItem[];
   keys: Array<Pick<SentAlertKey, "farmStageId" | "alertType" | "occurrenceKey">>;
+  entries: Array<{ item: AlertItem; key: Pick<SentAlertKey, "farmStageId" | "alertType" | "occurrenceKey"> }>;
 }
 
 interface OrderedAlert {
@@ -104,6 +105,7 @@ export function planDailyAlerts(input: DailyAlertPlanInput): PlannedRecipientAle
         recipientId: recipient.id,
         items: orderedAlerts.map(({ item }) => item),
         keys: orderedAlerts.map(({ key }) => key),
+        entries: orderedAlerts.map(({ item, key }) => ({ item, key })),
       });
     }
   }

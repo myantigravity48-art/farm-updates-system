@@ -15,6 +15,8 @@
 11. Run `supabase/checks/0009_checks.sql` to verify the 9-stage lifecycle, farm-stage coverage, privileges, alert settings and function grants.
 12. Paste and run `supabase/migrations/0010_recipient_phone.sql` to add the optional recipient phone reference. It preserves authenticated CRUD on recipients and leaves the existing RLS policy unchanged; anon remains excluded.
 13. Run `supabase/checks/0010_checks.sql` to verify the phone column, anon exclusion and phone constraint.
+14. Paste and run `supabase/migrations/0011_alert_send_claims.sql` to add alert claims, retry tracking and the service-role-only claim/finish functions.
+15. Run `supabase/checks/0011_checks.sql` to verify the constraints, functions, grants and columns.
 
 ## Tables
 
@@ -28,7 +30,7 @@
 | `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. `author_name` stores the uploader's display name. |
 | `recipients` | Email recipients for alerts, with an optional phone reference. Unique index on `lower(email)`. Alerts are sent by email only. |
 | `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, weekly overdue repeat, 14-day window nudges (0–60; 0 disables them), and London send hour. |
-| `notification_log` | One row per sent or failed alert (`heads_up`, `reminder`, `overdue`, `window_open`, or `done_notice`). Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
+| `notification_log` | One row per alert (`heads_up`, `reminder`, `overdue`, `window_open`, or `done_notice`) with `pending`, `sent` or `failed` status. Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
 
 All `auth.users` references (`created_by` and `done_by`) are nullable and use `ON DELETE SET NULL`, preserving farm records, notes, and photos when a user is deleted.
 
@@ -116,7 +118,7 @@ Every table has row-level security enabled. No table is accessible to the `anon`
 | `alert_settings` | select, update | all |
 | `notification_log` | select | all |
 
-The two invited users have equal permissions. The alert job will write to `notification_log` using the service-role key server-side.
+The two invited users have equal permissions. The alert job writes to `notification_log` using the service-role key in `src/lib/supabase/admin.ts`, imported only by the daily alert job.
 
 ## Grants
 
@@ -129,7 +131,7 @@ The two invited users have equal permissions. The alert job will write to `notif
 
 - `src/lib/supabase/client.ts` — browser client using `createBrowserClient` from `@supabase/ssr`.
 - `src/lib/supabase/server.ts` — server client using `createServerClient` with Next.js `cookies()`.
-- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0010. Regenerate later with `npx supabase gen types typescript`.
+- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0011. Regenerate later with `npx supabase gen types typescript`.
 - `.env.example` — placeholder variable names. Copy to `.env.local` and fill in real values.
 
 ## Environment variables
@@ -142,3 +144,7 @@ The two invited users have equal permissions. The alert job will write to `notif
 ## Dashboard settings
 
 After applying the migrations, disable public sign-up and anonymous sign-ins in the Supabase dashboard. Invite the two users instead; they have the same authenticated permissions. Keep the service-role key only in server-side deployment secrets, never in the app or repository.
+
+## Alert claim additions (0011)
+
+Migration `0011_alert_send_claims.sql` adds `claimed_at` and `attempts`. Claiming is one atomic upsert: failed alerts can be reclaimed immediately, and pending claims become reclaimable after 30 minutes. Fresh pending and sent rows are not returned. `finish_alert_rows` updates pending rows only and accepts only sent or failed outcomes. Both functions are `SECURITY INVOKER`, use an empty search path, and are executable only by `service_role`. The existing RLS and table grants are unchanged. `supabase/checks/0011_checks.sql` verifies only these migration additions.
