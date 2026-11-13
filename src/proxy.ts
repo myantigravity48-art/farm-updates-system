@@ -2,8 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { safeNextPath } from "@/lib/auth/next-path";
 import { getSupabaseConfig, MissingSupabaseConfigError } from "@/lib/supabase/config";
-
-const AUTH_PATHS = new Set(["/login", "/forgot-password"]);
+import { isPublicPath } from "@/lib/auth/public-path";
 
 type PendingCookie = { name: string; value: string; options: CookieOptions };
 
@@ -81,7 +80,7 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const { origin } = request.nextUrl;
 
-  if (!signedIn && !AUTH_PATHS.has(pathname)) {
+  if (!signedIn && !isPublicPath(pathname)) {
     const loginUrl = new URL("/login", origin);
     loginUrl.searchParams.set("next", safeNextPath(`${pathname}${search}`));
     return withPendingAuth(NextResponse.redirect(loginUrl), pendingCookies, pendingHeaders);

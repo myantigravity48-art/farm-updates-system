@@ -3,6 +3,7 @@
 Last updated: 2026-11-11
 
 ## Recent update
+- Cron route redirect fix: explicitly allow the daily alert route through the login proxy and make the local trigger script handle redirects and non-JSON responses safely.
 - Step 6b implementation is ready: daily alert job, Resend sending, cron route, local trigger scripts, service-role boundary, migration 0011 and its checks. Step 6b is complete once migration 0011 is applied and checked.
 
 ## Done

@@ -26,6 +26,8 @@ Set variables in the ignored `.env.local` file. The npm scripts load it with Nod
 
 Both scripts call `POST /api/cron/daily-alerts`. They refuse a non-localhost base URL unless `--allow-remote` is passed directly to the script.
 
+The proxy explicitly exempts only `/api/cron/daily-alerts` (with or without a trailing slash) from the logged-out login redirect. The route still requires its own constant-time Bearer secret check and returns 401 when it is missing or wrong. No other API path is public.
+
 ## Schedule
 
 The gate uses `Europe/London`, including daylight saving. A scheduler needs two UTC entries, 07:00 and 08:00, because London's 08:00 is 08:00 UTC in winter and 07:00 UTC in summer. The send-hour gate lets only the matching entry through; the other call exits without sending.
