@@ -28,6 +28,14 @@ Both scripts call `POST /api/cron/daily-alerts`. They refuse a non-localhost bas
 
 The proxy explicitly exempts only `/api/cron/daily-alerts` (with or without a trailing slash) from the logged-out login redirect. The route still requires its own constant-time Bearer secret check and returns 401 when it is missing or wrong. No other API path is public.
 
+## Other email sending
+
+The shared sender in `src/lib/email/send.ts` builds the Resend request and reads `RESEND_API_KEY`, `ALERT_FROM_ADDRESS` and optional `ALERT_REPLY_TO` at runtime. The daily job and the Alerts page test button use it. The test button sends the Alerts preview digest with current stored timing values. Its best-effort limiter allows one test per recipient per 60 seconds and ten total per hour **per server instance**; multiple instances do not share rate-limit state.
+
+After a successful Mark done action, the app sends a `done_notice` to each other enabled recipient, excluding the signed-in actor by case-insensitive email comparison. `done_notice_enabled` controls sending. Messages include the saved completion name/date and the next stage and date state. Sending is best-effort, sequential with a 600 ms pause, never written to `notification_log`, and never runs for undo or manual date changes. Missing configuration skips sending; provider failures do not change the Mark done result.
+
+Until the Resend domain is verified, any email (including test emails and done notices) can only be delivered to the address used to create the Resend account.
+
 ## Schedule
 
 The gate uses `Europe/London`, including daylight saving. A scheduler needs two UTC entries, 07:00 and 08:00, because London's 08:00 is 08:00 UTC in winter and 07:00 UTC in summer. The send-hour gate lets only the matching entry through; the other call exits without sending.

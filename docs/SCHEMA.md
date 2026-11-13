@@ -17,6 +17,8 @@
 13. Run `supabase/checks/0010_checks.sql` to verify the phone column, anon exclusion and phone constraint.
 14. Paste and run `supabase/migrations/0011_alert_send_claims.sql` to add alert claims, retry tracking and the service-role-only claim/finish functions.
 15. Run `supabase/checks/0011_checks.sql` to verify the constraints, functions, grants and columns.
+16. Paste and run `supabase/migrations/0012_done_notice_setting.sql` to add the default-on `alert_settings.done_notice_enabled` switch.
+17. Run `supabase/checks/0012_checks.sql` to verify the required column, default value and anonymous privilege exclusion.
 
 ## Tables
 
@@ -29,7 +31,7 @@
 | `notes` | Free-text notes on a farm or a specific stage. `author_name` stores the writer's display name at the time of writing. |
 | `photos` | Photo metadata. The file lives in the `farm-photos` storage bucket; `storage_path` points to it. `author_name` stores the uploader's display name. |
 | `recipients` | Email recipients for alerts, with an optional phone reference. Unique index on `lower(email)`. Alerts are sent by email only. |
-| `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, weekly overdue repeat, 14-day window nudges (0–60; 0 disables them), and London send hour. |
+| `alert_settings` | Single-row config table (PK is `boolean default true check (id)`). Controls heads-up days, reminder days, weekly overdue repeat, 14-day window nudges (0–60; 0 disables them), London send hour, and whether marked-done notices are enabled. |
 | `notification_log` | One row per alert (`heads_up`, `reminder`, `overdue`, `window_open`, or `done_notice`) with `pending`, `sent` or `failed` status. Unique on `(farm_stage_id, recipient_id, alert_type, occurrence_key)` to enforce idempotency. |
 
 All `auth.users` references (`created_by` and `done_by`) are nullable and use `ON DELETE SET NULL`, preserving farm records, notes, and photos when a user is deleted.
@@ -104,6 +106,8 @@ Migration `0010_recipient_phone.sql` adds nullable `recipients.phone` with a tri
 
 The timings described as placeholders in `PRODUCT.md` are now editable in the app. `src/lib/schedule/defaults.ts` remains only a seed and test reference and may differ from the live database values.
 
+Migration `0012_done_notice_setting.sql` adds `done_notice_enabled boolean not null default true`. It does not change grants or policies. The original `0001_schema.sql` grants `SELECT, UPDATE` to `authenticated` and defines the authenticated read/update policies for `alert_settings`; the same migration revokes table privileges from `anon` and `public`. This was confirmed by inspecting those statements; the 0012 checks query separately confirms there are no `anon` table grants.
+
 Every table has row-level security enabled. No table is accessible to the `anon` role. Every authenticated policy (including storage) also rejects a JWT whose `is_anonymous` claim is true, so anonymous sign-ins cannot read or write data.
 
 | Table | authenticated | service_role |
@@ -131,7 +135,7 @@ The two invited users have equal permissions. The alert job writes to `notificat
 
 - `src/lib/supabase/client.ts` — browser client using `createBrowserClient` from `@supabase/ssr`.
 - `src/lib/supabase/server.ts` — server client using `createServerClient` with Next.js `cookies()`.
-- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0011. Regenerate later with `npx supabase gen types typescript`.
+- `src/lib/supabase/database.types.ts` — hand-written types mirroring the schema through migration 0012. Regenerate later with `npx supabase gen types typescript`.
 - `.env.example` — placeholder variable names. Copy to `.env.local` and fill in real values.
 
 ## Environment variables

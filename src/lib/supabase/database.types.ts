@@ -1,5 +1,5 @@
 /**
- * Hand-written database types mirroring migrations through 0011.
+ * Hand-written database types mirroring migrations through 0012.
  * Regenerate with `npx supabase gen types typescript` once the CLI is set up.
  */
 
@@ -251,6 +251,7 @@ export interface Database {
           overdue_repeat_days: number;
           window_nudge_days: number;
           send_hour_london: number;
+          done_notice_enabled: boolean;
         };
         Insert: {
           id?: boolean;
@@ -260,6 +261,7 @@ export interface Database {
           overdue_repeat_days?: number;
           window_nudge_days?: number;
           send_hour_london?: number;
+          done_notice_enabled?: boolean;
         };
         Update: {
           id?: boolean;
@@ -269,6 +271,7 @@ export interface Database {
           overdue_repeat_days?: number;
           window_nudge_days?: number;
           send_hour_london?: number;
+          done_notice_enabled?: boolean;
         };
         Relationships: [];
       };

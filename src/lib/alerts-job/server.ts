@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { mapTemplates, mapWindows, mapFarmInput, mapStageStates } from "@/lib/data/map-rows";
 import type { Database } from "@/lib/supabase/database.types";
 import type { AlertJobData, ClaimedAlert, AlertJobDependencies } from "./run";
-import { buildResendRequest, interpretResendResponse } from "./resend";
+import { sendEmail } from "@/lib/email/send";
 
 type Tables = Database["public"]["Tables"];
 type Farm = Tables["farms"]["Row"];
@@ -77,15 +77,8 @@ export function createAlertJobDependencies(): AlertJobDependencies {
       return (data ?? []).map((row) => ({ id: row.id, farmStageId: row.farm_stage_id, recipientId: row.recipient_id, alertType: row.alert_type as ClaimedAlert["alertType"], occurrenceKey: row.occurrence_key }));
     },
     async send(input) {
-      const requestBody = buildResendRequest({ from: process.env.ALERT_FROM_ADDRESS!, to: input.email, replyTo: process.env.ALERT_REPLY_TO, subject: input.subject, html: input.html, text: input.text });
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": input.idempotencyKey },
-        body: JSON.stringify(requestBody),
-      });
-      let body: unknown;
-      try { body = await response.json(); } catch { body = null; }
-      return interpretResendResponse(response.status, body);
+      const result = await sendEmail({ to: input.email, subject: input.subject, html: input.html, text: input.text, idempotencyKey: input.idempotencyKey });
+      return result.ok ? result : { ...result, retry: result.retry ?? false };
     },
     async finish(ids, status, providerMessageId, errorCode) {
       const { error } = await supabase.rpc("finish_alert_rows", { p_ids: ids, p_status: status, p_provider_message_id: providerMessageId, p_error: errorCode });

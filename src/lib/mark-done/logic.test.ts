@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { defaultSeasonWindows, defaultStageTemplates } from "@/lib/schedule";
 import {
   availableActions,
+  buildDoneNoticeInput,
   earlierStagesOpen,
   previewAfterDone,
   stageActionErrorMessage,
@@ -65,6 +66,21 @@ describe("previewAfterDone", () => {
   it("keeps a later stage unscheduled without a planting date", () => {
     const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 4 }));
     expect(previewAfterDone({ ...previewBase, stages, stagePosition: 4 }, today)).toBe("Next: Herbicide, date set once planting is done.");
+  });
+});
+
+describe("buildDoneNoticeInput", () => {
+  const input = { ...previewBase, farmName: "Sample Farm", stageName: "Land clearing", doneByName: "Sample Person", doneDate: today, appUrl: "https://sample.invalid", stagePosition: 1 };
+  it("includes the next stage and date", () => {
+    expect(buildDoneNoticeInput(input)).toMatchObject({ nextStageName: "Order seedlings", nextDate: today, nextHasNoDate: false, isLastStage: false });
+  });
+  it("marks an undated next stage", () => {
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 4 }));
+    expect(buildDoneNoticeInput({ ...input, stages, stagePosition: 4 })).toMatchObject({ nextStageName: "Herbicide", nextDate: null, nextHasNoDate: true, isLastStage: false });
+  });
+  it("marks the last stage", () => {
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 9 }));
+    expect(buildDoneNoticeInput({ ...input, stages, stagePosition: 9 })).toMatchObject({ nextStageName: null, nextDate: null, nextHasNoDate: false, isLastStage: true });
   });
 });
 

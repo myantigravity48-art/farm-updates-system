@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildResendRequest, interpretResendResponse } from "./resend";
+import { buildResendRequest, interpretResendResponse } from "@/lib/email/send";
 
 describe("Resend request and response", () => {
   it("builds the documented JSON shape and only adds reply_to when configured", () => {

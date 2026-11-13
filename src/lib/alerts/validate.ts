@@ -16,6 +16,7 @@ export interface TimingValues {
   overdueEnabled: boolean;
   overdueRepeatDays: number;
   windowNudgeDays: number;
+  doneNoticeEnabled: boolean;
 }
 
 export type Validation<T> = { ok: true; value: T } | { ok: false; errors: Record<string, string> };
@@ -69,6 +70,7 @@ export function validateTiming(input: TimingValues): Validation<TimingValues> {
   if (typeof input.overdueEnabled !== "boolean") {
     errors.overdueEnabled = "Choose whether to send overdue emails.";
   }
+  if (typeof input.doneNoticeEnabled !== "boolean") errors.doneNoticeEnabled = "Choose whether to email the other people when someone marks a job done.";
   if (!Number.isInteger(input.overdueRepeatDays) || input.overdueRepeatDays < 1 || input.overdueRepeatDays > 30) {
     errors.overdueRepeatDays = "Enter a whole number from 1 to 30 days.";
   }

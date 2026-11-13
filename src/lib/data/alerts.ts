@@ -24,7 +24,7 @@ export async function getAlertsPageData(): Promise<AlertsPageData> {
 
   const [recipientsResult, settingsResult] = await Promise.all([
     supabase.from("recipients").select("id, name, email, phone, enabled").order("name", { ascending: true }),
-    supabase.from("alert_settings").select("heads_up_days, reminder_days, overdue_enabled, overdue_repeat_days, window_nudge_days, send_hour_london").limit(1).maybeSingle(),
+    supabase.from("alert_settings").select("heads_up_days, reminder_days, overdue_enabled, overdue_repeat_days, window_nudge_days, send_hour_london, done_notice_enabled").limit(1).maybeSingle(),
   ]);
 
   if (settingsResult.error) throw new Error("Could not load alert settings. Refresh the page and try again.");
@@ -40,6 +40,7 @@ export async function getAlertsPageData(): Promise<AlertsPageData> {
       overdueEnabled: settingsResult.data.overdue_enabled,
       overdueRepeatDays: settingsResult.data.overdue_repeat_days,
       windowNudgeDays: settingsResult.data.window_nudge_days,
+      doneNoticeEnabled: settingsResult.data.done_notice_enabled,
       sendHourLondon: settingsResult.data.send_hour_london,
     },
     // This page is request-rendered through the session-scoped server client; derive the date in London explicitly.

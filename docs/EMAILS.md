@@ -93,8 +93,4 @@ If the next stage has no date yet (planting date not set): `Next: {{next_stage}}
 
 ## Sending
 
-The daily sending side is implemented in `src/lib/alerts-job/` and the cron route at `/api/cron/daily-alerts`. It claims log rows before sending and marks each claimed row sent or failed. The event-driven `done_notice` sender is a later step and is not included in the daily job.
-
-## Sending
-
-The daily sending side is implemented in `src/lib/alerts-job/` and the authenticated cron route at `/api/cron/daily-alerts`. It claims log rows before sending and marks each claimed row sent or failed. The event-driven `done_notice` sender is a later step and is not included in the daily job.
+The daily sending side is implemented in `src/lib/alerts-job/` and the authenticated cron route at `/api/cron/daily-alerts`. It uses the shared Resend sender, claims log rows before sending, and marks each claimed row sent or failed. Event-driven `done_notice` sending is implemented after a successful Mark done action; it is best-effort and is not written to `notification_log`.

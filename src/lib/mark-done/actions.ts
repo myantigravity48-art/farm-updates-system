@@ -1,11 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { authorNameFromUser } from "@/lib/auth/author-name";
 import { SESSION_ENDED } from "@/lib/auth/messages";
 import { todayInLondon, type CalendarDate } from "@/lib/schedule";
 import { createClient } from "@/lib/supabase/server";
 import { mapFarmInput, mapStageStates, mapTemplates, mapWindows } from "@/lib/data/map-rows";
+import { buildDoneNoticeInput } from "./logic";
+import { sendDoneNoticesBestEffort } from "@/lib/email/done-notice-sender";
+import { scheduleNoticeAfterSuccess } from "@/lib/email/workflows";
 import {
   stageActionErrorMessage,
   validateDateInput,
@@ -38,6 +42,49 @@ function revalidateFarm(farmId: string) {
 
 function validUuid(value: unknown): value is string {
   return typeof value === "string" && UUID.test(value.trim());
+}
+
+async function sendDoneNoticeForStage(supabase: Awaited<ReturnType<typeof createClient>>, farmStageId: string, actorEmail: string | null | undefined, fallbackDoneDate: CalendarDate) {
+  let recipientCount = 0;
+  try {
+    const appUrl = process.env.APP_URL ?? "";
+    const [{ data: settings }, { data: recipients }, { data: stage }] = await Promise.all([
+      supabase.from("alert_settings").select("done_notice_enabled").eq("id", true).maybeSingle(),
+      supabase.from("recipients").select("id, email, enabled").eq("enabled", true),
+      supabase.from("farm_stages").select("id, farm_id, template_id, done_date, done_by_name").eq("id", farmStageId).maybeSingle(),
+    ]);
+    if (!settings?.done_notice_enabled || !stage) return;
+    recipientCount = (recipients ?? []).length;
+    const missing = ["APP_URL", "RESEND_API_KEY", "ALERT_FROM_ADDRESS"].filter((name) => !process.env[name]);
+    if (missing.length) {
+      console.warn("done_notice_not_configured", { missing });
+      return;
+    }
+    const [{ data: farm }, { data: stageRows }, { data: templateRows }, { data: windowRows }] = await Promise.all([
+      supabase.from("farms").select("*").eq("id", stage.farm_id).maybeSingle(),
+      supabase.from("farm_stages").select("*").eq("farm_id", stage.farm_id),
+      supabase.from("stage_templates").select("*"),
+      supabase.from("season_windows").select("*"),
+    ]);
+    if (!farm || !stageRows || !templateRows || !windowRows) throw new Error("done_notice_load_failed");
+    const target = templateRows.find((row) => row.id === stage.template_id);
+    if (!target) throw new Error("done_notice_load_failed");
+    const notice = buildDoneNoticeInput({
+      farmName: farm.name,
+      stageName: target.name,
+      doneByName: stage.done_by_name ?? "Someone",
+      doneDate: (stage.done_date as CalendarDate | null) ?? fallbackDoneDate,
+      appUrl,
+      templates: mapTemplates(templateRows),
+      windows: mapWindows(windowRows),
+      farm: mapFarmInput(farm),
+      stages: mapStageStates(stageRows, templateRows),
+      stagePosition: target.position,
+    });
+    await sendDoneNoticesBestEffort({ recipients: recipients ?? [], actorEmail, notice });
+  } catch {
+    console.error("done_notice_send_failed", { errorCode: "done_notice_load_failed", recipientCount });
+  }
 }
 
 export async function getMarkDonePreviewData(farmStageId: string) {
@@ -156,7 +203,8 @@ export async function markStageDone(
       return { ok: false, message: messageForError(error, plantingDate, anchorName) };
     }
     revalidateFarm(stage.farm_id);
-    return { ok: true, message: "Stage marked done." };
+    const result = { ok: true, message: "Stage marked done." } as const;
+    return scheduleNoticeAfterSuccess(result, after, () => sendDoneNoticeForStage(supabase, id, authData.user.email, dateValue as CalendarDate));
   } catch {
     return { ok: false, message: UNKNOWN_ERROR };
   }

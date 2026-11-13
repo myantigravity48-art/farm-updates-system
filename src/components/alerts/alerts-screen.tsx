@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Mail, Minus, Plus } from "lucide-react";
 import { addDays, type CalendarDate } from "@/lib/schedule";
 import { renderAlertEmail, renderDoneNotice, type AlertItem } from "@/lib/email/render";
 import type { AlertRecipient, AlertsPageData } from "@/lib/data/alerts";
 import { validateRecipient, validateTiming, type TimingValues } from "@/lib/alerts/validate";
-import { addRecipient, removeRecipient, saveTimingSettings, setRecipientEnabled, updateRecipient } from "@/lib/alerts/actions";
+import { addRecipient, removeRecipient, saveTimingSettings, sendTestEmail, setRecipientEnabled, updateRecipient } from "@/lib/alerts/actions";
 import { Modal } from "@/components/ui/modal";
 import { Toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
     overdueEnabled: data.settings.overdueEnabled,
     overdueRepeatDays: data.settings.overdueRepeatDays,
     windowNudgeDays: data.settings.windowNudgeDays,
+    doneNoticeEnabled: data.settings.doneNoticeEnabled,
   });
   const [savedTiming, setSavedTiming] = useState(timing);
   const [timingErrors, setTimingErrors] = useState<Record<string, string>>({});
@@ -165,6 +166,9 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
             <NumberStepper label="Heads-up, days before" value={timing.headsUpDays} error={timingErrors.headsUpDays} min={1} max={60} onChange={(value) => update("headsUpDays", value)} />
             <NumberStepper label="Reminder, days before" value={timing.reminderDays} error={timingErrors.reminderDays} min={0} max={30} onChange={(value) => update("reminderDays", value)} />
             <div className="border-t border-border pt-4">
+              <Switch checked={timing.doneNoticeEnabled} label="Email the other people when someone marks a job done" onChange={(value) => update("doneNoticeEnabled", value)} />
+            </div>
+            <div className="border-t border-border pt-4">
               <Switch checked={timing.overdueEnabled} label="Send overdue emails" onChange={(value) => update("overdueEnabled", value)} />
             </div>
             <NumberStepper label="Repeat overdue emails every n days" value={timing.overdueRepeatDays} error={timingErrors.overdueRepeatDays} min={1} max={30} disabled={!timing.overdueEnabled} onChange={(value) => update("overdueRepeatDays", value)} />
@@ -239,12 +243,33 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
 }
 
 function RecipientRow({ recipient, pending, onToggle, onRemove, onEdit }: { recipient: AlertRecipient; pending: boolean; onToggle: (recipient: AlertRecipient) => void; onRemove: (recipient: AlertRecipient) => void; onEdit: (recipient: AlertRecipient) => void }) {
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testMessage, setTestMessage] = useState("");
+  const [cooldownUntil, setCooldownUntil] = useState(0);
+  const [now, setNow] = useState(0);
+  useEffect(() => {
+    if (!cooldownUntil) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 500);
+    return () => window.clearInterval(timer);
+  }, [cooldownUntil]);
+  async function testEmail() {
+    setSendingTest(true);
+    setTestMessage("");
+    try {
+      const result = await sendTestEmail(recipient.id);
+      setTestMessage(result.message);
+      if (result.ok) { const until = Date.now() + 30_000; setCooldownUntil(until); setNow(Date.now()); }
+    } catch { setTestMessage("Couldn't send the email. Try again."); }
+    finally { setSendingTest(false); }
+  }
   return (
-    <li className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 min-[520px]:flex-nowrap">
+    <li className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
       <div className="min-w-0 flex-1"><p className="truncate font-medium">{recipient.name}</p><p className="truncate text-sm text-muted">{recipient.email}</p>{recipient.phone ? <p className="truncate text-sm text-muted">{recipient.phone}</p> : null}</div>
       <Switch checked={recipient.enabled} label={`Send alerts to ${recipient.name}`} onChange={() => onToggle(recipient)} disabled={pending} compact />
       <button type="button" onClick={() => onEdit(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Edit</button>
       <button type="button" onClick={() => onRemove(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Remove</button>
+      <button type="button" onClick={testEmail} disabled={sendingTest || now < cooldownUntil} className="min-h-11 rounded-[10px] border border-border px-3 text-sm text-text hover:bg-raised disabled:opacity-50">{sendingTest ? "Sending…" : "Send test email"}</button>
+      <p className="basis-full text-sm text-muted" aria-live="polite" aria-atomic="true">{testMessage}</p>
     </li>
   );
 }
@@ -278,7 +303,7 @@ function InlineNotice({ children }: { children: React.ReactNode }) {
 }
 
 function sameTiming(a: TimingValues, b: TimingValues): boolean {
-  return a.headsUpDays === b.headsUpDays && a.reminderDays === b.reminderDays && a.overdueEnabled === b.overdueEnabled && a.overdueRepeatDays === b.overdueRepeatDays && a.windowNudgeDays === b.windowNudgeDays;
+  return a.headsUpDays === b.headsUpDays && a.reminderDays === b.reminderDays && a.overdueEnabled === b.overdueEnabled && a.overdueRepeatDays === b.overdueRepeatDays && a.windowNudgeDays === b.windowNudgeDays && a.doneNoticeEnabled === b.doneNoticeEnabled;
 }
 
 function buildPreview(choice: PreviewChoice, timing: TimingValues, today: CalendarDate) {

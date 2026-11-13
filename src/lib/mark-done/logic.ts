@@ -9,6 +9,7 @@ import {
 } from "@/lib/schedule";
 import { formatUkShortDate } from "@/lib/format/dates";
 import { parseCalendarDate } from "@/lib/farms/validate";
+import type { DoneNoticeInput } from "@/lib/email/render";
 
 export interface DoneStageInput {
   triggerType: "season_window" | "after_planting" | "after_stage_done";
@@ -107,6 +108,21 @@ export function previewAfterDone(
     return `Next: ${next.name}, opens ${formatUkShortDate(next.windowStart)} and closes ${formatUkShortDate(next.windowEnd)}.`;
   }
   return `Next: ${next.name}, due ${formatUkShortDate(next.dueDate ?? next.windowStart!)}.`;
+}
+
+export function buildDoneNoticeInput(inputs: MarkDonePreviewInputs & { farmName: string; stageName: string; doneByName: string; doneDate: CalendarDate; appUrl: string }): DoneNoticeInput {
+  const target = inputs.templates.find((template) => template.position === inputs.stagePosition);
+  const stages = inputs.stages.map((stage) => stage.position === inputs.stagePosition ? { ...stage, isDone: true, doneDate: inputs.doneDate } : stage);
+  const plantingDate = target?.windowKey === "planting" ? inputs.doneDate : inputs.farm.plantingDate;
+  const scheduled = computeSchedule(inputs.templates, inputs.windows, { ...inputs.farm, plantingDate }, stages);
+  const next = scheduled.find((stage) => !stage.isDone);
+  return {
+    farmName: inputs.farmName, stageName: inputs.stageName, doneByName: inputs.doneByName, doneDate: inputs.doneDate, appUrl: inputs.appUrl,
+    nextStageName: next?.name ?? null,
+    nextDate: next?.dueDate ?? next?.windowStart ?? null,
+    nextHasNoDate: Boolean(next && (next.kind === "unscheduled" || (!next.dueDate && !next.windowStart))),
+    isLastStage: !next,
+  };
 }
 
 export function earlierStagesOpen(

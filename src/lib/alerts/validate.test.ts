@@ -35,7 +35,7 @@ describe("validateRecipient", () => {
 });
 
 describe("validateTiming", () => {
-  const valid = { headsUpDays: 14, reminderDays: 3, overdueEnabled: true, overdueRepeatDays: 7, windowNudgeDays: 14 };
+  const valid = { headsUpDays: 14, reminderDays: 3, overdueEnabled: true, overdueRepeatDays: 7, windowNudgeDays: 14, doneNoticeEnabled: true };
   it("accepts both boundaries", () => {
     expect(validateTiming({ ...valid, headsUpDays: 1, reminderDays: 0, overdueRepeatDays: 1 }).ok).toBe(true);
     expect(validateTiming({ ...valid, headsUpDays: 60, reminderDays: 30, overdueRepeatDays: 30 }).ok).toBe(true);

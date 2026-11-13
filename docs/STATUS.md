@@ -1,10 +1,11 @@
 # Status
 
-Last updated: 2026-11-11
+Last updated: 2026-11-13
 
 ## Recent update
 - Cron route redirect fix: explicitly allow the daily alert route through the login proxy and make the local trigger script handle redirects and non-JSON responses safely.
 - Step 6b implementation is ready: daily alert job, Resend sending, cron route, local trigger scripts, service-role boundary, migration 0011 and its checks. Step 6b is complete once migration 0011 is applied and checked.
+- Step 6c implementation is ready: shared Resend sender, per-recipient test email button with an instance-local rate limiter, `done_notice_enabled`, and best-effort marked-done notices scheduled with `after()`. Migration 0012 must be applied and checked to complete step 6c.
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
@@ -35,15 +36,14 @@ Last updated: 2026-11-11
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Apply and check migration 0011 to complete step 6b.
-2. Step 6c: add a "Send test email" button per recipient on the Alerts page; send instant "marked done" emails from the Mark done action to the other recipients, best-effort, never failing the Mark done action.
-3. Build the Schedule page.
-4. Deploy.
+1. Apply `supabase/migrations/0012_done_notice_setting.sql` and run `supabase/checks/0012_checks.sql` to complete step 6c.
+2. Build the Schedule page.
+3. Deploy.
 
 Before launch, remove `/dev/tokens` and `/dev/emails`.
 
 ## Waiting on
-- Apply `supabase/migrations/0011_alert_send_claims.sql` and run `supabase/checks/0011_checks.sql` to complete step 6b.
+- Apply `supabase/migrations/0012_done_notice_setting.sql` and run `supabase/checks/0012_checks.sql` to complete step 6c.
 - The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub

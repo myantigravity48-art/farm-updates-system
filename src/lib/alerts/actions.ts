@@ -3,6 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isDuplicateEmailError, validateRecipient, validateRecipientUpdate, validateTiming, type RecipientInput, type TimingValues } from "./validate";
+import { createTestEmailLimiter, mapTestEmailError } from "@/lib/email/workflows";
+import { sendEmail } from "@/lib/email/send";
+import { renderAlertEmail } from "@/lib/email/render";
+import { renderAlertEmailHtml } from "@/lib/email/render-html";
+import { addDays, todayInLondon } from "@/lib/schedule";
+import { emailTheme } from "@/lib/email/email-theme";
+
+const testEmailLimiter = createTestEmailLimiter();
 
 type ActionResult = { ok: true; message?: string } | { ok: false; message: string; errors?: Record<string, string> };
 
@@ -89,10 +97,40 @@ export async function saveTimingSettings(input: TimingValues): Promise<ActionRes
       overdue_enabled: validation.value.overdueEnabled,
       overdue_repeat_days: validation.value.overdueRepeatDays,
       window_nudge_days: validation.value.windowNudgeDays,
+      done_notice_enabled: validation.value.doneNoticeEnabled,
     })
     .eq("id", true)
     .select("id");
   if (error || !data?.length) return { ok: false, message: "Could not save timing settings. Try again." };
   revalidatePath("/alerts");
   return { ok: true, message: "Settings saved" };
+}
+
+export async function sendTestEmail(recipientId: string): Promise<{ ok: boolean; message: string }> {
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData.user) return { ok: false, message: "Your session has ended. Sign in again." };
+  if (!validId(recipientId)) return { ok: false, message: "Couldn't send the email. Try again." };
+  if (!testEmailLimiter.tryAcquire(recipientId)) return { ok: false, message: mapTestEmailError("limited") };
+  const [{ data: recipient, error: recipientError }, { data: settings, error: settingsError }] = await Promise.all([
+    supabase.from("recipients").select("id, email").eq("id", recipientId).maybeSingle(),
+    supabase.from("alert_settings").select("heads_up_days, reminder_days, overdue_repeat_days").limit(1).maybeSingle(),
+  ]);
+  if (recipientError || settingsError || !recipient || !settings) return { ok: false, message: "Couldn't send the email. Try again." };
+  const today = todayInLondon(new Date());
+  const alerts = [
+    { type: "overdue" as const, farmId: "sample-obi", farmName: "Obi-Umuagbogho", stageName: "Land clearing", kind: "window" as const, date: addDays(today, -settings.overdue_repeat_days), windowEnd: addDays(today, -settings.overdue_repeat_days + 4), days: settings.overdue_repeat_days },
+    { type: "reminder" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Second round-weeding", kind: "date" as const, date: addDays(today, settings.reminder_days), days: settings.reminder_days },
+    { type: "heads_up" as const, farmId: "sample-obaoba", farmName: "Obaoba", stageName: "First fertilizer", kind: "date" as const, date: addDays(today, settings.heads_up_days), days: settings.heads_up_days },
+    { type: "window_open" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Land clearing", kind: "window" as const, date: today, windowEnd: addDays(today, 11), days: 11 },
+    { type: "reminder" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Order seedlings", kind: "date" as const, date: addDays(today, settings.reminder_days), days: settings.reminder_days },
+  ];
+  const appUrl = process.env.APP_URL ?? "";
+  if (!appUrl) return { ok: false, message: mapTestEmailError("email_not_configured", ["APP_URL"]) };
+  const plain = renderAlertEmail({ alerts, today, appUrl });
+  const html = renderAlertEmailHtml({ alerts, today, appUrl });
+  const banner = "This is a test email. Nothing in it is real.";
+  const result = await sendEmail({ to: recipient.email, subject: `[Test] ${plain.subject}`, text: `${banner}\n\n${plain.text}`, html: html.html.replace("<tr><td bgcolor=", `<tr><td><div style="padding:14px 20px;background-color:${emailTheme.dueSoon};color:${emailTheme.text};font-family:Arial,sans-serif;font-weight:bold;">${banner}</div></td></tr><tr><td bgcolor=`) });
+  if (result.ok) return { ok: true, message: "Test email sent. Check the inbox, and the spam folder." };
+  return { ok: false, message: mapTestEmailError(result.errorCode, result.missingEnv) };
 }
