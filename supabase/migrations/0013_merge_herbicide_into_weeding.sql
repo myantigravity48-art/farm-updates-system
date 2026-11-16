@@ -8,6 +8,8 @@ declare
   v_herbicide_id uuid;
   v_invalid_count integer;
   v_template_count integer;
+  v_match_count integer;
+  v_match_details text;
 begin
   select count(*) into v_farm_count from public.farms;
   if v_farm_count > 0 then
@@ -18,20 +20,106 @@ begin
   from public.stage_templates
   where trigger_type = 'after_planting'
     and offset_months = 3
-    and lower(name) = 'herbicide';
+    and name ilike '%herbicide%';
 
   if v_herbicide_count <> 1 then
-    raise exception using message = 'herbicide_not_found: expected exactly one Herbicide template at the 3-month offset.';
+    select coalesce(string_agg(format('%s (offset %s)', name, offset_months), ', ' order by position), '<none>')
+    into v_match_details
+    from public.stage_templates
+    where trigger_type = 'after_planting'
+      and offset_months = 3
+      and name ilike '%herbicide%';
+
+    raise exception using message = format(
+      'herbicide_not_found: found %s matching templates: %s.',
+      v_herbicide_count,
+      v_match_details
+    );
   end if;
 
   select id into v_herbicide_id
   from public.stage_templates
   where trigger_type = 'after_planting'
     and offset_months = 3
-    and lower(name) = 'herbicide';
+    and name ilike '%herbicide%';
 
   delete from public.farm_stages where template_id = v_herbicide_id;
   delete from public.stage_templates where id = v_herbicide_id;
+
+  select count(*),
+         coalesce(string_agg(format('%s (offset %s)', name, offset_months), ', ' order by position), '<none>')
+  into v_match_count, v_match_details
+  from public.stage_templates
+  where trigger_type = 'after_planting'
+    and offset_months = 3;
+
+  if v_match_count <> 1 then
+    raise exception using message = format(
+      'stage_lifecycle_invalid: expected 1 after_planting template at offset 3; found %s: %s.',
+      v_match_count,
+      v_match_details
+    );
+  end if;
+
+  select count(*),
+         coalesce(string_agg(format('%s (offset %s)', name, offset_months), ', ' order by position), '<none>')
+  into v_match_count, v_match_details
+  from public.stage_templates
+  where trigger_type = 'after_planting'
+    and offset_months = 7;
+
+  if v_match_count <> 1 then
+    raise exception using message = format(
+      'stage_lifecycle_invalid: expected 1 after_planting template at offset 7; found %s: %s.',
+      v_match_count,
+      v_match_details
+    );
+  end if;
+
+  select count(*),
+         coalesce(string_agg(format('%s (offset %s)', name, offset_months), ', ' order by position), '<none>')
+  into v_match_count, v_match_details
+  from public.stage_templates
+  where trigger_type = 'after_planting'
+    and offset_months = 11;
+
+  if v_match_count <> 1 then
+    raise exception using message = format(
+      'stage_lifecycle_invalid: expected 1 after_planting template at offset 11; found %s: %s.',
+      v_match_count,
+      v_match_details
+    );
+  end if;
+
+  select count(*),
+         coalesce(string_agg(format('%s (offset %s)', name, offset_months), ', ' order by position), '<none>')
+  into v_match_count, v_match_details
+  from public.stage_templates
+  where trigger_type = 'after_planting'
+    and offset_months = 4;
+
+  if v_match_count <> 1 then
+    raise exception using message = format(
+      'stage_lifecycle_invalid: expected 1 after_planting template at offset 4; found %s: %s.',
+      v_match_count,
+      v_match_details
+    );
+  end if;
+
+  select count(*),
+         coalesce(string_agg(format('%s (offset %s)', name, offset_months), ', ' order by position), '<none>')
+  into v_match_count, v_match_details
+  from public.stage_templates
+  where trigger_type = 'after_planting'
+    and offset_months = 12;
+
+  if v_match_count <> 1 then
+    raise exception using message = format(
+      'stage_lifecycle_invalid: expected 1 after_planting template at offset 12; found %s: %s.',
+      v_match_count,
+      v_match_details
+    );
+  end if;
 
   with expected(trigger_type, window_key, anchor_window_key, offset_months, offset_days) as (
     values

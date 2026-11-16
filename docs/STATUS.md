@@ -3,7 +3,7 @@
 Last updated: 2026-11-16
 
 ## Recent update
-- Step 5i lifecycle merge is prepared: eight default/test stages, updated previews and samples, migration 0013, and migration-specific checks. The migration is complete only after it is applied and checked; it refuses to run if any farms exist. The owner confirmed herbicide is applied with every round-weeding, with no separate job. See `PRODUCT.md` for the confirmed lifecycle and remaining open questions.
+- Step 5i lifecycle merge is prepared but still awaiting application: migration 0013 now identifies Herbicide by a case-insensitive name fragment plus trigger and offset, and reports matching template names and offsets on failures. It remains complete only after it is applied and checked; it refuses to run if any farms exist. The owner confirmed herbicide is applied with every round-weeding, with no separate job. See `PRODUCT.md` for the confirmed lifecycle and remaining open questions.
 - Responsive layout fix: Dashboard grid children and progress rows now shrink and long farm and stage names wrap; the bulk-add form uses wrapping row cards instead of a fixed-width scrolling table. Added safe-area and dynamic viewport sizing, 16px form controls, email-preview scroll labels, and a development-only overflow warning. See `docs/POLISH.md` for the viewport matrix and browser console check. Live browser measurements were limited to the open 748px viewport and the supplied 390px findings; device emulation for the full matrix was unavailable.
 - Cron route redirect fix: explicitly allow the daily alert route through the login proxy and make the local trigger script handle redirects and non-JSON responses safely.
 - Step 6b is complete: migration 0011 and checks are applied.
