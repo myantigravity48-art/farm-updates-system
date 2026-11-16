@@ -2,7 +2,7 @@
 
 ## Layout checks
 
-Check these viewport widths in portrait: 320, 360, 375, 390, 412 and 430px; iPhone 16 at 440px; 667×375 and 844×390px in landscape; and 768 and 820px. Repeat on `/login`, `/`, `/farms`, a farm detail page, `/alerts`, `/settings`, `/settings/lifecycle`, `/dev/emails` and `/dev/tokens`. No page should scroll horizontally. Only the bordered email preview regions on `/dev/emails` may scroll horizontally inside their own labelled containers.
+Check these viewport widths in portrait: 320, 360, 375, 390, 412 and 430px; iPhone 16 at 440px; 667×375 and 844×390px in landscape; and 768 and 820px. Repeat on `/login`, `/`, `/farms`, a farm detail page, `/schedule`, `/alerts`, `/settings`, `/settings/lifecycle`, `/dev/emails` and `/dev/tokens`. No page should scroll horizontally. Only the bordered email preview regions on `/dev/emails` may scroll horizontally inside their own labelled containers.
 
 In the browser console, find elements whose right edge extends beyond the viewport with:
 
@@ -17,6 +17,7 @@ The development-only layout guard also warns with the three farthest overflowing
 Do not work on this until every v1 feature is built and working (see `STATUS.md`). The polish pass comes last. Polishing screens that still say "Coming soon" wastes effort.
 
 ## Known issues to fix in the polish pass
+- Schedule has no dedicated design. It reuses the Dashboard rows, StatusPill, Mark done panel, farm panel and shared shell; the page is intentionally plain until the polish pass.
 - The Mark done panel and stage actions menu are intentionally plain. Polish their spacing and hierarchy after every v1 feature is built and working.
 - Farms has no dedicated design export. The page currently reuses the shared cards, tokens and layout; give it a proper visual pass for both themes at desktop and mobile widths.
 - Farm detail: the stage timeline and photo grid are plain. Polish them last, after every v1 feature works: spacing and hierarchy on the 8 stage rows, the done and next-up treatments, the empty notes and photos states, and the tile hover and focus states.

@@ -78,6 +78,8 @@ Each email links to the farm's page in the app.
 7. Stage template editor with season windows
 8. Daily email alert job, logged and idempotent
 
+The Schedule page provides a filterable, date-ordered view of jobs across all farms, grouped into overdue, open, upcoming, later, unscheduled and recently completed work.
+
 Mark done records the completion date, optional note and the signed-in user's display name, then previews the next scheduled stage. A completion can be undone unless later after-planting stages are still done; manual due dates override the schedule until cleared, and changing a completed planting date reschedules open later stages while refusing dates that precede completed work.
 
 ## Phase 2 (designed, not built yet)

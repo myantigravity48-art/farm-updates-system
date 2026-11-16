@@ -160,9 +160,13 @@ export function DashboardScreen({
                   ))}
                 </ul>
                 {attention.extraCount > 0 ? (
-                  <p className="mt-3 text-sm text-muted tabular-nums">
-                    + {attention.extraCount} more
-                  </p>
+                  kpis.overdue > 0 ? (
+                    <Link href="/schedule?status=overdue" className="mt-3 inline-flex min-h-11 items-center text-sm text-primary hover:underline tabular-nums">
+                      + {attention.extraCount} more
+                    </Link>
+                  ) : (
+                    <p className="mt-3 text-sm text-muted tabular-nums">+ {attention.extraCount} more</p>
+                  )
                 ) : null}
               </>
             )}
@@ -222,6 +226,9 @@ export function DashboardScreen({
                 ))}
               </ul>
             )}
+            <Link href="/schedule" className="mt-2 inline-flex min-h-11 items-center text-sm text-primary hover:underline">
+              View full schedule
+            </Link>
           </section>
         </div>
       </div>
