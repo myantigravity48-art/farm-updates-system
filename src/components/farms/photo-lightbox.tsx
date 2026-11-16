@@ -128,7 +128,7 @@ export function PhotoLightbox({
         aria-label="Photo viewer"
         tabIndex={-1}
         onKeyDown={onKeyDown}
-        className="relative flex h-full w-full flex-col overflow-hidden border border-border bg-surface text-text min-[768px]:h-auto min-[768px]:max-h-[92vh] min-[768px]:max-w-[1000px] min-[768px]:rounded-[14px]"
+        className="relative flex h-full w-full min-w-0 flex-col overflow-hidden border border-border bg-surface text-text min-[768px]:h-auto min-[768px]:max-h-[92dvh] min-[768px]:max-w-[1000px] min-[768px]:rounded-[14px]"
       >
         <header className="flex flex-none items-center gap-3 border-b border-border px-4 py-3 min-[768px]:px-5">
           <p className="text-sm text-muted tabular-nums">

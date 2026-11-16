@@ -58,7 +58,7 @@ export function AppShell({
   };
 
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div className="min-h-dvh min-w-0 bg-bg text-text">
       <aside aria-label="Primary navigation" className="fixed inset-y-0 left-0 z-20 hidden w-[72px] flex-col items-center border-r border-border bg-surface py-4 min-[768px]:flex">
         <Link href="/" aria-label="Farm updates system dashboard" className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl border border-border text-primary focus-visible:outline-offset-2">
           <Leaf aria-hidden="true" size={21} strokeWidth={1.5} />
@@ -94,8 +94,8 @@ export function AppShell({
               <Link href={`/farms/${farm.id}`} className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 hover:bg-raised">
                 <StatusDot status={farm.status} />
                 <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm">{farm.name}</span>
-                  <span className="truncate text-sm text-muted">
+                  <span className="text-sm [overflow-wrap:anywhere]">{farm.name}</span>
+                  <span className="text-sm text-muted [overflow-wrap:anywhere]">
                     {farmStatusLabels[farm.status]}
                     {farm.location ? ` · ${farm.location}` : ""}
                   </span>
@@ -119,7 +119,7 @@ export function AppShell({
         </button>
       </aside>}
 
-      <main className={`min-h-screen px-4 pb-24 pt-5 min-[768px]:ml-[72px] min-[768px]:px-6 min-[768px]:pb-10 min-[768px]:pt-9 ${showFarmPanel ? "min-[1024px]:ml-[320px]" : ""}`}>
+      <main className={`min-h-dvh min-w-0 px-4 pb-24 pt-5 min-[768px]:ml-[72px] min-[768px]:px-6 min-[768px]:pb-10 min-[768px]:pt-9 ${showFarmPanel ? "min-[1024px]:ml-[320px]" : ""}`}>
         <div className="mx-auto w-full max-w-[1200px]">
           <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="mr-auto font-medium min-[768px]:hidden">Farm updates system</span>
@@ -141,10 +141,10 @@ export function AppShell({
         </div>
       </main>
 
-      <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 min-[768px]:hidden">
+      <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-30 grid min-w-0 grid-cols-5 border-t border-border bg-surface px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 min-[768px]:hidden">
         {allLinks.map(({ href, label, Icon }) => {
           const active = activeFor(pathname, href);
-          return <Link key={href} href={href} aria-label={label} aria-current={active ? "page" : undefined} className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg text-xs focus-visible:outline-offset-[-2px] ${active ? "text-primary" : "text-muted"}`}>
+          return <Link key={href} href={href} aria-label={label} aria-current={active ? "page" : undefined} className={`flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs focus-visible:outline-offset-[-2px] ${active ? "text-primary" : "text-muted"}`}>
             <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
             <span className="text-sm">{label}</span>
           </Link>;

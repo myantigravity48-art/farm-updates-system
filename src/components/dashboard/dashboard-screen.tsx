@@ -33,7 +33,7 @@ function KpiCard({
   const iconClass = tone ? kpiTones[tone] : "text-muted";
 
   return (
-    <div className="rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
+    <div className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
       <p className="flex items-center gap-1.5 text-sm text-muted">
         {Icon ? <Icon aria-hidden="true" size={16} strokeWidth={1.6} className={iconClass} /> : null}
         {label}
@@ -55,15 +55,15 @@ const attentionEdgeClasses = {
 function AttentionRow({ row }: { row: AttentionList["rows"][number] }) {
   const { openMarkDone } = useMarkDone();
   return (
-    <div className="relative flex min-h-16 items-center gap-2 overflow-hidden rounded-[10px] bg-raised pl-5 pr-2 hover:bg-border/40">
+    <div className="relative flex min-h-16 items-center gap-2 rounded-[10px] bg-raised pl-5 pr-2 hover:bg-border/40">
       <span
         aria-hidden="true"
         className={`absolute inset-y-0 left-0 w-1 ${attentionEdgeClasses[row.status]}`}
       />
       <Link href={`/farms/${row.farmId}`} className="flex min-h-14 min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2">
         <span className="min-w-0">
-          <span className="block font-display text-lg font-light leading-tight">{row.farmName}</span>
-          <span className="block text-sm text-muted">{row.stageName}</span>
+          <span className="block font-display text-lg font-light leading-tight [overflow-wrap:anywhere]">{row.farmName}</span>
+          <span className="block text-sm text-muted [overflow-wrap:anywhere]">{row.stageName}</span>
         </span>
         <StatusPill status={row.status} label={row.phrase} />
       </Link>
@@ -76,20 +76,20 @@ function AttentionRow({ row }: { row: AttentionList["rows"][number] }) {
 
 function ProgressRowItem({ row }: { row: ProgressList["rows"][number] }) {
   return (
-    <li className="py-3">
-      <div className="flex items-baseline justify-between gap-3">
+    <li className="min-w-0 py-3">
+      <div className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <Link
           href={`/farms/${row.id}`}
-          className="inline-flex min-h-11 items-center font-display text-lg font-light hover:underline"
+          className="inline-flex min-h-11 min-w-0 flex-1 items-center font-display text-lg font-light hover:underline [overflow-wrap:anywhere]"
         >
           {row.name}
         </Link>
-        <span className="text-sm text-muted tabular-nums">
+        <span className="min-w-0 text-sm text-muted tabular-nums">
           {row.doneCount} of {row.totalStages} stages
         </span>
       </div>
       {row.totalStages > 0 ? (
-        <div aria-hidden="true" className="mt-1 flex gap-1">
+        <div aria-hidden="true" className="mt-1 flex min-w-0 gap-1">
           {Array.from({ length: row.totalStages }, (_, index) => (
             <span
               key={index}
@@ -111,9 +111,9 @@ function ComingUpRowLink({ row }: { row: ComingUpRow }) {
       <span className="w-[7.5rem] flex-none text-sm font-medium tabular-nums">
         {formatUkShortDate(row.date)}
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm leading-tight">{row.stageName}</span>
-        <span className="block truncate text-sm leading-tight text-muted">{row.farmName}</span>
+      <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">
+        <span className="block text-sm leading-tight [overflow-wrap:anywhere]">{row.stageName}</span>
+        <span className="block text-sm leading-tight text-muted [overflow-wrap:anywhere]">{row.farmName}</span>
       </span>
       <ChevronRight aria-hidden="true" size={18} strokeWidth={1.5} className="flex-none text-muted" />
     </Link>
@@ -136,11 +136,11 @@ export function DashboardScreen({
         <KpiCard label="Farms" value={kpis.farms} />
       </section>
 
-      <div className="mt-4 grid gap-4 lg:items-start lg:grid-cols-[3fr_2fr]">
-        <div className="space-y-4">
+      <div className="mt-4 grid min-w-0 gap-4 lg:items-start lg:grid-cols-[3fr_2fr]">
+        <div className="min-w-0 space-y-4">
           <section
             aria-labelledby="attention-heading"
-            className="rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
+            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
           >
             <h2 id="attention-heading" className="font-display text-2xl font-light">
               Needs attention
@@ -154,7 +154,7 @@ export function DashboardScreen({
               <>
                 <ul className="mt-4 space-y-2">
                   {attention.rows.map((row) => (
-                    <li key={`${row.farmId}-${row.stageName}`}>
+                    <li key={`${row.farmId}-${row.stageName}`} className="min-w-0">
                       <AttentionRow row={row} />
                     </li>
                   ))}
@@ -170,7 +170,7 @@ export function DashboardScreen({
 
           <section
             aria-labelledby="progress-heading"
-            className="rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
+            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
           >
             <h2 id="progress-heading" className="font-display text-2xl font-light">
               Farm progress
@@ -191,10 +191,10 @@ export function DashboardScreen({
           </section>
         </div>
 
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <section
             aria-labelledby="season-heading"
-            className="rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
+            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
           >
             <h2 id="season-heading" className="font-display text-2xl font-light">
               Season timeline
@@ -206,7 +206,7 @@ export function DashboardScreen({
 
           <section
             aria-labelledby="coming-up-heading"
-            className="rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
+            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
           >
             <h2 id="coming-up-heading" className="font-display text-2xl font-light">
               Coming up

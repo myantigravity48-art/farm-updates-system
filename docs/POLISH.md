@@ -1,5 +1,19 @@
 # Polish backlog
 
+## Layout checks
+
+Check these viewport widths in portrait: 320, 360, 375, 390, 412 and 430px; iPhone 16 at 440px; 667×375 and 844×390px in landscape; and 768 and 820px. Repeat on `/login`, `/`, `/farms`, a farm detail page, `/alerts`, `/settings`, `/settings/lifecycle`, `/dev/emails` and `/dev/tokens`. No page should scroll horizontally. Only the bordered email preview regions on `/dev/emails` may scroll horizontally inside their own labelled containers.
+
+In the browser console, find elements whose right edge extends beyond the viewport with:
+
+```js
+[...document.querySelectorAll('*')]
+  .filter((element) => element.getBoundingClientRect().right > document.documentElement.clientWidth + 1)
+  .map((element) => `${element.tagName} ${String(element.className).slice(0, 70)} right=${Math.round(element.getBoundingClientRect().right)}`)
+```
+
+The development-only layout guard also warns with the three farthest overflowing elements after load and resize.
+
 Do not work on this until every v1 feature is built and working (see `STATUS.md`). The polish pass comes last. Polishing screens that still say "Coming soon" wastes effort.
 
 ## Known issues to fix in the polish pass

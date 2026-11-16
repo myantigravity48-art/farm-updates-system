@@ -12,7 +12,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const next = Array.isArray(params.next) ? params.next[0] : params.next;
 
   return (
-    <main className="grid min-h-screen lg:grid-cols-2">
+    <main className="grid min-h-dvh min-w-0 lg:grid-cols-2">
       <div className="flex flex-col justify-center px-6 py-16 lg:px-12">
         <div className="mx-auto w-full max-w-[416px]">
           <Wordmark />

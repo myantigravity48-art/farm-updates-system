@@ -1,8 +1,9 @@
 # Status
 
-Last updated: 2026-11-13
+Last updated: 2026-11-16
 
 ## Recent update
+- Responsive layout fix: Dashboard grid children and progress rows now shrink and long farm and stage names wrap; the bulk-add form uses wrapping row cards instead of a fixed-width scrolling table. Added safe-area and dynamic viewport sizing, 16px form controls, email-preview scroll labels, and a development-only overflow warning. See `docs/POLISH.md` for the viewport matrix and browser console check. Live browser measurements were limited to the open 748px viewport and the supplied 390px findings; device emulation for the full matrix was unavailable.
 - Cron route redirect fix: explicitly allow the daily alert route through the login proxy and make the local trigger script handle redirects and non-JSON responses safely.
 - Step 6b implementation is ready: daily alert job, Resend sending, cron route, local trigger scripts, service-role boundary, migration 0011 and its checks. Step 6b is complete once migration 0011 is applied and checked.
 - Step 6c implementation is ready: shared Resend sender, per-recipient test email button with an instance-local rate limiter, `done_notice_enabled`, and best-effort marked-done notices scheduled with `after()`. Migration 0012 must be applied and checked to complete step 6c.

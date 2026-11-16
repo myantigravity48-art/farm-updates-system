@@ -51,7 +51,7 @@ async function AuthenticatedFrame({ children }: { children: ReactNode }) {
 
 function AppLoading() {
   return (
-    <main className="min-h-screen bg-bg px-6 pt-9 text-text">
+    <main className="min-h-dvh min-w-0 bg-bg px-6 pt-9 text-text">
       <p className="text-sm text-muted">Loading…</p>
     </main>
   );

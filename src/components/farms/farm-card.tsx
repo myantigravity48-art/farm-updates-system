@@ -8,12 +8,12 @@ export function FarmCard({ farm }: { farm: FarmSummary }) {
   return (
     <Link
       href={`/farms/${farm.id}`}
-      className="flex flex-col rounded-[14px] border border-border bg-surface p-5 hover:bg-raised"
+      className="flex min-w-0 flex-col rounded-[14px] border border-border bg-surface p-5 hover:bg-raised"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="truncate font-display text-2xl font-light">{farm.name}</h2>
-          {meta ? <p className="mt-1 text-sm text-muted">{meta}</p> : null}
+          <h2 className="font-display text-2xl font-light [overflow-wrap:anywhere]">{farm.name}</h2>
+          {meta ? <p className="mt-1 text-sm text-muted [overflow-wrap:anywhere]">{meta}</p> : null}
         </div>
         <StatusPill status={farm.status} />
       </div>
@@ -34,7 +34,7 @@ export function FarmCard({ farm }: { farm: FarmSummary }) {
         </p>
       </div>
 
-      <p className="mt-4 text-sm text-text">
+      <p className="mt-4 text-sm text-text [overflow-wrap:anywhere]">
         {farm.nextStageName && farm.nextDueLabel
           ? `${farm.nextStageName}, due ${farm.nextDueLabel}`
           : farm.status === "done"

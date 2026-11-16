@@ -95,7 +95,7 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={labelledBy}
         tabIndex={-1}
-        className={`relative flex w-full flex-col overflow-hidden border border-border bg-surface text-text ${presentation === "drawer" ? "h-[94dvh] rounded-t-[20px] min-[768px]:h-full min-[768px]:max-h-none min-[768px]:w-[min(560px,92vw)] min-[768px]:rounded-none" : "h-full min-[768px]:h-auto min-[768px]:max-h-[92vh] min-[768px]:max-w-[640px] min-[768px]:rounded-[14px]"}`}
+        className={`relative flex min-w-0 w-full flex-col overflow-hidden border border-border bg-surface text-text ${presentation === "drawer" ? "h-[94dvh] rounded-t-[20px] pb-[env(safe-area-inset-bottom)] min-[768px]:h-full min-[768px]:max-h-none min-[768px]:w-[min(560px,92vw)] min-[768px]:rounded-none min-[768px]:pb-0" : "h-full min-[768px]:h-auto min-[768px]:max-h-[92dvh] min-[768px]:max-w-[640px] min-[768px]:rounded-[14px]"}`}
       >
         <button
           type="button"

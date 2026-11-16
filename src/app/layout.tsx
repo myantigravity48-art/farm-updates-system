@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Geist } from "next/font/google";
 import type { ReactNode } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LayoutOverflowGuard } from "@/components/layout-overflow-guard";
 import "./globals.css";
 
 const fraunces = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], weight: ["300", "400"] });
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <ThemeProvider attribute="class" themes={["dark", "light"]} defaultTheme="dark" enableSystem={false}>
           {children}
         </ThemeProvider>
+        {process.env.NODE_ENV === "development" ? <LayoutOverflowGuard /> : null}
       </body>
     </html>
   );

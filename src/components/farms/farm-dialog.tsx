@@ -503,130 +503,97 @@ function BulkAddForm({
               {rows.length} {rows.length === 1 ? "row" : "rows"}
             </p>
           </div>
-          <p className={`mt-1 ${hintTextClass} min-[640px]:hidden`}>Swipe to see size</p>
+          <ul className="mt-3 space-y-3">
+            {rows.map((row, index) => {
+              const rowError =
+                state.rowErrors?.[index] ??
+                row.errors.name ??
+                row.errors.location ??
+                row.errors.size;
+              const rowErrorId = `${id}-row-${row.id}-error`;
 
-          <div className="mt-3 overflow-x-auto">
-            <table className="w-full min-w-[620px] border-collapse text-sm">
-              <caption className="sr-only">Farm rows</caption>
-              <thead>
-                <tr className="text-left text-muted">
-                  <th scope="col" className="pb-2 pr-2 font-medium">
-                    Name <span aria-hidden="true">*</span>
-                  </th>
-                  <th scope="col" className="pb-2 pr-2 font-medium">
-                    Location
-                  </th>
-                  <th scope="col" className="pb-2 pr-2 font-medium">
-                    Size
-                  </th>
-                  <th scope="col" className="pb-2 pr-2 font-medium">
-                    Unit
-                  </th>
-                  <th scope="col" className="pb-2 font-medium">
-                    <span className="sr-only">Remove</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, index) => {
-                  const rowError =
-                    state.rowErrors?.[index] ??
-                    row.errors.name ??
-                    row.errors.location ??
-                    row.errors.size;
-                  const rowErrorId = `${id}-row-${row.id}-error`;
-
-                  return (
-                    <tr key={row.id} className="align-top">
-                      <td className="py-1 pr-2">
-                        <input
-                          type="text"
-                          value={row.name}
-                          onChange={(event) =>
-                            updateRow(row.id, {
-                              name: event.target.value,
-                              errors: clearRowError(row, "name").errors,
-                            })
-                          }
-                          aria-label={`Farm name, row ${index + 1}`}
-                          aria-invalid={Boolean(rowError)}
-                          aria-describedby={rowError ? rowErrorId : undefined}
-                          placeholder="Farm name"
-                          className={inputClass}
-                        />
-                        {rowError ? (
-                          <p id={rowErrorId} className={errorTextClass}>
-                            {rowError}
-                          </p>
-                        ) : null}
-                      </td>
-                      <td className="py-1 pr-2">
-                        <input
-                          type="text"
-                          value={row.location}
-                          onChange={(event) =>
-                            updateRow(row.id, {
-                              location: event.target.value,
-                              errors: clearRowError(row, "location").errors,
-                            })
-                          }
-                          aria-label={`Location, row ${index + 1}`}
-                          placeholder="Location"
-                          className={inputClass}
-                        />
-                      </td>
-                      <td className="py-1 pr-2">
-                        <input
-                          type="text"
-                          inputMode="decimal"
-                          value={row.sizeValue}
-                          onChange={(event) =>
-                            updateRow(row.id, {
-                              sizeValue: event.target.value,
-                              errors: clearRowError(row, "size").errors,
-                            })
-                          }
-                          aria-label={`Size, row ${index + 1}`}
-                          placeholder="0"
-                          className={inputClass}
-                        />
-                      </td>
-                      <td className="py-1 pr-2">
-                        <select
-                          value={row.sizeUnit}
-                          onChange={(event) =>
-                            updateRow(row.id, {
-                              sizeUnit: event.target.value,
-                              errors: clearRowError(row, "size").errors,
-                            })
-                          }
-                          aria-label={`Size unit, row ${index + 1}`}
-                          className={inputClass}
-                        >
-                          <option value="">Unit</option>
-                          {SIZE_UNITS.map((unit) => (
-                            <option key={unit} value={unit}>
-                              {unit}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="py-1">
-                        <button
-                          type="button"
-                          onClick={() => removeRow(row.id)}
-                          aria-label={`Remove row ${index + 1}`}
-                          className="flex h-11 w-11 items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
-                        >
-                          <Trash2 aria-hidden="true" size={18} strokeWidth={1.5} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+              return (
+                <li key={row.id} className="min-w-0 rounded-[10px] border border-border p-3">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <h4 className="text-sm font-medium">Farm row {index + 1}</h4>
+                    <button
+                      type="button"
+                      onClick={() => removeRow(row.id)}
+                      aria-label={`Remove row ${index + 1}`}
+                      className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
+                    >
+                      <Trash2 aria-hidden="true" size={18} strokeWidth={1.5} />
+                    </button>
+                  </div>
+                  <div className="grid min-w-0 gap-3 min-[520px]:grid-cols-2">
+                    <label className="min-w-0 text-sm font-medium min-[520px]:col-span-2">
+                      Name <span aria-hidden="true">*</span>
+                      <input
+                        type="text"
+                        value={row.name}
+                        onChange={(event) => updateRow(row.id, {
+                          name: event.target.value,
+                          errors: clearRowError(row, "name").errors,
+                        })}
+                        aria-label={`Farm name, row ${index + 1}`}
+                        aria-invalid={Boolean(rowError)}
+                        aria-describedby={rowError ? rowErrorId : undefined}
+                        placeholder="Farm name"
+                        className={`mt-1 ${inputClass}`}
+                      />
+                    </label>
+                    <label className="min-w-0 text-sm font-medium">
+                      Location
+                      <input
+                        type="text"
+                        value={row.location}
+                        onChange={(event) => updateRow(row.id, {
+                          location: event.target.value,
+                          errors: clearRowError(row, "location").errors,
+                        })}
+                        aria-label={`Location, row ${index + 1}`}
+                        placeholder="Location"
+                        className={`mt-1 ${inputClass}`}
+                      />
+                    </label>
+                    <label className="min-w-0 text-sm font-medium">
+                      Size
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        value={row.sizeValue}
+                        onChange={(event) => updateRow(row.id, {
+                          sizeValue: event.target.value,
+                          errors: clearRowError(row, "size").errors,
+                        })}
+                        aria-label={`Size, row ${index + 1}`}
+                        placeholder="0"
+                        className={`mt-1 ${inputClass}`}
+                      />
+                    </label>
+                    <label className="min-w-0 text-sm font-medium">
+                      Unit
+                      <select
+                        value={row.sizeUnit}
+                        onChange={(event) => updateRow(row.id, {
+                          sizeUnit: event.target.value,
+                          errors: clearRowError(row, "size").errors,
+                        })}
+                        aria-label={`Size unit, row ${index + 1}`}
+                        className={`mt-1 ${inputClass}`}
+                      >
+                        <option value="">Unit</option>
+                        {SIZE_UNITS.map((unit) => (
+                          <option key={unit} value={unit}>{unit}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  {rowError ? <p id={rowErrorId} className={`mt-2 ${errorTextClass}`}>{rowError}</p> : null}
+                </li>
+              );
+            })}
+          </ul>
 
           <button
             type="button"

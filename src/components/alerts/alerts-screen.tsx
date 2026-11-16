@@ -130,7 +130,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
   const nobody = data.recipients.length === 0 || data.recipients.every((recipient) => !recipient.enabled);
 
   return (
-    <main className="mx-auto w-full max-w-[720px] pb-24 pt-8 min-[768px]:pt-10">
+    <main className="mx-auto w-full min-w-0 max-w-[720px] pb-24 pt-8 min-[768px]:pt-10">
       <header className="mb-8">
         <h1 className="font-display text-4xl font-light tracking-tight">Alerts</h1>
         <p className="mt-3 text-muted">Choose who receives email alerts and when they arrive.</p>

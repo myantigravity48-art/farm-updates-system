@@ -13,7 +13,7 @@ export interface EmailPreviewSample {
 
 export function EmailPreview({ samples }: { samples: EmailPreviewSample[] }) {
   return (
-    <main className="mx-auto w-full max-w-[900px] space-y-8 pb-24 pt-8 min-[768px]:pt-10">
+    <main className="mx-auto w-full min-w-0 max-w-[900px] space-y-8 pb-24 pt-8 min-[768px]:pt-10">
       <header className="mb-8">
         <h1 className="font-display text-4xl font-light tracking-tight">Email previews</h1>
         <p className="mt-3 text-muted">Sample HTML and plain-text email layouts.</p>
@@ -26,7 +26,7 @@ export function EmailPreview({ samples }: { samples: EmailPreviewSample[] }) {
 function EmailPreviewCard({ sample }: { sample: EmailPreviewSample }) {
   const [width, setWidth] = useState<390 | 720>(720);
   return (
-    <section aria-labelledby={`email-${slug(sample.label)}`} className="overflow-hidden rounded-[14px] border border-border bg-surface">
+    <section aria-labelledby={`email-${slug(sample.label)}`} className="min-w-0 overflow-hidden rounded-[14px] border border-border bg-surface">
       <div className="border-b border-border p-4">
         <h2 id={`email-${slug(sample.label)}`} className="text-lg font-medium">{sample.label}</h2>
         <p className="mt-3 text-xs text-muted">Subject</p>
@@ -39,7 +39,7 @@ function EmailPreviewCard({ sample }: { sample: EmailPreviewSample }) {
           <Button variant={width === 720 ? "primary" : "secondary"} onClick={() => setWidth(720)}>Desktop (720)</Button>
         </div>
       </div>
-      <div className="overflow-x-auto p-4" style={{ backgroundColor: emailTheme.card }}>
+      <div role="region" aria-label={`${sample.label} HTML email preview, horizontal scrolling when needed`} className="overflow-x-auto border-b border-border p-4" style={{ backgroundColor: emailTheme.card }}>
         <iframe
           title={`${sample.label} HTML email`}
           srcDoc={sample.html}
@@ -49,7 +49,7 @@ function EmailPreviewCard({ sample }: { sample: EmailPreviewSample }) {
       </div>
       <div className="border-t border-border p-4">
         <h3 className="text-sm font-medium">Plain text</h3>
-        <pre className="mt-3 whitespace-pre-wrap break-words rounded-[10px] border border-border bg-bg p-4 font-mono text-sm leading-6 text-text">{sample.text}</pre>
+        <pre role="region" aria-label={`${sample.label} plain-text email preview`} className="mt-3 overflow-x-auto whitespace-pre-wrap break-words rounded-[10px] border border-border bg-bg p-4 font-mono text-sm leading-6 text-text">{sample.text}</pre>
       </div>
     </section>
   );

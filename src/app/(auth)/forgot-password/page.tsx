@@ -6,7 +6,7 @@ import { Wordmark } from "@/components/auth/wordmark";
 // supabase.auth.resetPasswordForEmail() and a /reset-password page.
 export default function ForgotPasswordPage() {
   return (
-    <main className="flex min-h-screen flex-col justify-center px-6 py-16 lg:px-12">
+    <main className="flex min-h-dvh min-w-0 flex-col justify-center px-6 py-16 lg:px-12">
       <div className="mx-auto w-full max-w-[416px]">
         <Wordmark />
 

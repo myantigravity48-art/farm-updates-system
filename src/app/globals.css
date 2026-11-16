@@ -55,6 +55,7 @@ body {
   font-feature-settings: "tnum";
 }
 button, input { font: inherit; }
+input:not([type="hidden"]), select, textarea { font-size: 16px; }
 button, a, input { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 ::selection { background: var(--primary); color: var(--on-primary); }

@@ -22,13 +22,13 @@ export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
         </span>
       </nav>
 
-      <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
+      <div className="mt-2 flex min-w-0 flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
             Farm record
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <h1 className="font-display text-4xl font-light leading-none tracking-tight min-[1024px]:text-5xl">
+            <h1 className="font-display text-4xl font-light leading-tight tracking-tight [overflow-wrap:anywhere] min-[1024px]:text-5xl">
               {farm.name}
             </h1>
             <StatusPill status={farm.status} />
