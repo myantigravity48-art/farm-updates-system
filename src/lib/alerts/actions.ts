@@ -120,7 +120,7 @@ export async function sendTestEmail(recipientId: string): Promise<{ ok: boolean;
   const today = todayInLondon(new Date());
   const alerts = [
     { type: "overdue" as const, farmId: "sample-obi", farmName: "Obi-Umuagbogho", stageName: "Land clearing", kind: "window" as const, date: addDays(today, -settings.overdue_repeat_days), windowEnd: addDays(today, -settings.overdue_repeat_days + 4), days: settings.overdue_repeat_days },
-    { type: "reminder" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Second round-weeding", kind: "date" as const, date: addDays(today, settings.reminder_days), days: settings.reminder_days },
+    { type: "reminder" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Second round-weeding and herbicide", kind: "date" as const, date: addDays(today, settings.reminder_days), days: settings.reminder_days },
     { type: "heads_up" as const, farmId: "sample-obaoba", farmName: "Obaoba", stageName: "First fertilizer", kind: "date" as const, date: addDays(today, settings.heads_up_days), days: settings.heads_up_days },
     { type: "window_open" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Land clearing", kind: "window" as const, date: today, windowEnd: addDays(today, 11), days: 11 },
     { type: "reminder" as const, farmId: "sample-iyanuole", farmName: "Iyanuole", stageName: "Order seedlings", kind: "date" as const, date: addDays(today, settings.reminder_days), days: settings.reminder_days },

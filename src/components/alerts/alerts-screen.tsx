@@ -317,9 +317,9 @@ function buildPreview(choice: PreviewChoice, timing: TimingValues, today: Calend
     days,
   });
 
-  if (choice === "Marked done") return renderDoneNotice({ farmName: "Iyanuole", stageName: "Second round-weeding", doneByName: "Obi", doneDate: today, nextStageName: "Land clearing", nextDate: addDays(today, timing.headsUpDays), nextHasNoDate: false, isLastStage: false, appUrl: SAMPLE_APP_URL });
+  if (choice === "Marked done") return renderDoneNotice({ farmName: "Iyanuole", stageName: "Second round-weeding and herbicide", doneByName: "Obi", doneDate: today, nextStageName: "Land clearing", nextDate: addDays(today, timing.headsUpDays), nextHasNoDate: false, isLastStage: false, appUrl: SAMPLE_APP_URL });
   const item = choice === "Heads-up"
-    ? alert("heads_up", "sample-iyanuole", "Iyanuole", "Second round-weeding", headsUpDays, "window")
+    ? alert("heads_up", "sample-iyanuole", "Iyanuole", "Second round-weeding and herbicide", headsUpDays, "window")
     : choice === "Reminder"
       ? alert("reminder", "sample-obi", "Obi-Umuagbogho", "Land clearing", reminderDays)
     : choice === "Overdue"
@@ -329,7 +329,7 @@ function buildPreview(choice: PreviewChoice, timing: TimingValues, today: Calend
         : null;
   const alerts = item ? [item] : [
     alert("overdue", "sample-obi", "Obi-Umuagbogho", "Land clearing", overdueDays, "window"),
-    alert("reminder", "sample-iyanuole", "Iyanuole", "Second round-weeding", reminderDays),
+    alert("reminder", "sample-iyanuole", "Iyanuole", "Second round-weeding and herbicide", reminderDays),
     alert("heads_up", "sample-obaoba", "Obaoba", "First fertilizer", headsUpDays),
     { ...alert("window_open", "sample-iyanuole", "Iyanuole", "Land clearing", 10, "window"), date: today, windowEnd: "2027-03-31" as CalendarDate },
     alert("reminder", "sample-iyanuole", "Iyanuole", "Order seedlings", reminderDays),

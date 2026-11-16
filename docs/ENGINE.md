@@ -2,6 +2,8 @@
 
 Pure date-computation module in `src/lib/schedule/`. No database, network, React, Next.js, or Supabase imports. No `new Date()` without explicit inputs. All date arithmetic is UTC. Today is always passed in by the caller.
 
+The current lifecycle data contains eight stages. Round-weeding and herbicide are one combined stage at months 3, 7, and 11. After-planting stages are one-time offsets; there is no annual monitoring recurrence. Dry-season months remain pending owner confirmation.
+
 ## Files
 
 | File | Purpose |

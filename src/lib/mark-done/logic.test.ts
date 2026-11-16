@@ -54,18 +54,18 @@ describe("previewAfterDone", () => {
     expect(previewAfterDone({ ...previewBase, stagePosition: 1 }, today)).toBe("Next: Order seedlings, due 7 Nov 2026.");
   });
   it("reports completion on the last stage", () => {
-    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 9 }));
-    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 9 }, today)).toBe("This completes every stage for this farm.");
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 8 }));
+    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 8 }, today)).toBe("This completes every stage for this farm.");
   });
   it("schedules later stages from the hypothetical planting date", () => {
     const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 3 }));
     const result = previewAfterDone({ ...previewBase, stages, stagePosition: 3 }, "2026-06-15");
-    expect(result).toContain("Next: First round-weeding");
+    expect(result).toContain("Next: First round-weeding and herbicide");
     expect(result).toContain("15 Sept 2026");
   });
   it("keeps a later stage unscheduled without a planting date", () => {
     const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 4 }));
-    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 4 }, today)).toBe("Next: Herbicide, date set once planting is done.");
+    expect(previewAfterDone({ ...previewBase, stages, stagePosition: 4 }, today)).toBe("Next: First fertilizer, date set once planting is done.");
   });
 });
 
@@ -76,11 +76,11 @@ describe("buildDoneNoticeInput", () => {
   });
   it("marks an undated next stage", () => {
     const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 4 }));
-    expect(buildDoneNoticeInput({ ...input, stages, stagePosition: 4 })).toMatchObject({ nextStageName: "Herbicide", nextDate: null, nextHasNoDate: true, isLastStage: false });
+    expect(buildDoneNoticeInput({ ...input, stages, stagePosition: 4 })).toMatchObject({ nextStageName: "First fertilizer", nextDate: null, nextHasNoDate: true, isLastStage: false });
   });
   it("marks the last stage", () => {
-    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 9 }));
-    expect(buildDoneNoticeInput({ ...input, stages, stagePosition: 9 })).toMatchObject({ nextStageName: null, nextDate: null, nextHasNoDate: false, isLastStage: true });
+    const stages = previewBase.stages.map((stage) => ({ ...stage, isDone: stage.position < 8 }));
+    expect(buildDoneNoticeInput({ ...input, stages, stagePosition: 8 })).toMatchObject({ nextStageName: null, nextDate: null, nextHasNoDate: false, isLastStage: true });
   });
 });
 

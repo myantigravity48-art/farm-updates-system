@@ -12,20 +12,22 @@
 8. In the SQL Editor, paste and run `supabase/checks/0006_checks.sql` to verify only the 0006 changes.
 9. Run `supabase/checks.sql` when you need to recheck the original schema security rules. It is not a substitute for migration-specific check files.
 10. After 0007 and 0008, paste and run `supabase/migrations/0009_order_seedlings_and_nudge.sql`.
-11. Run `supabase/checks/0009_checks.sql` to verify the 9-stage lifecycle, farm-stage coverage, privileges, alert settings and function grants.
+11. Run `supabase/checks/0009_checks.sql` to verify the lifecycle as it stood after migration 0009 (the historical check expects its then-current 9-stage set), farm-stage coverage, privileges, alert settings and function grants.
 12. Paste and run `supabase/migrations/0010_recipient_phone.sql` to add the optional recipient phone reference. It preserves authenticated CRUD on recipients and leaves the existing RLS policy unchanged; anon remains excluded.
 13. Run `supabase/checks/0010_checks.sql` to verify the phone column, anon exclusion and phone constraint.
 14. Paste and run `supabase/migrations/0011_alert_send_claims.sql` to add alert claims, retry tracking and the service-role-only claim/finish functions.
 15. Run `supabase/checks/0011_checks.sql` to verify the constraints, functions, grants and columns.
 16. Paste and run `supabase/migrations/0012_done_notice_setting.sql` to add the default-on `alert_settings.done_notice_enabled` switch.
 17. Run `supabase/checks/0012_checks.sql` to verify the required column, default value and anonymous privilege exclusion.
+18. Confirm `public.farms` is empty before applying `supabase/migrations/0013_merge_herbicide_into_weeding.sql`. This migration refuses to run when farms exist; do not delete farm data just to apply it.
+19. Run `supabase/checks/0013_checks.sql` to verify the eight-stage lifecycle and farm-stage coverage.
 
 ## Tables
 
 | Table | Purpose |
 |-------|---------|
 | `season_windows` | Recurring date ranges for season-triggered stages. PK is the key (`dry_season`, `planting`). |
-| `stage_templates` | The 9-stage lifecycle definition. Position is unique. Season-window rows use `window_key`; after-planting rows use `offset_months`; after-stage-done rows use `anchor_window_key` and `offset_days`. |
+| `stage_templates` | The current eight-stage lifecycle definition (after migration 0013). Position is unique. Season-window rows use `window_key`; after-planting rows use `offset_months`; after-stage-done rows use `anchor_window_key` and `offset_days`. |
 | `farms` | One row per farm plot. Unique index on `lower(name)`. `schedule_anchor_date` defaults to today but the app sets it explicitly. `created_by` references `auth.users`. |
 | `farm_stages` | One row per farm per stage template (auto-created by trigger). Tracks done state, done date, completion author and name, note, and due-date override. Unique on `(farm_id, template_id)`. |
 | `notes` | Free-text notes on a farm or a specific stage. `author_name` stores the writer's display name at the time of writing. |
@@ -47,9 +49,9 @@ When a row is inserted into `farms`, a trigger function inserts one `farm_stages
 | Function | Arguments | Returns | Purpose |
 |----------|-----------|---------|---------|
 | `create_farm` | `p_name text, p_location text, p_size_value numeric, p_size_unit text, p_notes text, p_current_position int, p_planting_date date, p_anchor_date date` | `uuid` | Inserts one farm, lets the trigger create its stages, then marks every stage before `p_current_position` as done. The planting stage is found by `stage_templates.window_key = 'planting'`, never by a position literal. When planting is already past, its `done_date` is set to `p_planting_date`. |
-| `create_farms_bulk` | `p_rows jsonb, p_anchor_date date` | `int` | Creates each row at position 1 by calling `create_farm`. All rows succeed or none do. Rejects more than 100 rows. A duplicate name returns `row N: a farm with that name already exists`. |
+| `create_farms_bulk` | `p_rows jsonb, p_anchor_date date` | `int` | Creates each row at the minimum template position by calling `create_farm`. All rows succeed or none do. Rejects more than 100 rows. A duplicate name returns `row N: a farm with that name already exists`. |
 
-`create_farm` rejects a blank name, a position outside 1 to the highest `stage_templates.position`, a missing planting date when the chosen stage is after planting, and a planting date when the chosen stage is not after planting.
+`create_farm` rejects a blank name, a position outside the minimum to maximum `stage_templates.position`, a missing planting date when the chosen stage is after planting, and a planting date when the chosen stage is not after planting. Migration 0013 replaces the original literal lower bound with the data-driven minimum.
 
 `execute` is revoked from `public` and `anon`, and granted to `authenticated` only. The existing checks confirm both functions exist and that `anon` and `public` cannot execute them.
 
@@ -98,7 +100,7 @@ Function exceptions begin with stable codes for friendly app messages. `supabase
 
 `0007_lifecycle_editor.sql` adds nullable `updated_at` and `updated_by_name` columns to `stage_templates` and `season_windows`. Migration `0009_order_seedlings_and_nudge.sql` adds the Order seedlings trigger, nudge settings and updated lifecycle save/mark/undo functions. Authenticated UPDATE on stage templates is restricted to `name`, `offset_months`, `offset_days`, `updated_at`, and `updated_by_name`.
 
-Migration 0009 inserts Order seedlings at position 2, finds its clearing anchor by `dry_season`, backfills one farm-stage row per existing farm, and makes `save_lifecycle` validate `offset_days` (0–365) for after-stage-done rows. `mark_stage_done` rejects completion before a dated anchor with `before_anchor`; `undo_stage_done` rejects undoing an anchor with completed dependent work. It changes overdue repeats to 7 days and adds `window_nudge_days` with a 14-day default and a 0–60 check. The migration also allows `window_open` in `notification_log.alert_type`.
+Migration 0009 inserted Order seedlings at position 2, found its clearing anchor by `dry_season`, backfilled one farm-stage row per existing farm, and made `save_lifecycle` validate `offset_days` (0–365) for after-stage-done rows. Its migration-specific check verifies the lifecycle as it stood after 0009; migration 0013 changes the live lifecycle to eight stages. `mark_stage_done` rejects completion before a dated anchor with `before_anchor`; `undo_stage_done` rejects undoing an anchor with completed dependent work. It changes overdue repeats to 7 days and adds `window_nudge_days` with a 14-day default and a 0–60 check. The migration also allows `window_open` in `notification_log.alert_type`.
 
 The `SECURITY INVOKER` function `public.save_lifecycle(jsonb,jsonb,text)` validates the full lifecycle and updates both tables atomically. It calls `public.lifecycle_days_in_month(integer)`, an immutable SQL helper that uses February = 28 for window validation. The helper and save function revoke execution from `public` and `anon`, and grant it to `authenticated`. Migration 0009 replaces `save_lifecycle` while preserving its validation rules and adding `offset_days` validation.
 
@@ -107,6 +109,10 @@ Migration `0010_recipient_phone.sql` adds nullable `recipients.phone` with a tri
 The timings described as placeholders in `PRODUCT.md` are now editable in the app. `src/lib/schedule/defaults.ts` remains only a seed and test reference and may differ from the live database values.
 
 Migration `0012_done_notice_setting.sql` adds `done_notice_enabled boolean not null default true`. It does not change grants or policies. The original `0001_schema.sql` grants `SELECT, UPDATE` to `authenticated` and defines the authenticated read/update policies for `alert_settings`; the same migration revokes table privileges from `anon` and `public`. This was confirmed by inspecting those statements; the 0012 checks query separately confirms there are no `anon` table grants.
+
+## Lifecycle merge (0013)
+
+`0013_merge_herbicide_into_weeding.sql` requires that `farms` is empty, removes the after-planting Herbicide template at month 3, and assigns the eight target stage positions by trigger attributes and offsets. It renames the three round-weeding templates and updates their `updated_at` and `updated_by_name` fields. A final assertion rolls back if the ordered template set is not exactly the target lifecycle. It also replaces `create_farm` and `create_farms_bulk` so their initial and lower stage positions come from `stage_templates`, not hard-coded values. Run `supabase/checks/0013_checks.sql` after applying it; the migration itself is not applied by this repository task.
 
 Every table has row-level security enabled. No table is accessible to the `anon` role. Every authenticated policy (including storage) also rejects a JWT whose `is_anonymous` claim is true, so anonymous sign-ins cannot read or write data.
 

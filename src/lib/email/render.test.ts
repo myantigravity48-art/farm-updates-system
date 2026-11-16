@@ -13,7 +13,7 @@ function item(type: AlertItem["type"], kind: AlertItem["kind"], days: number): A
     days,
     farmId: "farm-1",
     farmName: "Iyanuole",
-    stageName: "Second round-weeding",
+    stageName: "Second round-weeding and herbicide",
     date: type === "overdue" ? "2026-10-10" : "2026-10-18",
     ...(kind === "window" ? { windowEnd: "2026-10-22" as CalendarDate } : {}),
   };
@@ -33,7 +33,7 @@ describe("single alert emails", () => {
   it.each(["heads_up", "reminder", "overdue"] as const)("renders a %s date alert", (type) => {
     const { subject, text } = renderAlertEmail({ alerts: [item(type, "date", type === "overdue" ? 1 : 5)], today, appUrl });
     expect(subject).toContain("Iyanuole");
-    expect(text).toContain("Second round-weeding");
+    expect(text).toContain("Second round-weeding and herbicide");
     expect(text).toContain("Open Iyanuole: https://your-app-address/farms/farm-1");
     expect(text).toContain("You get these emails because you are on the alert list for Farm updates system. To change who gets them, open Alerts in the app.");
   });
@@ -118,12 +118,12 @@ describe("digest emails", () => {
 });
 
 describe("done notice", () => {
-  const base = { farmName: "Iyanuole", stageName: "Second round-weeding", doneByName: "Obi", doneDate: today, nextStageName: "Land clearing", nextDate: "2027-03-01" as CalendarDate, nextHasNoDate: false, isLastStage: false, appUrl };
+  const base = { farmName: "Iyanuole", stageName: "Second round-weeding and herbicide", doneByName: "Obi", doneDate: today, nextStageName: "Land clearing", nextDate: "2027-03-01" as CalendarDate, nextHasNoDate: false, isLastStage: false, appUrl };
 
   it("includes the next stage and its date", () => {
     const result = renderDoneNotice(base);
-    expect(result.subject).toBe("Iyanuole: Second round-weeding marked done");
-    expect(result.text).toContain("Obi marked Second round-weeding done on Iyanuole on Wed 14 Oct 2026. Next: Land clearing, due Mon 1 Mar 2027.");
+    expect(result.subject).toBe("Iyanuole: Second round-weeding and herbicide marked done");
+    expect(result.text).toContain("Obi marked Second round-weeding and herbicide done on Iyanuole on Wed 14 Oct 2026. Next: Land clearing, due Mon 1 Mar 2027.");
   });
 
   it("handles the last stage", () => {

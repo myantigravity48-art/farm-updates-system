@@ -25,24 +25,24 @@ const templates: StageTemplate[] = [
   { position: 1, name: "Clearing", triggerType: "season_window", windowKey: "dry_season" },
   { position: 2, name: "Order seedlings", triggerType: "after_stage_done", anchorWindowKey: "dry_season", offsetDays: 0 },
   { position: 3, name: "Planting", triggerType: "season_window", windowKey: "planting" },
-  { position: 4, name: "Weeding", triggerType: "after_planting", offsetMonths: 3 },
-  { position: 5, name: "Herbicide", triggerType: "after_planting", offsetMonths: 3 },
-  { position: 6, name: "Fertilizer", triggerType: "after_planting", offsetMonths: 4 },
-  { position: 7, name: "Second weeding", triggerType: "after_planting", offsetMonths: 7 },
-  { position: 8, name: "Third weeding", triggerType: "after_planting", offsetMonths: 11 },
-  { position: 9, name: "Second fertilizer", triggerType: "after_planting", offsetMonths: 12 },
+  { position: 4, name: "First round-weeding and herbicide", triggerType: "after_planting", offsetMonths: 3 },
+  { position: 5, name: "First fertilizer", triggerType: "after_planting", offsetMonths: 4 },
+  { position: 6, name: "Second round-weeding and herbicide", triggerType: "after_planting", offsetMonths: 7 },
+  { position: 7, name: "Third round-weeding and herbicide", triggerType: "after_planting", offsetMonths: 11 },
+  { position: 8, name: "Second fertilizer", triggerType: "after_planting", offsetMonths: 12 },
 ];
 const farm = (plantingDate: FarmInput["plantingDate"] = null): FarmInput => ({ anchorDate: "2026-10-12", plantingDate });
 const states = (overrides: Partial<StageState>[] = []): StageState[] => templates.map((template, index) => ({ position: template.position, isDone: false, doneDate: null, dueDateOverride: null, ...overrides[index] }));
 const settings: AlertSettings = { headsUpDays: 14, reminderDays: 3, overdueEnabled: true, overdueRepeatDays: 7, windowNudgeDays: 14 };
 
 describe("date arithmetic", () => {
-  it("seeds the nine lifecycle stages in order", () => {
-    expect(defaultStageTemplates).toHaveLength(9);
+  it("seeds the eight lifecycle stages in order", () => {
+    expect(defaultStageTemplates).toHaveLength(8);
     expect(defaultStageTemplates.map((stage) => stage.name)).toEqual([
-      "Land clearing", "Order seedlings", "Planting", "First round-weeding", "Herbicide",
-      "First fertilizer", "Second round-weeding", "Third round-weeding", "Second fertilizer",
+      "Land clearing", "Order seedlings", "Planting", "First round-weeding and herbicide",
+      "First fertilizer", "Second round-weeding and herbicide", "Third round-weeding and herbicide", "Second fertilizer",
     ]);
+    expect(defaultStageTemplates.every((stage) => stage.name.length <= 60)).toBe(true);
     expect(defaultStageTemplates[1]).toMatchObject({ triggerType: "after_stage_done", anchorWindowKey: "dry_season", offsetDays: 0 });
   });
 
@@ -77,11 +77,11 @@ describe("computeSchedule", () => {
     expect(schedule[2]).toMatchObject({ windowStart: "2027-04-25", windowEnd: "2027-07-15" });
     const planted = computeSchedule(templates, [drySeason, plantingWindow], farm("2027-05-10"), states());
     expect(planted[3].dueDate).toBe("2027-08-10");
-    expect(planted[8].dueDate).toBe("2028-05-10");
+    expect(planted[7].dueDate).toBe("2028-05-10");
   });
 
   it("clamps long offsets and derives planting date from completed planting", () => {
-    expect(computeSchedule(templates, [drySeason, plantingWindow], farm("2027-05-31"), states())[7].dueDate).toBe("2028-04-30");
+    expect(computeSchedule(templates, [drySeason, plantingWindow], farm("2027-05-31"), states())[7].dueDate).toBe("2028-05-31");
     expect(computeSchedule(templates, [drySeason, plantingWindow], farm(), states([{},{},{ isDone: true, doneDate: "2027-05-10" }]))[3].dueDate).toBe("2027-08-10");
   });
 
@@ -115,7 +115,7 @@ describe("computeSchedule", () => {
     const anchorDoneWithoutDate = states([{ isDone: true, doneDate: null }]);
     expect(computeSchedule(templates, [drySeason, plantingWindow], farm(), anchorDoneWithoutDate)[1]).toMatchObject({ kind: "unscheduled", unscheduledReason: "needs_anchor_stage" });
     expect(computeSchedule(templates, [drySeason, plantingWindow], farm(), states([{},{ dueDateOverride: "2027-01-01" }]))[1]).toMatchObject({ kind: "date", dueDate: "2027-01-01" });
-    expect(computeSchedule(templates, [drySeason, plantingWindow], farm(), states([{},{},{},{},{},{},{},{},{ dueDateOverride: "2027-01-01" }]))[8]).toMatchObject({ kind: "date", dueDate: "2027-01-01" });
+    expect(computeSchedule(templates, [drySeason, plantingWindow], farm(), states([{},{},{},{},{},{},{},{ dueDateOverride: "2027-01-01" }]))[7]).toMatchObject({ kind: "date", dueDate: "2027-01-01" });
     const plantingAnchored = computeSchedule(templates, [drySeason, plantingWindow], farm(), states([{ isDone: true, doneDate: "2027-01-20" }]));
     expect(plantingAnchored[2]).toMatchObject({ windowStart: "2027-04-25", windowEnd: "2027-07-15" });
   });

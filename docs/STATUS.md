@@ -3,10 +3,11 @@
 Last updated: 2026-11-16
 
 ## Recent update
+- Step 5i lifecycle merge is prepared: eight default/test stages, updated previews and samples, migration 0013, and migration-specific checks. The migration is complete only after it is applied and checked; it refuses to run if any farms exist. The owner confirmed herbicide is applied with every round-weeding, with no separate job. See `PRODUCT.md` for the confirmed lifecycle and remaining open questions.
 - Responsive layout fix: Dashboard grid children and progress rows now shrink and long farm and stage names wrap; the bulk-add form uses wrapping row cards instead of a fixed-width scrolling table. Added safe-area and dynamic viewport sizing, 16px form controls, email-preview scroll labels, and a development-only overflow warning. See `docs/POLISH.md` for the viewport matrix and browser console check. Live browser measurements were limited to the open 748px viewport and the supplied 390px findings; device emulation for the full matrix was unavailable.
 - Cron route redirect fix: explicitly allow the daily alert route through the login proxy and make the local trigger script handle redirects and non-JSON responses safely.
-- Step 6b implementation is ready: daily alert job, Resend sending, cron route, local trigger scripts, service-role boundary, migration 0011 and its checks. Step 6b is complete once migration 0011 is applied and checked.
-- Step 6c implementation is ready: shared Resend sender, per-recipient test email button with an instance-local rate limiter, `done_notice_enabled`, and best-effort marked-done notices scheduled with `after()`. Migration 0012 must be applied and checked to complete step 6c.
+- Step 6b is complete: migration 0011 and checks are applied.
+- Step 6c is complete: migration 0012 and checks are applied.
 
 ## Done
 - Rendering fix 1: removed unused Cache Components and dependent partial-prefetching config so authenticated, time-dependent pages render per request. Removed non-function exports from `"use server"` modules, and the display-name action now reports `Name saved.`.
@@ -28,24 +29,26 @@ Last updated: 2026-11-16
 - Step 5f built: lifecycle editor, server validation and impact preview, and migration `0007_lifecycle_editor.sql`. Timing values are editable in the app; `src/lib/schedule/defaults.ts` is a test and seed reference and may differ from live values.
 - Step 5g-1 done: Order seedlings lifecycle, weekly overdue reminders, clearing-window nudges, and migration `0009_order_seedlings_and_nudge.sql` are applied.
 - Step 6a done: HTML email rendering, the daily alert planner and the `/dev/emails` preview are implemented. The preview should be removed before launch.
-- Migrations 0001–0010 are applied to the live database.
-- Step 6b implementation done; apply `supabase/migrations/0011_alert_send_claims.sql` and run `supabase/checks/0011_checks.sql` to complete it.
+- Migrations 0001–0012 are applied to the live database.
 
 ## Decisions
 - Alerts are email only (Resend). WhatsApp and SMS are dropped.
-- The owner is correcting the initial clearing and planting timings and will send near-final dates. Treat those timings as editable data only.
+- Round-weeding and herbicide are combined at months 3, 7 and 11; first fertilizer is at month 4; second fertilizer is at month 12. The owner confirmed these timings and herbicide treatment.
+- Planting dates for the four existing farms are approximate; see `PRODUCT.md`. Uzor Timber and Obaoba need monitoring only, with no yearly lifecycle repeat.
+- Dry-season months remain pending owner confirmation.
 - No public sign-up. The two users are invited from the Supabase dashboard; the app only calls `signInWithPassword`.
 
 ## Next (in order)
-1. Apply `supabase/migrations/0012_done_notice_setting.sql` and run `supabase/checks/0012_checks.sql` to complete step 6c.
-2. Build the Schedule page.
-3. Deploy.
+1. Apply `supabase/migrations/0013_merge_herbicide_into_weeding.sql` and run `supabase/checks/0013_checks.sql` to complete step 5i.
+2. Complete the polish pass.
+3. Build the Schedule page.
+4. Deploy.
 
 Before launch, remove `/dev/tokens` and `/dev/emails`.
 
 ## Waiting on
-- Apply `supabase/migrations/0012_done_notice_setting.sql` and run `supabase/checks/0012_checks.sql` to complete step 6c.
-- The owner's corrected clearing and planting timings, and answers to the other open questions in `PRODUCT.md`
+- Apply `supabase/migrations/0013_merge_herbicide_into_weeding.sql` and run `supabase/checks/0013_checks.sql`; the migration requires zero farms.
+- The corrected dry-season months and whether a monitoring reminder is wanted later, as listed in `PRODUCT.md`.
 - Project domain, so Resend can send verified email
 - Resend configured as custom SMTP, so real password reset can replace the forgot-password stub
 - Phase 2 designs (Costs, Workers) not made yet
@@ -58,7 +61,7 @@ Before launch, remove `/dev/tokens` and `/dev/emails`.
 - The Farm detail page shows the 50 newest notes and 60 newest photos with no paging yet. Revisit when farms collect more.
 
 ## Notes for the next agent
-- Timing values for stages 1, 2 and 4 to 7 are placeholders until the owner confirms them. Keep them as editable data.
+- Dry-season months are still pending owner confirmation. Keep timings editable in `stage_templates` and `season_windows`.
 - The screen exports folder is `design/`. If references to `designs/` remain anywhere, fix them.
 - Read `docs/ENGINE.md` for the schedule engine rules, public API, and alert key format.
 - Read `docs/SCHEMA.md` for the database schema, security policies and migration-specific check files.

@@ -7,24 +7,34 @@ Users: two, equal permissions (the owner and the person who manages the system).
 
 Farms so far: Obi-Umuagbogho, Uzor Timber, Iyanuole, Obaoba. Many more are coming, so every list must scale to 50+ farms (search, bulk add). Size and dimensions per farm come later and are optional.
 
-## Lifecycle (one set of 9 stages per farm)
-Early stages follow season windows. Later stages are counted from the planting date.
+## Lifecycle (one set of 8 stages per farm)
+Early stages follow season windows. Later stages are one-time offsets from the planting date and do not repeat yearly. Herbicide is applied with every round-weeding: the palms are round-weeded while herbicide clears the other weeds. The owner confirmed this, so there is no separate Herbicide job.
 
 | # | Stage | Trigger | Rule | Rule status |
 |---|-------|---------|------|-------------|
-| 1 | Land clearing (cut trees, gather weeds, isolate wood, burn weeds, clear log remnants) | season window | Dry season | PENDING CORRECTION. The owner is correcting the clearing timing and will supply near-final dates. Seed placeholder: November to March |
-| 2 | Order seedlings | after clearing done | +0 days, then weekly reminders until done | Confirmed |
-| 3 | Planting (acquire and plant seedlings) | season window | Late April to mid July | PENDING CORRECTION, same as stage 1 |
-| 4 | First round-weeding | after planting | +3 months | Confirmed |
-| 5 | Herbicide | after planting | +3 months, applied with the weeding | Confirmed |
-| 6 | First fertilizer | after planting | +4 months | Confirmed; owner says 3 to 4 months, reminder is for end of range |
-| 7 | Second round-weeding | after planting | +7 months | Confirmed |
-| 8 | Third round-weeding | after planting | +11 months | Confirmed |
-| 9 | Second fertilizer | after planting | +12 months | Confirmed (one year after planting) |
+| 1 | Land clearing | season window (`dry_season`) | Dry season | Dry-season months are still pending. |
+| 2 | Order seedlings | after stage done (`dry_season`) | +0 days, then weekly reminders until done | Confirmed |
+| 3 | Planting | season window (`planting`) | Planting window | — |
+| 4 | First round-weeding and herbicide | after planting | +3 months | Confirmed |
+| 5 | First fertilizer | after planting | +4 months | Confirmed; month 4 is the end of the owner's 3-to-4-month range. |
+| 6 | Second round-weeding and herbicide | after planting | +7 months | Confirmed |
+| 7 | Third round-weeding and herbicide | after planting | +11 months | Confirmed |
+| 8 | Second fertilizer | after planting | +12 months | Confirmed (one year after planting) |
 
-Timings are data, not code. They live in `stage_templates` and `season_windows` so they can be edited in the app. The same lifecycle is assumed for every farm until the owner says otherwise. Because the clearing and planting timings are still changing, never hard-code them anywhere.
+Timings are data, not code. They live in `stage_templates` and `season_windows` so they can be edited in the app. The same lifecycle applies to every farm. Because the dry-season months are still pending, never hard-code them anywhere.
 
-## Scheduling rules (draft, confirm with the owner)
+### Existing farm planting dates
+
+| Farm | Approximate planting date to use | Owner's note |
+|------|----------------------------------|--------------|
+| Obi-Umuagbogho | 30 June 2026 | Approximate |
+| Iyanuole | 15 June 2026 | June 2026; use the 15th as an approximate date |
+| Uzor Timber | 15 May 2025 | May 2025; use the 15th. Monitoring only now. |
+| Obaoba | 15 May 2025 | May 2025; use the 15th. Monitoring only now. |
+
+Uzor Timber and Obaoba need monitoring now; this does not make the lifecycle repeat annually. Whether a separate monitoring reminder is wanted later remains open.
+
+## Scheduling rules
 - Anchor date: every farm has a `schedule_anchor_date`, the date it entered the system (or was acquired). Season windows are resolved from the anchor, never from today.
 - Season-window stage: use the first occurrence of the window that ends on or after the anchor date. The planting window is anchored to the Land clearing stage's done date when present, found by its `dry_season` window key. Occurrences never roll forward, so a missed window stays overdue until the stage is done.
 - Due moment for a window stage is the window opening. It is overdue once the window has closed without the stage being done.
@@ -92,7 +102,7 @@ Mark done records the completion date, optional note and the signed-in user's di
 Phase 2 will add `expenses`, `workers` and `worker_payments`. Do not build them now.
 
 ## Open questions for the owner (TBC)
-1. Corrected clearing and planting window months (the owner will supply them).
-2. Whether every farm and crop follows this same lifecycle.
+1. Corrected dry-season months.
+2. Whether a separate monitoring reminder is wanted later for farms that only need monitoring now.
 3. Email recipient details; editing recipients is the next step.
 4. For phase 2: how workers are paid, and whether owed balances should be tracked.

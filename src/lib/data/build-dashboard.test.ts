@@ -61,7 +61,7 @@ describe("buildDashboard with no farms", () => {
 describe("buildDashboard KPIs and per-status farms", () => {
   const farms = [
     farm("zeta", "Zeta Fields", [stage(1, "Clearing", { dueDate: "2026-10-16" })]),
-    farm("alpha", "Alpha Grove", [stage(1, "First round-weeding", { dueDate: "2026-10-26" })]),
+    farm("alpha", "Alpha Grove", [stage(1, "First round-weeding and herbicide", { dueDate: "2026-10-26" })]),
     farm("beta", "Beta Commons", [stage(1, "Land clearing", { dueDate: "2026-10-20" })]),
     farm("delta", "Delta Rise", [stage(1, "Second fertilizer", { dueDate: "2026-12-10" })]),
     farm("echo", "Echo Meadow", [stage(1, "Final stage", { isDone: true, doneDate: null })]),
@@ -144,7 +144,7 @@ describe("buildDashboard attention sorting with windows and dates", () => {
       }),
     ]),
     farm("late-date", "Late Date", [stage(1, "First fertilizer", { dueDate: "2026-09-25" })]),
-    farm("late-less", "Late Less", [stage(1, "First round-weeding", { dueDate: "2026-10-08" })]),
+    farm("late-less", "Late Less", [stage(1, "First round-weeding and herbicide", { dueDate: "2026-10-08" })]),
     farm("open-window", "Open Window", [
       stage(1, "Planting", {
         kind: "window",
@@ -228,7 +228,7 @@ describe("buildDashboard comingUp", () => {
       stage(6, "December job", { dueDate: "2026-12-05" }),
       stage(7, "Late December job", { dueDate: "2026-12-20" }),
       stage(8, "January job", { dueDate: "2027-01-05" }),
-      stage(9, "Later January job", { dueDate: "2027-01-15" }),
+      stage(8, "Later January job", { dueDate: "2027-01-15" }),
     ]),
   ];
 

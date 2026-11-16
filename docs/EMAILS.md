@@ -38,7 +38,7 @@ OVERDUE
 - Obi-Umuagbogho: Land clearing. Window closed Tue 31 Mar 2026 (3 days late).
 
 DUE SOON
-- Iyanuole: Second round-weeding. Due Fri 23 Oct 2026 (in 9 days).
+- Iyanuole: Second round-weeding and herbicide. Due Fri 23 Oct 2026 (in 9 days).
 - Obaoba: First fertilizer. Due Mon 26 Oct 2026 (in 12 days).
 - {{farm}}: {{stage}}. Window open until {{window_end}} ({{n}} days left).
 
