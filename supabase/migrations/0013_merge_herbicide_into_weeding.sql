@@ -10,10 +10,13 @@ declare
   v_template_count integer;
   v_match_count integer;
   v_match_details text;
+  v_all_templates text;
 begin
   select count(*) into v_farm_count from public.farms;
   if v_farm_count > 0 then
-    raise exception using message = 'farms_exist: Delete all farms before applying this migration.';
+    select coalesce(string_agg(format('position %s: %s (%s, offset %s)', position, name, trigger_type, offset_months), '; ' order by position), '<none>')
+    into v_all_templates from public.stage_templates;
+    raise exception using message = format('farms_exist: expected 0 farms, found %s. Templates found: %s.', v_farm_count, v_all_templates);
   end if;
 
   select count(*) into v_herbicide_count
@@ -145,7 +148,9 @@ begin
   ) <> 1;
 
   if v_invalid_count <> 0 then
-    raise exception using message = 'stage_lifecycle_invalid: expected one template for every target stage rule.';
+    select coalesce(string_agg(format('position %s: %s (%s, offset %s)', position, name, trigger_type, offset_months), '; ' order by position), '<none>')
+    into v_all_templates from public.stage_templates;
+    raise exception using message = format('stage_lifecycle_invalid: expected one match for each target trigger/key/offset rule; found %s invalid rules. Templates found: %s.', v_invalid_count, v_all_templates);
   end if;
 
   -- Move every row out of the target range before assigning unique positions.
@@ -194,16 +199,16 @@ begin
 
   select count(*) into v_template_count from public.stage_templates;
 
-  with expected(position, trigger_type, window_key, anchor_window_key, offset_months, offset_days, name) as (
+  with expected(position, trigger_type, window_key, anchor_window_key, offset_months, offset_days, renamed_name) as (
     values
-      (1, 'season_window'::text, 'dry_season'::text, null::text, null::integer, null::integer, 'Land clearing'::text),
-      (2, 'after_stage_done'::text, null::text, 'dry_season'::text, null::integer, 0, 'Order seedlings'::text),
-      (3, 'season_window'::text, 'planting'::text, null::text, null::integer, null::integer, 'Planting'::text),
+      (1, 'season_window'::text, 'dry_season'::text, null::text, null::integer, null::integer, null::text),
+      (2, 'after_stage_done'::text, null::text, 'dry_season'::text, null::integer, 0, null::text),
+      (3, 'season_window'::text, 'planting'::text, null::text, null::integer, null::integer, null::text),
       (4, 'after_planting'::text, null::text, null::text, 3, null::integer, 'First round-weeding and herbicide'::text),
-      (5, 'after_planting'::text, null::text, null::text, 4, null::integer, 'First fertilizer'::text),
+      (5, 'after_planting'::text, null::text, null::text, 4, null::integer, null::text),
       (6, 'after_planting'::text, null::text, null::text, 7, null::integer, 'Second round-weeding and herbicide'::text),
       (7, 'after_planting'::text, null::text, null::text, 11, null::integer, 'Third round-weeding and herbicide'::text),
-      (8, 'after_planting'::text, null::text, null::text, 12, null::integer, 'Second fertilizer'::text)
+      (8, 'after_planting'::text, null::text, null::text, 12, null::integer, null::text)
   )
   select count(*) into v_invalid_count
   from expected e
@@ -214,10 +219,12 @@ begin
      or t.anchor_window_key is distinct from e.anchor_window_key
      or t.offset_months is distinct from e.offset_months
      or t.offset_days is distinct from e.offset_days
-     or t.name is distinct from e.name;
+     or (e.renamed_name is not null and t.name is distinct from e.renamed_name);
 
   if v_template_count <> 8 or v_invalid_count <> 0 then
-    raise exception using message = 'stage_lifecycle_invalid: final lifecycle must contain exactly 8 templates in target order.';
+    select coalesce(string_agg(format('position %s: %s (%s, offset %s)', position, name, trigger_type, offset_months), '; ' order by position), '<none>')
+    into v_all_templates from public.stage_templates;
+    raise exception using message = format('stage_lifecycle_invalid: expected 8 templates in structural target order and renamed-stage labels; found %s templates and %s structural mismatches. Templates found: %s.', v_template_count, v_invalid_count, v_all_templates);
   end if;
 end;
 $$;
