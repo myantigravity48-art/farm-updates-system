@@ -8,5 +8,5 @@ export const emailTheme = {
   text: "#14201A",
   secondary: "#5E6B62",
   overdue: "#B3402A",
-  dueSoon: "#B97C0C",
+  dueSoon: "#7A4E00",
 } as const;

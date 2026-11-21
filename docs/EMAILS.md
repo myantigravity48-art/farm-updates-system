@@ -78,7 +78,7 @@ If the next stage has no date yet (planting date not set): `Next: {{next_stage}}
 - One column, max width 560px, centred, on a warm background (#F4F3EC) with a white card (#FFFFFF) and 1px border (#E2E1D6). Light mode only. Email clients handle dark mode unpredictably.
 - A slim top bar in the primary green (#2B6B3A) with the text "Farm updates system" in white, 16px.
 - Text colour #14201A, secondary text #5E6B62. System font stack (email clients cannot rely on custom fonts). Body 16px, line height 1.5.
-- Section labels ("Overdue", "Due soon") in the status colour, text always present: overdue #B3402A, due soon #B97C0C. The status is carried by the word as well as the colour.
+- Section labels ("Overdue", "Due soon") in the status colour, text always present: overdue #B3402A, due soon #7A4E00. The status is carried by the word as well as the colour.
 - Each digest item is a row: farm name in bold, stage and dates below it in secondary text. The farm name links to the farm page.
 - One button: "Open the app". Background #2B6B3A, white text, at least 44px high, full width on small screens.
 - Footer in secondary text, 13px.

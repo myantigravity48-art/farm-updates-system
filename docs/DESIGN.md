@@ -34,7 +34,7 @@ Email HTML uses client-safe inline styles; `src/lib/email/email-theme.ts` is the
   --muted: #5E6B62;
   --primary: #2B6B3A;
   --on-primary: #FFFFFF;
-  --due-soon: #B97C0C;
+  --due-soon: #7A4E00;
   --overdue: #B3402A;
   --photo-overlay: rgb(10 17 13 / 0.55);
   --on-photo: #F4F3EC;
