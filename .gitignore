@@ -35,7 +35,7 @@ yarn-error.log*
 !.env.example
 
 # secrets
-Dtabase organisation password.txt
+Database organisation password.txt
 *password*.txt
 *.key
 
@@ -45,3 +45,4 @@ Dtabase organisation password.txt
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.claude/settings.local.json
