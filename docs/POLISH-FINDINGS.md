@@ -221,3 +221,11 @@ Status colours on `--raised` were also checked where rows/pills use that layer: 
 3. **Dashboard priority:** should “Needs attention” lead before the KPI grid? **Recommendation:** yes, while retaining all four metrics as a quieter summary.
 4. **60+ farms:** should Farms receive a compact-list/search mode before launch, or is card-only acceptable until the farm count grows? **Recommendation:** ship shared search now; defer a density switch until the count approaches 50.
 5. **PWA boundary:** should pull-to-refresh be disabled in standalone mode? **Recommendation:** yes, if and only if it is replaced by an explicit refresh path and tested on physical devices.
+
+## 8. Owner decisions
+
+1. **Icon family: not decided.** It will be chosen by a side-by-side comparison in a later batch. Until then keep Lucide, and put every icon behind one wrapper component (allowed in the batch that the plan assigns it to).
+2. **Light-mode due-soon colour: approved.** Replace it with a darker value that reaches at least 4.5:1 for text on the light background, on the surface, and on its own 18% tint (the pill background). The email theme uses the same colour, so it gets the same change.
+3. **Dashboard: approved for widths under 1024px only.** "Needs attention" first, then the four metrics as a compact summary. Desktop (1024 and up) stays as designed.
+4. **60+ farms: approved.** Ship shared search now; no density switch until about 25 farms.
+5. **Pull-to-refresh: rejected.** Do not disable it. Only add `overscroll-behavior: contain` inside sheets, dialogs and drawers.
