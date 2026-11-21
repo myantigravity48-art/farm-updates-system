@@ -1,8 +1,9 @@
 # Status
 
-Last updated: 2026-11-16
+Last updated: 2026-11-21
 
 ## Recent update
+- Polish step 2 (Batch 1) is complete. Owner decisions are recorded in `docs/POLISH-FINDINGS.md` §8. F-001: light `--due-soon` is now `#7A4E00` in `globals.css`, `DESIGN.md`, `EMAILS.md` and `email-theme.ts`; `src/lib/design/contrast.test.ts` computes the WCAG ratios from the real CSS and fails if they drop below 4.5:1. F-002: shared `SectionStack`/`Section` keep peer sections 24px apart on phones and 32px from 768px up, applied to the page headers and top-level stacks on the dashboard, farms, schedule, alerts, settings and farm detail. F-009: shared `EmptyState` and static `Skeleton` are used by farms, schedule, notes, photos and the Mark done loading state. Still local markup: the dashboard "Nothing needs attention" box, the farm rail's empty/no-results lines, and the alerts inline notice. Lint now ignores the vendored `.agents/` skill scripts. Tests: 347 passing; `test:tz` passing. Typecheck and build could not run because this machine's `node_modules/next` has no type declarations and no `.bin` links (see Waiting on).
 - Step 5h Schedule page is complete: `/schedule` uses the shared session-scoped farm snapshot, query-string filters, grouped schedule rows, the shared Mark done panel, and Dashboard links. The Schedule page has no dedicated design and is recorded as plain in `docs/POLISH.md`.
 - Step 5i is complete: migration 0013 (herbicide merged into the weeding stages) is APPLIED and checked. Never re-run it.
 - Responsive layout fix: Dashboard grid children and progress rows now shrink and long farm and stage names wrap; the bulk-add form uses wrapping row cards instead of a fixed-width scrolling table. Added safe-area and dynamic viewport sizing, 16px form controls, email-preview scroll labels, and a development-only overflow warning. See `docs/POLISH.md` for the viewport matrix and browser console check. Live browser measurements were limited to the open 748px viewport and the supplied 390px findings; device emulation for the full matrix was unavailable.
@@ -47,6 +48,7 @@ Last updated: 2026-11-16
 Before launch, remove `/dev/tokens` and `/dev/emails`.
 
 ## Waiting on
+- Reinstall dependencies: `node_modules/next` in this checkout has no `.d.ts` files and no `.bin/next`, so `tsc`, `next build` and `next dev` cannot run. Nothing in the app changed; the install is incomplete.
 - Apply `supabase/migrations/0013_merge_herbicide_into_weeding.sql` and run `supabase/checks/0013_checks.sql` to complete step 5i; the migration requires zero farms.
 - The corrected dry-season months and whether a monitoring reminder is wanted later, as listed in `PRODUCT.md`.
 - Project domain, so Resend can send verified email
