@@ -4,7 +4,7 @@ Last updated: 2026-11-16
 
 ## Recent update
 - Step 5h Schedule page is complete: `/schedule` uses the shared session-scoped farm snapshot, query-string filters, grouped schedule rows, the shared Mark done panel, and Dashboard links. The Schedule page has no dedicated design and is recorded as plain in `docs/POLISH.md`.
-- Step 5i lifecycle merge is prepared but still awaiting application: migration 0013 now identifies Herbicide by a case-insensitive name fragment plus trigger and offset, and reports matching template names and offsets on failures. It remains complete only after it is applied and checked; it refuses to run if any farms exist. The owner confirmed herbicide is applied with every round-weeding, with no separate job. See `PRODUCT.md` for the confirmed lifecycle and remaining open questions.
+- Step 5i is complete: migration 0013 (herbicide merged into the weeding stages) is APPLIED and checked. Never re-run it.
 - Responsive layout fix: Dashboard grid children and progress rows now shrink and long farm and stage names wrap; the bulk-add form uses wrapping row cards instead of a fixed-width scrolling table. Added safe-area and dynamic viewport sizing, 16px form controls, email-preview scroll labels, and a development-only overflow warning. See `docs/POLISH.md` for the viewport matrix and browser console check. Live browser measurements were limited to the open 748px viewport and the supplied 390px findings; device emulation for the full matrix was unavailable.
 - Cron route redirect fix: explicitly allow the daily alert route through the login proxy and make the local trigger script handle redirects and non-JSON responses safely.
 - Step 6b is complete: migration 0011 and checks are applied.
@@ -31,7 +31,7 @@ Last updated: 2026-11-16
 - Step 5g-1 done: Order seedlings lifecycle, weekly overdue reminders, clearing-window nudges, and migration `0009_order_seedlings_and_nudge.sql` are applied.
 - Step 5h done: the Schedule page and Dashboard links are built. All v1 screens are complete.
 - Step 6a done: HTML email rendering, the daily alert planner and the `/dev/emails` preview are implemented. The preview should be removed before launch.
-- Migrations 0001–0012 are applied to the live database.
+- Migrations 0001–0013 are applied to the live database.
 
 ## Decisions
 - Alerts are email only (Resend). WhatsApp and SMS are dropped.
