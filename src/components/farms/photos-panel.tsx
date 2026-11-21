@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ImageOff, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { PhotoLightbox } from "@/components/farms/photo-lightbox";
 import { PhotoUploadDialog } from "@/components/farms/photo-upload-dialog";
 import { photoAltText } from "@/components/farms/photo-alt";
@@ -85,7 +86,7 @@ export function PhotosPanel({
       </div>
 
       {photos.length === 0 ? (
-        <p className="px-4 py-8 text-sm text-muted min-[768px]:px-5">No photos yet</p>
+        <EmptyState variant="plain" title="No photos yet" className="px-4 py-8 min-[768px]:px-5" />
       ) : (
         <ul className="grid grid-cols-2 gap-4 px-4 py-5 min-[480px]:grid-cols-3 min-[768px]:px-5">
           {photos.map((photo, index) => {

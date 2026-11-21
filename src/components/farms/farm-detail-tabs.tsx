@@ -78,7 +78,7 @@ export function FarmDetailTabs({
   };
 
   return (
-    <div className="mt-6 grid min-w-0 gap-4 min-[1024px]:mt-0 min-[1024px]:grid-cols-[minmax(0,1fr)_minmax(340px,400px)] min-[1024px]:items-start min-[1024px]:gap-6">
+    <div className="mt-6 grid min-w-0 gap-4 min-[768px]:mt-8 min-[768px]:gap-6 min-[1024px]:mt-0 min-[1024px]:grid-cols-[minmax(0,1fr)_minmax(340px,400px)] min-[1024px]:items-start min-[1024px]:gap-6">
       <div
         role="tablist"
         aria-label="Farm record sections"

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useActionState } from "react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   errorTextClass,
   hintTextClass,
@@ -140,7 +141,7 @@ export function NotesPanel({
       </div>
 
       {notes.length === 0 ? (
-        <p className="px-4 py-8 text-sm text-muted min-[768px]:px-5">No notes yet</p>
+        <EmptyState variant="plain" title="No notes yet" className="px-4 py-8 min-[768px]:px-5" />
       ) : (
         <ul className="divide-y divide-border">
           {notes.map((note) => {

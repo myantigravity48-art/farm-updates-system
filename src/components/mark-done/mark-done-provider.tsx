@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Check, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Toast } from "@/components/ui/toast";
 import { createClient } from "@/lib/supabase/client";
 import { getMarkDonePreviewData, markStageDone, undoStageDone } from "@/lib/mark-done/actions";
@@ -233,7 +234,17 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
               </div>
             </header>
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 min-[768px]:px-7">
-              {loading ? <p role="status" className="text-sm text-muted">Loading stage details…</p> : null}
+              {loading ? (
+                <div role="status" aria-live="polite">
+                  <span className="sr-only">Loading stage details</span>
+                  <div aria-hidden="true" className="space-y-3">
+                    <Skeleton className="h-5 w-2/3" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-11 w-full" />
+                    <Skeleton className="h-28 w-full" />
+                  </div>
+                </div>
+              ) : null}
               {error ? <p role="alert" className="mb-4 text-sm text-overdue">{error}</p> : null}
               {preview && !saved ? (
                 <>

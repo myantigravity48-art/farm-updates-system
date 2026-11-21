@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FarmCard } from "@/components/farms/farm-card";
 import { FarmDialog } from "@/components/farms/farm-dialog";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Toast } from "@/components/ui/toast";
 import type { FarmSummary, StageConfig } from "@/lib/data/types";
 
@@ -44,27 +45,27 @@ export function FarmsScreen({
           {error}
         </div>
       ) : farms.length === 0 ? (
-        <div className="rounded-[14px] border border-dashed border-border bg-surface px-6 py-12 text-center">
-          <h2 className="font-display text-2xl font-light">No farms yet</h2>
-          <p className="mt-2 text-sm text-muted">
-            Add a plot to start its schedule.
-          </p>
-          <div className="mt-6 flex flex-col items-center gap-2 min-[560px]:flex-row min-[560px]:justify-center">
-            <Button onClick={() => openDialog("single")}>Add farm</Button>
-            <Button variant="secondary" onClick={() => openDialog("bulk")}>
-              Add several farms at once
-            </Button>
-          </div>
-        </div>
+        <EmptyState
+          title="No farms yet"
+          description="Add a plot to start its schedule."
+          action={
+            <>
+              <Button onClick={() => openDialog("single")}>Add farm</Button>
+              <Button variant="secondary" onClick={() => openDialog("bulk")}>
+                Add several farms at once
+              </Button>
+            </>
+          }
+        />
       ) : (
         <>
-          <div className="mb-5 flex flex-wrap items-center justify-end gap-2">
+          <div className="mb-6 flex flex-wrap items-center justify-end gap-2 min-[768px]:mb-8">
             <Button variant="secondary" onClick={() => openDialog("bulk")}>
               Add several farms at once
             </Button>
             <Button onClick={() => openDialog("single")}>Add farm</Button>
           </div>
-          <div className="grid gap-4 min-[640px]:grid-cols-2 min-[1200px]:grid-cols-3">
+          <div className="grid gap-6 min-[640px]:grid-cols-2 min-[768px]:gap-8 min-[1200px]:grid-cols-3">
             {farms.map((farm) => (
               <FarmCard key={farm.id} farm={farm} />
             ))}

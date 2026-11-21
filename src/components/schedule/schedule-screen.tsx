@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { useMarkDone } from "@/components/mark-done/mark-done-provider";
 import { StatusPill, type StatusVariant } from "@/components/status-pill";
 import { buttonClass } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { ScheduleFilterStatus, SchedulePageGroup, SchedulePageRow } from "@/lib/schedule-page/build-schedule-page";
 
 const edgeClass: Record<SchedulePageRow["status"], string> = {
@@ -108,12 +109,12 @@ export function ScheduleScreen({
 
   return (
     <div className="mx-auto w-full min-w-0 max-w-[960px]">
-      <header className="mb-6">
+      <header className="mb-6 min-[768px]:mb-8">
         <h1 className="font-display text-4xl font-light tracking-tight min-[768px]:text-5xl">Schedule</h1>
         <p className="mt-3 text-sm text-muted">Every job across all farms, in date order.</p>
       </header>
 
-      {hasFarms ? <section aria-label="Schedule filters" className="mb-5 flex min-w-0 flex-wrap items-end gap-3 rounded-[14px] border border-border bg-surface p-4">
+      {hasFarms ? <section aria-label="Schedule filters" className="mb-6 flex min-w-0 flex-wrap items-end gap-3 rounded-[14px] border border-border bg-surface p-4">
         <label className="flex min-w-[160px] flex-1 flex-col gap-1 text-sm text-muted">
           Farm
           <select value={selectedFarmId ?? ""} onChange={(event) => updateFilter("farmId", event.target.value || null)} className="min-h-11 min-w-0 w-full rounded-[10px] border border-border bg-bg px-3 text-text">
@@ -132,22 +133,32 @@ export function ScheduleScreen({
         </label>
       </section> : null}
 
-      {!hasFarms ? <section className="rounded-[14px] border border-dashed border-border bg-surface px-6 py-10 text-center">
-        <h2 className="font-display text-2xl font-light">No farms yet</h2>
-        <Link href="/farms" className={`${buttonClass("secondary")} mt-5`}>Add farm</Link>
-      </section> : null}
+      {!hasFarms ? (
+        <EmptyState
+          title="No farms yet"
+          description="Add a farm to start its schedule."
+          action={<Link href="/farms" className={buttonClass("secondary")}>Add farm</Link>}
+        />
+      ) : null}
 
-      {noResults ? <section aria-live="polite" className="rounded-[14px] border border-dashed border-border bg-surface px-6 py-10 text-center">
-        <h2 className="font-display text-2xl font-light">No jobs match these filters</h2>
-        <button type="button" onClick={() => router.push("/schedule", { scroll: false })} className={`${buttonClass("secondary")} mt-5`}>Clear filters</button>
-      </section> : null}
+      {noResults ? <div aria-live="polite">
+        <EmptyState
+          title="No jobs match these filters"
+          description="Try a different farm or status."
+          action={<button type="button" onClick={() => router.push("/schedule", { scroll: false })} className={buttonClass("secondary")}>Clear filters</button>}
+        />
+      </div> : null}
 
-      {hasFarms && hasScheduled ? <div aria-live="polite" className="min-w-0 space-y-4">
+      {hasFarms && hasScheduled ? <div aria-live="polite" className="min-w-0 space-y-6 min-[768px]:space-y-8">
         {groups.map((group) => <ScheduleGroup key={group.label} group={group} />)}
       </div> : null}
 
-      {hasFarms && !hasScheduled && !noResults ? <div aria-live="polite" className="min-w-0 space-y-4">
-        <p className="rounded-[14px] border border-dashed border-border bg-surface px-5 py-6 text-center text-muted">Nothing scheduled yet. Mark planting done on a farm to schedule its later jobs.</p>
+      {hasFarms && !hasScheduled && !noResults ? <div aria-live="polite" className="min-w-0 space-y-6 min-[768px]:space-y-8">
+        <EmptyState
+          title="Nothing scheduled yet"
+          description="Mark planting done on a farm to schedule its later jobs."
+          action={<Link href="/farms" className={buttonClass("secondary")}>Go to farms</Link>}
+        />
         {groups.map((group) => <ScheduleGroup key={group.label} group={group} />)}
       </div> : null}
     </div>

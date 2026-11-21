@@ -131,12 +131,12 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-[720px] pb-24 pt-8 min-[768px]:pt-10">
-      <header className="mb-8">
+      <header className="mb-6 min-[768px]:mb-8">
         <h1 className="font-display text-4xl font-light tracking-tight">Alerts</h1>
         <p className="mt-3 text-muted">Choose who receives email alerts and when they arrive.</p>
       </header>
 
-      <div className="space-y-8">
+      <div className="space-y-6 min-[768px]:space-y-8">
         <section aria-labelledby="recipients-title">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>

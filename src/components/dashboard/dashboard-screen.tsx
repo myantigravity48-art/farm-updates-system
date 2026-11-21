@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AlertCircle, Check, ChevronRight, Clock3, type LucideIcon } from "lucide-react";
 import { SeasonTimelineStrip } from "@/components/dashboard/season-timeline-strip";
 import { StatusPill } from "@/components/status-pill";
+import { Section, SectionStack } from "@/components/ui/section";
 import { formatUkShortDate } from "@/lib/format/dates";
 import type {
   AttentionList,
@@ -128,20 +129,17 @@ export function DashboardScreen({
   const { kpis, attention, progress, comingUp, timeline } = model;
 
   return (
-    <div>
-      <section aria-label="This week at a glance" className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <SectionStack>
+      <section aria-label="This week at a glance" className="grid grid-cols-2 gap-4 min-[768px]:gap-6 lg:grid-cols-4">
         <KpiCard label="Overdue" value={kpis.overdue} tone="overdue" Icon={AlertCircle} />
         <KpiCard label="Next 14 days" value={kpis.dueSoon} tone="due-soon" Icon={Clock3} />
         <KpiCard label="Done this month" value={kpis.doneThisMonth} />
         <KpiCard label="Farms" value={kpis.farms} />
       </section>
 
-      <div className="mt-4 grid min-w-0 gap-4 lg:items-start lg:grid-cols-[3fr_2fr]">
-        <div className="min-w-0 space-y-4">
-          <section
-            aria-labelledby="attention-heading"
-            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
-          >
+      <div className="grid min-w-0 gap-6 min-[768px]:gap-8 lg:items-start lg:grid-cols-[3fr_2fr]">
+        <div className="min-w-0 space-y-6 min-[768px]:space-y-8">
+          <Section aria-labelledby="attention-heading">
             <h2 id="attention-heading" className="font-display text-2xl font-light">
               Needs attention
             </h2>
@@ -170,12 +168,9 @@ export function DashboardScreen({
                 ) : null}
               </>
             )}
-          </section>
+          </Section>
 
-          <section
-            aria-labelledby="progress-heading"
-            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
-          >
+          <Section aria-labelledby="progress-heading">
             <h2 id="progress-heading" className="font-display text-2xl font-light">
               Farm progress
             </h2>
@@ -192,26 +187,20 @@ export function DashboardScreen({
                 View all {progress.total} farms
               </Link>
             ) : null}
-          </section>
+          </Section>
         </div>
 
-        <div className="min-w-0 space-y-4">
-          <section
-            aria-labelledby="season-heading"
-            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
-          >
+        <div className="min-w-0 space-y-6 min-[768px]:space-y-8">
+          <Section aria-labelledby="season-heading">
             <h2 id="season-heading" className="font-display text-2xl font-light">
               Season timeline
             </h2>
             <div className="mt-4">
               <SeasonTimelineStrip timeline={timeline} />
             </div>
-          </section>
+          </Section>
 
-          <section
-            aria-labelledby="coming-up-heading"
-            className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5"
-          >
+          <Section aria-labelledby="coming-up-heading">
             <h2 id="coming-up-heading" className="font-display text-2xl font-light">
               Coming up
             </h2>
@@ -229,9 +218,9 @@ export function DashboardScreen({
             <Link href="/schedule" className="mt-2 inline-flex min-h-11 items-center text-sm text-primary hover:underline">
               View full schedule
             </Link>
-          </section>
+          </Section>
         </div>
       </div>
-    </div>
+    </SectionStack>
   );
 }

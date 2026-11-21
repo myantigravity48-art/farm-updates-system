@@ -8,7 +8,7 @@ export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
   const total = farm.totalStages;
 
   return (
-    <header className="mb-6 min-[1024px]:mb-8">
+    <header className="mb-6 min-[768px]:mb-8">
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted">
         <Link
           href="/farms"
