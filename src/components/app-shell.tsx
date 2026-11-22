@@ -80,7 +80,7 @@ export function AppShell({
       </aside>
 
       {showFarmPanel && <aside aria-label="Farm list" className="fixed inset-y-0 left-[72px] z-10 hidden w-[248px] flex-col border-r border-border bg-surface px-4 py-7 min-[1024px]:flex">
-        <h2 className="mb-5 font-display text-2xl font-light">Farms</h2>
+        <h2 className="mb-5 font-display text-2xl font-normal">Farms</h2>
         <label className="flex h-11 flex-none items-center gap-2 rounded-[10px] border border-border bg-bg px-3 text-muted focus-within:outline focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2">
           <Search aria-hidden="true" size={17} strokeWidth={1.5} />
           <span className="sr-only">Search farms</span>

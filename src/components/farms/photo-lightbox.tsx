@@ -131,7 +131,7 @@ export function PhotoLightbox({
         className="relative flex h-full w-full min-w-0 flex-col overflow-hidden border border-border bg-surface text-text min-[768px]:h-auto min-[768px]:max-h-[92dvh] min-[768px]:max-w-[1000px] min-[768px]:rounded-[14px]"
       >
         <header className="flex flex-none items-center gap-3 border-b border-border px-4 py-3 min-[768px]:px-5">
-          <p className="text-sm text-muted tabular-nums">
+          <p className="text-sm text-muted numeric">
             {index + 1} of {photos.length}
           </p>
           <button
@@ -166,7 +166,7 @@ export function PhotoLightbox({
         <footer className="flex flex-none flex-col gap-3 border-t border-border px-4 py-4 min-[768px]:flex-row min-[768px]:items-center min-[768px]:justify-between min-[768px]:px-5">
           <div className="min-w-0">
             <p className="break-words text-base">{photo.caption?.trim() || alt}</p>
-            <p className="mt-1 text-sm text-muted tabular-nums">
+            <p className="mt-1 text-sm text-muted numeric">
               {photo.takenOn ? formatUkDate(photo.takenOn) : "Date not set"}
               {photo.authorName ? ` · ${photo.authorName}` : ""}
             </p>

@@ -12,7 +12,7 @@ export function FarmCard({ farm }: { farm: FarmSummary }) {
     >
       <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-2">
         <div className="min-w-0">
-          <h2 className="min-w-0 font-display text-2xl font-light [overflow-wrap:anywhere]">{farm.name}</h2>
+          <h2 className="min-w-0 font-display text-2xl font-normal [overflow-wrap:anywhere]">{farm.name}</h2>
           {meta ? <p className="mt-1 text-sm text-muted [overflow-wrap:anywhere]">{meta}</p> : null}
         </div>
         <StatusPill status={farm.status} />
@@ -29,7 +29,7 @@ export function FarmCard({ farm }: { farm: FarmSummary }) {
             />
           ))}
         </div>
-        <p className="mt-2 text-sm text-muted tabular-nums">
+        <p className="mt-2 text-sm text-muted numeric">
           {farm.doneCount} of {farm.totalStages} stages
         </p>
       </div>

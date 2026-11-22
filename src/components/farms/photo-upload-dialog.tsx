@@ -283,7 +283,7 @@ export function PhotoUploadDialog({
                   <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                     <p className="min-w-0 flex-1 truncate text-sm">{item.file.name}</p>
                     <p
-                      className={`text-sm tabular-nums ${failed ? "text-overdue" : "text-muted"}`}
+                      className={`text-sm numeric ${failed ? "text-overdue" : "text-muted"}`}
                     >
                       {statusLabel[item.status]}
                     </p>
@@ -301,7 +301,7 @@ export function PhotoUploadDialog({
                       style={{ width: `${progressValue[item.status]}%` }}
                     />
                   </div>
-                  <p className="mt-1.5 text-sm text-muted tabular-nums">
+                  <p className="mt-1.5 text-sm text-muted numeric">
                     {formatFileSize(item.file.size)}
                   </p>
                   {item.message ? (
@@ -333,7 +333,7 @@ export function PhotoUploadDialog({
                 placeholder="What does this photo show?"
                 className={inputClass}
               />
-              <p className={`mt-2 ${hintTextClass} tabular-nums`}>
+              <p className={`mt-2 ${hintTextClass} numeric`}>
                 Applies to every photo in this batch. {caption.trim().length} of{" "}
                 {PHOTO_CAPTION_MAX} characters
               </p>

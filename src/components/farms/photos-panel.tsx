@@ -53,10 +53,10 @@ export function PhotosPanel({
     >
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 min-[768px]:px-5">
         <div>
-          <h2 id="photos-heading" className="font-display text-2xl font-light">
+          <h2 id="photos-heading" className="font-display text-2xl font-normal">
             Photos
           </h2>
-          <p className="text-sm text-muted tabular-nums">
+          <p className="text-sm text-muted numeric">
             {photos.length} {photos.length === 1 ? "image" : "images"}
           </p>
         </div>
@@ -120,7 +120,7 @@ export function PhotosPanel({
                     <span className="mt-2 line-clamp-2 block text-sm">{photo.caption.trim()}</span>
                   ) : null}
                   {photo.stageName ? <span className="mt-1 block text-sm text-text">{photo.stageName}</span> : null}
-                  <span className="mt-1 block text-sm text-muted tabular-nums">
+                  <span className="mt-1 block text-sm text-muted numeric">
                     {photo.takenOn ? formatUkShortDate(photo.takenOn) : "Date not set"}
                   </span>
                 </button>

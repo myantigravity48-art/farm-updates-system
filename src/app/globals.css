@@ -60,6 +60,8 @@ button, a, input { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 ::selection { background: var(--primary); color: var(--on-primary); }
 
+.numeric { font-variant-numeric: lining-nums tabular-nums; }
+
 .status-pill {
   display: inline-flex;
   align-items: center;

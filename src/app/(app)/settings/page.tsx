@@ -26,13 +26,13 @@ export default async function SettingsPage() {
 
       <SectionStack>
         <section className="rounded-[14px] border border-border bg-surface p-6">
-          <h2 className="font-display text-2xl font-light">Lifecycle and season windows</h2>
+          <h2 className="font-display text-2xl font-normal">Lifecycle and season windows</h2>
           <p className="mt-2 text-sm text-muted">Edit the stage timings used to schedule every farm.</p>
           <Link href="/settings/lifecycle" className="mt-3 inline-flex min-h-11 items-center rounded-[10px] text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-primary">Edit lifecycle</Link>
         </section>
 
         <section aria-labelledby="account-heading" className="rounded-[14px] border border-border bg-surface p-6">
-          <h2 id="account-heading" className="font-display text-2xl font-light">
+          <h2 id="account-heading" className="font-display text-2xl font-normal">
             Account
           </h2>
 
@@ -51,7 +51,7 @@ export default async function SettingsPage() {
           </div>
 
           <div className="mt-8 border-t border-border pt-6">
-            <h3 className="font-display text-xl font-light">Display name</h3>
+            <h3 className="font-display text-xl font-normal">Display name</h3>
             <p className="mt-1 text-sm text-muted">
               The name shown on your notes and photos, and in the Dashboard greeting.
             </p>
@@ -59,7 +59,7 @@ export default async function SettingsPage() {
           </div>
 
           <div className="mt-8 border-t border-border pt-6">
-            <h3 className="font-display text-xl font-light">Change password</h3>
+            <h3 className="font-display text-xl font-normal">Change password</h3>
             <ChangePasswordForm />
           </div>
 

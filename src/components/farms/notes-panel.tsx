@@ -47,10 +47,10 @@ export function NotesPanel({
       className="rounded-[14px] border border-border bg-surface"
     >
       <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-4 min-[768px]:px-5">
-        <h2 id="notes-heading" className="font-display text-2xl font-light">
+        <h2 id="notes-heading" className="font-display text-2xl font-normal">
           Notes
         </h2>
-        <p className="text-sm text-muted tabular-nums">
+        <p className="text-sm text-muted numeric">
           {notes.length} {notes.length === 1 ? "entry" : "entries"}
         </p>
       </header>
@@ -158,7 +158,7 @@ export function NotesPanel({
 
                 <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
                   <span>{note.authorName ?? "Author not recorded"}</span>
-                  {timestamp ? <span className="tabular-nums">{timestamp}</span> : null}
+                  {timestamp ? <span className="numeric">{timestamp}</span> : null}
                 </p>
 
                 <div className="mt-3">

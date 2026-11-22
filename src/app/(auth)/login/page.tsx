@@ -17,7 +17,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="mx-auto w-full max-w-[416px]">
           <Wordmark />
 
-          <h1 className="mt-12 font-display text-[32px] font-light leading-tight">Sign in</h1>
+          <h1 className="mt-12 font-display text-4xl font-light leading-tight">Sign in</h1>
 
           <LoginForm nextPath={safeNextPath(next)} />
         </div>

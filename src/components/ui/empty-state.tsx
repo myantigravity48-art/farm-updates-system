@@ -32,7 +32,7 @@ export function EmptyState({
     <div
       className={`min-w-0 rounded-[14px] border border-dashed border-border bg-surface px-6 py-10 text-center ${className}`.trim()}
     >
-      <p className="font-display text-2xl font-light">{title}</p>
+      <p className="font-display text-2xl font-normal">{title}</p>
       {description ? <p className="mt-2 text-sm text-muted">{description}</p> : null}
       {action ? (
         <div className="mt-6 flex flex-col items-center justify-center gap-2 min-[560px]:flex-row">

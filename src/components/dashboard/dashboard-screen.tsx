@@ -40,7 +40,7 @@ function KpiCard({
         {label}
       </p>
       <p
-        className={`mt-2 font-display text-4xl font-light tabular-nums min-[768px]:mt-3 min-[768px]:text-5xl ${valueClass}`}
+        className={`mt-2 font-display text-4xl font-light numeric min-[768px]:mt-3 min-[768px]:text-5xl ${valueClass}`}
       >
         {value}
       </p>
@@ -85,7 +85,7 @@ function ProgressRowItem({ row }: { row: ProgressList["rows"][number] }) {
         >
           {row.name}
         </Link>
-        <span className="min-w-0 text-sm text-muted tabular-nums">
+        <span className="min-w-0 text-sm text-muted numeric">
           {row.doneCount} of {row.totalStages} stages
         </span>
       </div>
@@ -109,7 +109,7 @@ function ComingUpRowLink({ row }: { row: ComingUpRow }) {
       href={`/farms/${row.farmId}`}
       className="flex min-h-14 items-center gap-3 rounded-[10px] px-2 hover:bg-raised"
     >
-      <span className="w-[7.5rem] flex-none text-sm font-medium tabular-nums">
+      <span className="w-[7.5rem] flex-none text-sm font-medium numeric">
         {formatUkShortDate(row.date)}
       </span>
       <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">
@@ -147,12 +147,12 @@ export function DashboardScreen({
 
         <div className="contents lg:order-2 lg:col-start-1 lg:row-start-2 lg:block lg:min-w-0 lg:space-y-8">
           <Section aria-labelledby="attention-heading" className="order-1 lg:order-none">
-            <h2 id="attention-heading" className="font-display text-2xl font-light">
+            <h2 id="attention-heading" className="font-display text-2xl font-normal">
               Needs attention
             </h2>
             {attention.rows.length === 0 ? (
               <div className="mt-4 rounded-[10px] border border-dashed border-border px-4 py-8 text-center">
-                <p className="font-display text-xl font-light">Nothing needs attention</p>
+                <p className="font-display text-xl font-normal">Nothing needs attention</p>
                 <p className="mt-2 text-sm text-muted">Everything is on schedule.</p>
               </div>
             ) : (
@@ -166,11 +166,11 @@ export function DashboardScreen({
                 </ul>
                 {attention.extraCount > 0 ? (
                   kpis.overdue > 0 ? (
-                    <Link href="/schedule?status=overdue" className="mt-3 inline-flex min-h-11 items-center text-sm text-primary hover:underline tabular-nums">
+                    <Link href="/schedule?status=overdue" className="mt-3 inline-flex min-h-11 items-center text-sm text-primary hover:underline numeric">
                       + {attention.extraCount} more
                     </Link>
                   ) : (
-                    <p className="mt-3 text-sm text-muted tabular-nums">+ {attention.extraCount} more</p>
+                    <p className="mt-3 text-sm text-muted numeric">+ {attention.extraCount} more</p>
                   )
                 ) : null}
               </>
@@ -178,7 +178,7 @@ export function DashboardScreen({
           </Section>
 
           <Section aria-labelledby="progress-heading" className="order-3 lg:order-none">
-            <h2 id="progress-heading" className="font-display text-2xl font-light">
+            <h2 id="progress-heading" className="font-display text-2xl font-normal">
               Farm progress
             </h2>
             <ul className="mt-2 divide-y divide-border">
@@ -199,7 +199,7 @@ export function DashboardScreen({
 
         <div className="contents lg:order-3 lg:col-start-2 lg:row-start-2 lg:block lg:min-w-0 lg:space-y-8">
           <Section aria-labelledby="season-heading" className="order-4 lg:order-none">
-            <h2 id="season-heading" className="font-display text-2xl font-light">
+            <h2 id="season-heading" className="font-display text-2xl font-normal">
               Season timeline
             </h2>
             <div className="mt-4">
@@ -208,7 +208,7 @@ export function DashboardScreen({
           </Section>
 
           <Section aria-labelledby="coming-up-heading" className="order-5 lg:order-none">
-            <h2 id="coming-up-heading" className="font-display text-2xl font-light">
+            <h2 id="coming-up-heading" className="font-display text-2xl font-normal">
               Coming up
             </h2>
             {comingUp.length === 0 ? (

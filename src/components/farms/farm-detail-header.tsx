@@ -66,7 +66,7 @@ export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
             />
           ))}
         </div>
-        <p className="mt-2 text-sm text-muted tabular-nums">
+        <p className="mt-2 text-sm text-muted numeric">
           {farm.doneCount} of {total} stages
         </p>
       </div>

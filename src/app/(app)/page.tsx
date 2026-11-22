@@ -25,7 +25,7 @@ export default async function DashboardPage() {
   const greeting = getGreeting(now, session.user.displayName);
   const dashboardHeader = (
     <header className="mb-7">
-      <p className="text-sm text-muted tabular-nums">{formatUkDate(today)}</p>
+      <p className="text-sm text-muted numeric">{formatUkDate(today)}</p>
       <h1 className="mt-3 font-display text-4xl font-light tracking-tight min-[768px]:text-5xl">
         {greeting}
       </h1>

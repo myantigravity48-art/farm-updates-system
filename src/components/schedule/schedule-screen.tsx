@@ -66,15 +66,15 @@ function ScheduleGroup({ group }: { group: SchedulePageGroup }) {
   const content = <ul className="mt-3 grid min-w-0 gap-2 min-[1024px]:grid-cols-[minmax(0,1fr)_8.5rem_13rem_auto] min-[1024px]:gap-x-4">{group.rows.map((row) => <ScheduleRow key={`${row.farmId}-${row.farmStageId ?? row.position}`} row={row} />)}</ul>;
   if (group.collapsed) {
     return <details className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
-      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-display text-2xl font-light focus-visible:rounded-md">
-        <span>{group.label}</span><span className="font-sans text-sm text-muted tabular-nums">{group.count}</span>
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-display text-2xl font-normal focus-visible:rounded-md">
+        <span>{group.label}</span><span className="font-sans text-sm text-muted numeric">{group.count}</span>
       </summary>
       {content}
     </details>;
   }
   return <section aria-labelledby={`schedule-group-${group.label.replaceAll(" ", "-")}`} className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
-    <h2 id={`schedule-group-${group.label.replaceAll(" ", "-")}`} className="flex items-baseline justify-between gap-3 font-display text-2xl font-light">
-      <span>{group.label}</span><span className="font-sans text-sm text-muted tabular-nums">{group.count}</span>
+    <h2 id={`schedule-group-${group.label.replaceAll(" ", "-")}`} className="flex items-baseline justify-between gap-3 font-display text-2xl font-normal">
+      <span>{group.label}</span><span className="font-sans text-sm text-muted numeric">{group.count}</span>
     </h2>
     {content}
   </section>;

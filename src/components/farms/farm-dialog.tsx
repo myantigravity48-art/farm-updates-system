@@ -499,7 +499,7 @@ function BulkAddForm({
         <section className="mt-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h3 className="text-sm font-medium">Farm details</h3>
-            <p className="text-sm text-muted tabular-nums">
+            <p className="text-sm text-muted numeric">
               {rows.length} {rows.length === 1 ? "row" : "rows"}
             </p>
           </div>

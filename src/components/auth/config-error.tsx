@@ -4,7 +4,7 @@ export function ConfigError({ variable }: { variable: string }) {
   return (
     <main className="flex min-h-dvh min-w-0 items-center justify-center bg-bg px-6 text-text">
       <div className="w-full max-w-[560px] rounded-[14px] border border-overdue bg-surface p-6">
-        <h1 className="flex items-center gap-2 font-display text-2xl font-light">
+        <h1 className="flex items-center gap-2 font-display text-2xl font-normal">
           <AlertCircle aria-hidden="true" size={22} strokeWidth={1.5} className="text-overdue" />
           The app is not configured
         </h1>

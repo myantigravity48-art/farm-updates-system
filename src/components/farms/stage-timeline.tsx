@@ -38,10 +38,10 @@ export function StageTimeline({ rows, farmId, today, plantingDate }: { rows: Sta
       className="rounded-[14px] border border-border bg-surface"
     >
       <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-4 min-[768px]:px-5">
-        <h2 id="stage-timeline-heading" className="font-display text-2xl font-light">
+        <h2 id="stage-timeline-heading" className="font-display text-2xl font-normal">
           Crop lifecycle
         </h2>
-        <p className="text-sm text-muted tabular-nums">{rows.length} stages</p>
+        <p className="text-sm text-muted numeric">{rows.length} stages</p>
       </header>
 
       {rows.length === 0 ? (
@@ -78,7 +78,7 @@ export function StageTimeline({ rows, farmId, today, plantingDate }: { rows: Sta
                         done ? "text-muted" : "text-text"
                       } ${row.nextUp ? "font-medium" : ""}`}
                     >
-                      <span className="mr-2 text-muted tabular-nums">
+                      <span className="mr-2 text-muted numeric">
                         {String(row.position).padStart(2, "0")}
                       </span>
                       {row.name}
@@ -90,7 +90,7 @@ export function StageTimeline({ rows, farmId, today, plantingDate }: { rows: Sta
                   </div>
 
                   <p
-                    className={`mt-1.5 text-sm tabular-nums ${
+                    className={`mt-1.5 text-sm numeric ${
                       done ? "text-muted" : "text-text"
                     }`}
                   >
@@ -186,7 +186,7 @@ function StageActions({ row, farmId, today, plantingDate, onMarkDone, onResult }
       </div>
       {dialog ? <Modal onClose={() => setDialog(null)} labelledBy={`stage-date-heading-${row.position}`}>
         <form onSubmit={saveDate} className="flex flex-col">
-          <header className="border-b border-border px-5 py-5"><h2 id={`stage-date-heading-${row.position}`} className="pr-10 font-display text-2xl font-light">{dialog === "planting" ? "Change planting date" : `Set date for ${row.name}`}</h2></header>
+          <header className="border-b border-border px-5 py-5"><h2 id={`stage-date-heading-${row.position}`} className="pr-10 font-display text-2xl font-normal">{dialog === "planting" ? "Change planting date" : `Set date for ${row.name}`}</h2></header>
           <div className="px-5 py-5">
             <label htmlFor={`stage-date-${row.position}`} className="mb-2 block text-sm font-medium">{dialog === "planting" ? "Planting date" : "Due date"}</label>
             <input id={`stage-date-${row.position}`} data-autofocus type="date" value={date} min={dialog === "planting" ? "2000-01-01" : "2020-01-01"} max={dialog === "planting" ? today : "2100-12-31"} onChange={(event) => setDate(event.target.value)} className="min-h-11 w-full rounded-[10px] border border-border bg-bg px-3 text-base" />

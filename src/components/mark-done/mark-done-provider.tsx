@@ -227,7 +227,7 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
               <span aria-hidden="true" className="mx-auto mb-3 block h-1 w-9 rounded-full bg-border min-[768px]:hidden" />
               <div className="pr-10">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">Field record</p>
-                <h2 id="mark-done-heading" className="mt-2 font-display text-3xl font-light leading-tight">
+                <h2 id="mark-done-heading" className="mt-2 font-display text-[28px] font-light leading-tight">
                   {preview ? `Mark ${preview.stageName} done` : "Mark stage done"}
                 </h2>
                 {preview ? <p className="mt-2 text-sm text-muted">{preview.farmName}</p> : null}
@@ -261,7 +261,7 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
                   <div className="mt-5">
                     <label htmlFor="mark-done-note" className="mb-2 block text-sm font-medium">Note <span className="font-normal text-muted">Optional</span></label>
                     <textarea id="mark-done-note" value={note} maxLength={1000} onChange={(event) => setNote(event.target.value)} rows={4} placeholder="Add a short note about the work" className="min-h-28 w-full rounded-[10px] border border-border bg-bg px-3 py-3 text-base text-text" />
-                    <p className="mt-2 text-sm text-muted tabular-nums">{note.length} of 1000 characters</p>
+                    <p className="mt-2 text-sm text-muted numeric">{note.length} of 1000 characters</p>
                   </div>
                   <div className="mt-5">
                     <label htmlFor="mark-done-photos" className="mb-2 block text-sm font-medium">Add photos <span className="font-normal text-muted">Optional · multiple</span></label>
