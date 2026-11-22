@@ -10,9 +10,9 @@ export function FarmCard({ farm }: { farm: FarmSummary }) {
       href={`/farms/${farm.id}`}
       className="flex min-w-0 flex-col rounded-[14px] border border-border bg-surface p-5 hover:bg-raised"
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-2">
         <div className="min-w-0">
-          <h2 className="font-display text-2xl font-light [overflow-wrap:anywhere]">{farm.name}</h2>
+          <h2 className="min-w-0 font-display text-2xl font-light [overflow-wrap:anywhere]">{farm.name}</h2>
           {meta ? <p className="mt-1 text-sm text-muted [overflow-wrap:anywhere]">{meta}</p> : null}
         </div>
         <StatusPill status={farm.status} />

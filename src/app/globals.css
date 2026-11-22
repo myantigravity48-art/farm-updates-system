@@ -64,6 +64,8 @@ button, a, input { -webkit-tap-highlight-color: transparent; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  flex: none;
+  white-space: nowrap;
   border-radius: 999px;
   padding: 5px 10px;
   font-size: 14px;
