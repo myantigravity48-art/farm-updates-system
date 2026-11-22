@@ -49,6 +49,22 @@ Rules for skills:
 5. Re-run the audits. Test both themes at 390, 900 and 1440 widths. All tests must still pass.
 
 Rules for the pass: tokens only, no behaviour changes, one screen per commit.
+
+## Completed in polish pass 3 (2026-11-22)
+
+Eleven visible fixes, inferred from code and not yet verified in a browser:
+1. Dashboard: under 1024px the order is Needs attention, the four metrics as a 2x2 summary, then progress, season and coming up; desktop is unchanged.
+2. Farm cards: the status pill keeps its full phrase and drops to its own line instead of squeezing.
+3. Alerts: recipient identity, switch and actions stack; long names and addresses wrap.
+4. Alerts: the switch off state uses `bg-muted` for the track and `bg-text` for the thumb; the contrast test covers both themes.
+5. Schedule: filters use one column on phones and a two-row grid from 768px, with the status chips on their own row.
+6. Schedule: rows share a four-column grid from 1024px; below that they stack.
+7. Shell: the truncated header email has a `title`; the settings link already announces the full address.
+8. Stage timeline: a done stage with no date reads "No date recorded" and only adds "by {name}" when a name exists.
+9. Numerals: one `.numeric` class replaces every `tabular-nums`; lifecycle month labels are 12px, the Mark done heading is 28px and the login title is 36px.
+10. Type: Fraunces headings below 28px use 400 instead of 300; the 18px farm-name spans stay light.
+11. Empty states: the dashboard "Nothing needs attention" box, the farm rail lines and the alerts notice use the shared `EmptyState`.
+
 # Lifecycle editor
 
 - The lifecycle page is plain and has no dedicated Stage template design export. Polish it later.
