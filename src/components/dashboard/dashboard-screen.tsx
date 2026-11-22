@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AlertCircle, Check, ChevronRight, Clock3, type LucideIcon } from "lucide-react";
 import { SeasonTimelineStrip } from "@/components/dashboard/season-timeline-strip";
 import { StatusPill } from "@/components/status-pill";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Section, SectionStack } from "@/components/ui/section";
 import { formatUkShortDate } from "@/lib/format/dates";
 import type {
@@ -151,10 +152,7 @@ export function DashboardScreen({
               Needs attention
             </h2>
             {attention.rows.length === 0 ? (
-              <div className="mt-4 rounded-[10px] border border-dashed border-border px-4 py-8 text-center">
-                <p className="font-display text-xl font-normal">Nothing needs attention</p>
-                <p className="mt-2 text-sm text-muted">Everything is on schedule.</p>
-              </div>
+              <EmptyState className="mt-4" title="Nothing needs attention" description="Everything is on schedule." />
             ) : (
               <>
                 <ul className="mt-4 space-y-2">

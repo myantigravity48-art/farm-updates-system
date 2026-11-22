@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Mail, Minus, Plus } from "lucide-react";
+import { Mail, Minus, Plus } from "lucide-react";
 import { addDays, type CalendarDate } from "@/lib/schedule";
 import { renderAlertEmail, renderDoneNotice, type AlertItem } from "@/lib/email/render";
 import type { AlertRecipient, AlertsPageData } from "@/lib/data/alerts";
@@ -11,6 +11,7 @@ import { addRecipient, removeRecipient, saveTimingSettings, sendTestEmail, setRe
 import { Modal } from "@/components/ui/modal";
 import { Toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type PreviewChoice = "Digest" | "Heads-up" | "Reminder" | "Overdue" | "Window open" | "Marked done";
 const PREVIEW_CHOICES: PreviewChoice[] = ["Digest", "Heads-up", "Reminder", "Overdue", "Window open", "Marked done"];
@@ -149,7 +150,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
           </div>
 
           {recipientProblem ? <p role="alert" aria-live="polite" className="mb-3 rounded-[10px] border border-overdue/40 bg-overdue/10 px-4 py-3 text-sm">{recipientProblem}</p> : null}
-          {nobody ? <InlineNotice>No one will receive alerts. Add a recipient or turn one on.</InlineNotice> : null}
+          {nobody ? <EmptyState variant="plain" className="mb-3" title="No one will receive alerts" description="Add a recipient or turn one on." /> : null}
           {data.recipients.length ? (
             <ul className="divide-y divide-border rounded-[14px] border border-border bg-surface">
               {data.recipients.map((recipient) => <RecipientRow key={recipient.id} recipient={recipient} pending={pending} onToggle={toggleRecipient} onRemove={deleteRecipient} onEdit={openEditDialog} />)}
@@ -302,10 +303,6 @@ function NumberStepper({ label, value, error, min, max, disabled, onChange }: { 
       </div>
     </div>
   );
-}
-
-function InlineNotice({ children }: { children: React.ReactNode }) {
-  return <p className="mb-3 flex items-start gap-2 rounded-[10px] border border-due-soon/40 bg-due-soon/10 px-4 py-3 text-sm"><AlertCircle aria-hidden="true" className="mt-0.5 shrink-0 text-due-soon" size={18} /><span>{children}</span></p>;
 }
 
 function sameTiming(a: TimingValues, b: TimingValues): boolean {

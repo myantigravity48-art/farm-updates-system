@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { FarmDialog } from "@/components/farms/farm-dialog";
 import { StatusDot } from "@/components/status-dot";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Toast } from "@/components/ui/toast";
 import type { FarmSummary, StageConfig } from "@/lib/data/types";
 
@@ -103,10 +104,10 @@ export function AppShell({
               </Link>
             </li>)}
             {visibleFarms.length === 0 && farms.length === 0 && (
-              <li className="px-3 py-3 text-sm text-muted">No farms yet. Add your first farm to start the schedule.</li>
+              <li className="px-3 py-3"><EmptyState variant="plain" title="No farms yet" description="Add your first farm to start the schedule." /></li>
             )}
             {visibleFarms.length === 0 && farms.length > 0 && (
-              <li className="px-3 py-3 text-sm text-muted">No farms found</li>
+              <li className="px-3 py-3"><EmptyState variant="plain" title="No farms found" /></li>
             )}
           </ul>
         )}
