@@ -94,7 +94,11 @@ export function StageTimeline({ rows, farmId, today, plantingDate }: { rows: Sta
                       done ? "text-muted" : "text-text"
                     }`}
                   >
-                    {done ? `Done ${row.doneDate ? formatUkShortDate(row.doneDate) : "date not recorded"} by ${row.doneByName ?? "a user"}` : row.dateText}
+                    {done
+                      ? row.doneDate
+                        ? `Done ${formatUkShortDate(row.doneDate)}${row.doneByName ? ` by ${row.doneByName}` : ""}`
+                        : `No date recorded${row.doneByName ? ` by ${row.doneByName}` : ""}`
+                      : row.dateText}
                   </p>
                   {done && row.doneNote ? <p className="mt-1 whitespace-pre-wrap text-sm text-muted">{row.doneNote}</p> : null}
                   <p className="mt-1 text-sm text-muted">{row.ruleText}</p>
