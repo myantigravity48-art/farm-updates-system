@@ -35,22 +35,22 @@ const filters: Array<{ value: ScheduleFilterStatus; label: string }> = [
 function ScheduleRow({ row }: { row: SchedulePageRow }) {
   const { openMarkDone } = useMarkDone();
   return (
-    <li className="relative min-w-0 rounded-[10px] bg-raised pl-5 pr-3 hover:bg-border/40">
+    <li className="relative min-w-0 rounded-[10px] bg-raised py-3 pl-5 pr-3 hover:bg-border/40 min-[1024px]:col-span-full min-[1024px]:grid min-[1024px]:min-h-[72px] min-[1024px]:grid-cols-subgrid min-[1024px]:items-center">
       <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1 ${edgeClass[row.status]}`} />
-      <div className="flex min-h-[72px] min-w-0 flex-wrap items-center gap-x-4 gap-y-2 py-3 max-[639px]:flex-col max-[639px]:items-stretch">
-        <Link href={`/farms/${row.farmId}`} className="flex min-h-11 min-w-0 flex-1 flex-col justify-center [overflow-wrap:anywhere] focus-visible:rounded-md">
+      <div className="flex min-w-0 flex-col items-stretch gap-y-2 min-[1024px]:contents">
+        <Link href={`/farms/${row.farmId}`} className="flex min-h-11 min-w-0 flex-col justify-center [overflow-wrap:anywhere] focus-visible:rounded-md min-[1024px]:col-start-1">
           <span className="font-display text-lg font-light leading-tight">{row.farmName}</span>
           <span className="text-sm text-muted [overflow-wrap:anywhere]">{row.stageName}</span>
         </Link>
-        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-2 max-[639px]:w-full max-[639px]:flex-col max-[639px]:items-start">
-          <p className="min-w-0 text-sm text-muted [overflow-wrap:anywhere]">
+        <div className="flex min-w-0 flex-col items-start gap-y-2 min-[1024px]:contents">
+          <p className="min-w-0 text-sm text-muted [overflow-wrap:anywhere] min-[1024px]:col-start-2">
             {row.dateText}
             {row.isOverrideDate ? <span className="block">Date set manually</span> : null}
           </p>
-          <div className="flex min-w-0 flex-wrap items-center gap-2 max-[639px]:w-full">
-            <StatusPill status={variant[row.status]} label={row.phrase} />
+          <div className="flex min-w-0 flex-wrap items-center gap-2 min-[1024px]:contents">
+            <span className="min-[1024px]:col-start-3 min-[1024px]:justify-self-start"><StatusPill status={variant[row.status]} label={row.phrase} /></span>
             {row.canMarkDone ? (
-              <button type="button" onClick={() => openMarkDone(row.farmStageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-border bg-surface px-3 text-sm font-medium text-text hover:bg-raised">
+              <button type="button" onClick={() => openMarkDone(row.farmStageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-border bg-surface px-3 text-sm font-medium text-text hover:bg-raised min-[1024px]:justify-self-end">
                 <Check aria-hidden="true" size={17} strokeWidth={1.7} />
                 Mark done
               </button>
@@ -63,7 +63,7 @@ function ScheduleRow({ row }: { row: SchedulePageRow }) {
 }
 
 function ScheduleGroup({ group }: { group: SchedulePageGroup }) {
-  const content = <ul className="mt-3 min-w-0 space-y-2">{group.rows.map((row) => <ScheduleRow key={`${row.farmId}-${row.farmStageId ?? row.position}`} row={row} />)}</ul>;
+  const content = <ul className="mt-3 grid min-w-0 gap-2 min-[1024px]:grid-cols-[minmax(0,1fr)_8.5rem_13rem_auto] min-[1024px]:gap-x-4">{group.rows.map((row) => <ScheduleRow key={`${row.farmId}-${row.farmStageId ?? row.position}`} row={row} />)}</ul>;
   if (group.collapsed) {
     return <details className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
       <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-display text-2xl font-light focus-visible:rounded-md">
@@ -114,20 +114,20 @@ export function ScheduleScreen({
         <p className="mt-3 text-sm text-muted">Every job across all farms, in date order.</p>
       </header>
 
-      {hasFarms ? <section aria-label="Schedule filters" className="mb-6 flex min-w-0 flex-wrap items-end gap-3 rounded-[14px] border border-border bg-surface p-4">
-        <label className="flex min-w-[160px] flex-1 flex-col gap-1 text-sm text-muted">
+      {hasFarms ? <section aria-label="Schedule filters" className="mb-6 grid min-w-0 grid-cols-1 items-end gap-3 rounded-[14px] border border-border bg-surface p-4 min-[768px]:grid-cols-[minmax(0,1fr)_auto]">
+        <label className="flex min-w-0 flex-col gap-1 text-sm text-muted min-[768px]:col-start-1 min-[768px]:row-start-1">
           Farm
-          <select value={selectedFarmId ?? ""} onChange={(event) => updateFilter("farmId", event.target.value || null)} className="min-h-11 min-w-0 w-full rounded-[10px] border border-border bg-bg px-3 text-text">
+          <select value={selectedFarmId ?? ""} onChange={(event) => updateFilter("farmId", event.target.value || null)} className="min-h-11 w-full min-w-0 rounded-[10px] border border-border bg-bg px-3 text-text">
             <option value="">All farms</option>
             {farmOptions.map((farm) => <option key={farm.id} value={farm.id}>{farm.name}</option>)}
           </select>
         </label>
-        <div role="group" aria-label="Filter by status" className="flex min-w-0 flex-1 flex-wrap gap-2">
+        <div role="group" aria-label="Filter by status" className="flex min-w-0 flex-wrap gap-2 min-[768px]:col-span-2 min-[768px]:row-start-2 min-[768px]:flex-nowrap">
           {filters.map((filter) => <button key={filter.value} type="button" aria-pressed={selectedStatus === filter.value} onClick={() => updateFilter("status", filter.value === "all" ? null : filter.value)} className={`min-h-11 rounded-full border px-4 text-sm ${selectedStatus === filter.value ? "border-primary bg-raised text-text" : "border-border bg-bg text-muted hover:bg-raised"}`}>
             {filter.label}
           </button>)}
         </div>
-        <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-2 text-sm">
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-2 text-sm min-[768px]:col-start-2 min-[768px]:row-start-1">
           <input type="checkbox" role="switch" aria-checked={showCompleted} checked={showCompleted} onChange={(event) => updateFilter("showCompleted", event.target.checked ? "true" : null)} className="h-5 w-5 accent-primary" />
           <span>Show completed</span>
         </label>
