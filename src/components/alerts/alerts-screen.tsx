@@ -263,13 +263,19 @@ function RecipientRow({ recipient, pending, onToggle, onRemove, onEdit }: { reci
     finally { setSendingTest(false); }
   }
   return (
-    <li className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
-      <div className="min-w-0 flex-1"><p className="truncate font-medium">{recipient.name}</p><p className="truncate text-sm text-muted">{recipient.email}</p>{recipient.phone ? <p className="truncate text-sm text-muted">{recipient.phone}</p> : null}</div>
-      <Switch checked={recipient.enabled} label={`Send alerts to ${recipient.name}`} onChange={() => onToggle(recipient)} disabled={pending} compact />
-      <button type="button" onClick={() => onEdit(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Edit</button>
-      <button type="button" onClick={() => onRemove(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Remove</button>
-      <button type="button" onClick={testEmail} disabled={sendingTest || now < cooldownUntil} className="min-h-11 rounded-[10px] border border-border px-3 text-sm text-text hover:bg-raised disabled:opacity-50">{sendingTest ? "Sending…" : "Send test email"}</button>
-      <p className="basis-full text-sm text-muted" aria-live="polite" aria-atomic="true">{testMessage}</p>
+    <li className="min-w-0 px-4 py-4">
+      <p className="font-medium [overflow-wrap:anywhere]">{recipient.name}</p>
+      <p className="mt-1 text-sm text-muted [overflow-wrap:anywhere]">
+        {recipient.email}
+        {recipient.phone ? ` · ${recipient.phone}` : ""}
+      </p>
+      <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
+        <Switch checked={recipient.enabled} label={`Send alerts to ${recipient.name}`} onChange={() => onToggle(recipient)} disabled={pending} compact />
+        <button type="button" onClick={testEmail} disabled={sendingTest || now < cooldownUntil} className="min-h-11 rounded-[10px] border border-border px-3 text-sm text-text hover:bg-raised disabled:opacity-50">{sendingTest ? "Sending…" : "Send test email"}</button>
+        <button type="button" onClick={() => onEdit(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Edit</button>
+        <button type="button" onClick={() => onRemove(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Remove</button>
+      </div>
+      <p className="mt-2 text-sm text-muted" aria-live="polite" aria-atomic="true">{testMessage}</p>
     </li>
   );
 }
@@ -278,7 +284,7 @@ function Switch({ checked, label, onChange, disabled = false, compact = false }:
   return (
     <button type="button" role="switch" aria-checked={checked} aria-label={label} disabled={disabled} onClick={() => onChange(!checked)} className={`inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm disabled:opacity-50 ${compact ? "" : "w-full justify-between"}`}>
       {compact ? null : <span>{label}</span>}
-      <span aria-hidden="true" className={`relative h-6 w-11 rounded-full border border-border transition-colors ${checked ? "bg-primary" : "bg-raised"}`}><span className={`absolute top-[3px] h-4 w-4 rounded-full bg-surface transition-transform ${checked ? "translate-x-[23px]" : "translate-x-[3px]"}`} /></span>
+      <span aria-hidden="true" className={`relative h-6 w-11 rounded-full border border-border transition-colors ${checked ? "bg-primary" : "bg-muted"}`}><span className={`absolute top-[3px] h-4 w-4 rounded-full transition-transform ${checked ? "translate-x-[23px] bg-surface" : "translate-x-[3px] bg-text"}`} /></span>
       <span className="sr-only">{checked ? "On" : "Off"}</span>
     </button>
   );

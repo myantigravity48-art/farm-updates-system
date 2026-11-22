@@ -61,6 +61,11 @@ function themeTokens(selector: RegExp): Record<string, string> {
 const dark = themeTokens(/:root,\s*\.dark\s*\{([\s\S]*?)\}/);
 const light = themeTokens(/\.light\s*\{([\s\S]*?)\}/);
 
+const alertsScreen = readFileSync(
+  fileURLToPath(new URL("../../components/alerts/alerts-screen.tsx", import.meta.url)),
+  "utf8",
+);
+
 const textTokens = ["text", "muted", "primary", "due-soon", "overdue"] as const;
 const layers = ["bg", "surface", "raised"] as const;
 
@@ -129,4 +134,24 @@ describe("text and status tokens", () => {
       }
     }
   });
+});
+
+describe("switch off state", () => {
+  it("uses the shared off-track and thumb tokens", () => {
+    expect(alertsScreen).toContain('checked ? "bg-primary" : "bg-muted"');
+    expect(alertsScreen).toContain(
+      'checked ? "translate-x-[23px] bg-surface" : "translate-x-[3px] bg-text"',
+    );
+  });
+
+  it.each([
+    ["dark", dark],
+    ["light", light],
+  ] as const)(
+    "reaches 3:1 for the off track and thumb against the card surface in %s mode",
+    (_theme, tokens) => {
+      expect(round(contrastRatio(tokens.muted, tokens.surface))).toBeGreaterThanOrEqual(3);
+      expect(round(contrastRatio(tokens.text, tokens.surface))).toBeGreaterThanOrEqual(3);
+    },
+  );
 });
