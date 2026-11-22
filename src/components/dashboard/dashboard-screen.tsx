@@ -130,16 +130,23 @@ export function DashboardScreen({
 
   return (
     <SectionStack>
-      <section aria-label="This week at a glance" className="grid grid-cols-2 gap-4 min-[768px]:gap-6 lg:grid-cols-4">
-        <KpiCard label="Overdue" value={kpis.overdue} tone="overdue" Icon={AlertCircle} />
-        <KpiCard label="Next 14 days" value={kpis.dueSoon} tone="due-soon" Icon={Clock3} />
-        <KpiCard label="Done this month" value={kpis.doneThisMonth} />
-        <KpiCard label="Farms" value={kpis.farms} />
-      </section>
+      {/*
+        Under 1024px the grid is one column and the two wrappers use
+        display: contents, so Needs attention reads first, the four metrics
+        follow as a 2x2 summary, then the rest. At 1024px and up the wrappers
+        become the same two independent columns as before, with the metrics
+        back above them.
+      */}
+      <div className="grid min-w-0 gap-6 min-[768px]:gap-8 lg:grid-cols-[3fr_2fr] lg:items-start">
+        <section aria-label="This week at a glance" className="order-2 grid grid-cols-2 gap-4 min-[768px]:gap-6 lg:order-1 lg:col-span-2 lg:grid-cols-4">
+          <KpiCard label="Overdue" value={kpis.overdue} tone="overdue" Icon={AlertCircle} />
+          <KpiCard label="Next 14 days" value={kpis.dueSoon} tone="due-soon" Icon={Clock3} />
+          <KpiCard label="Done this month" value={kpis.doneThisMonth} />
+          <KpiCard label="Farms" value={kpis.farms} />
+        </section>
 
-      <div className="grid min-w-0 gap-6 min-[768px]:gap-8 lg:items-start lg:grid-cols-[3fr_2fr]">
-        <div className="min-w-0 space-y-6 min-[768px]:space-y-8">
-          <Section aria-labelledby="attention-heading">
+        <div className="contents lg:order-2 lg:col-start-1 lg:row-start-2 lg:block lg:min-w-0 lg:space-y-8">
+          <Section aria-labelledby="attention-heading" className="order-1 lg:order-none">
             <h2 id="attention-heading" className="font-display text-2xl font-light">
               Needs attention
             </h2>
@@ -170,7 +177,7 @@ export function DashboardScreen({
             )}
           </Section>
 
-          <Section aria-labelledby="progress-heading">
+          <Section aria-labelledby="progress-heading" className="order-3 lg:order-none">
             <h2 id="progress-heading" className="font-display text-2xl font-light">
               Farm progress
             </h2>
@@ -190,8 +197,8 @@ export function DashboardScreen({
           </Section>
         </div>
 
-        <div className="min-w-0 space-y-6 min-[768px]:space-y-8">
-          <Section aria-labelledby="season-heading">
+        <div className="contents lg:order-3 lg:col-start-2 lg:row-start-2 lg:block lg:min-w-0 lg:space-y-8">
+          <Section aria-labelledby="season-heading" className="order-4 lg:order-none">
             <h2 id="season-heading" className="font-display text-2xl font-light">
               Season timeline
             </h2>
@@ -200,7 +207,7 @@ export function DashboardScreen({
             </div>
           </Section>
 
-          <Section aria-labelledby="coming-up-heading">
+          <Section aria-labelledby="coming-up-heading" className="order-5 lg:order-none">
             <h2 id="coming-up-heading" className="font-display text-2xl font-light">
               Coming up
             </h2>
