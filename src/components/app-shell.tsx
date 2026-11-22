@@ -130,7 +130,7 @@ export function AppShell({
                 className="flex min-h-11 min-w-0 items-center gap-2 rounded-[10px] px-2 text-sm text-muted hover:bg-raised hover:text-text"
               >
                 <Settings aria-hidden="true" size={18} strokeWidth={1.5} />
-                <span className="max-w-[160px] truncate min-[768px]:max-w-[260px]">{email}</span>
+                <span title={email} className="max-w-[160px] truncate min-[768px]:max-w-[260px]">{email}</span>
               </Link>
               <span className="min-[768px]:hidden">
                 <ThemeToggle />
