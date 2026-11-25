@@ -100,7 +100,7 @@ export function FarmDetailTabs({
               tabIndex={selected ? 0 : -1}
               onClick={() => setActive(tab.id)}
               onKeyDown={(event) => onKeyDown(event, tab.id)}
-              className={`flex min-h-11 flex-1 items-center justify-center rounded-[8px] px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+              className={`pressable flex min-h-11 flex-1 items-center justify-center rounded-[8px] px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                 selected
                   ? "bg-surface font-medium text-text"
                   : "text-muted hover:text-text"

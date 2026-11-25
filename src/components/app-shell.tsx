@@ -62,20 +62,20 @@ export function AppShell({
   return (
     <div className="min-h-dvh min-w-0 bg-bg text-text">
       <aside aria-label="Primary navigation" className="fixed inset-y-0 left-0 z-20 hidden w-[72px] flex-col items-center border-r border-border bg-surface py-4 min-[768px]:flex">
-        <Link href="/" aria-label="Farm updates system dashboard" className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl border border-border text-primary focus-visible:outline-offset-2">
+        <Link href="/" aria-label="Farm updates system dashboard" className="pressable mb-7 flex h-11 w-11 items-center justify-center rounded-xl border border-border text-primary focus-visible:outline-offset-2">
           <Icon icon={Leaf} />
         </Link>
         <nav className="flex flex-col gap-2">
           {primaryLinks.map(({ href, label, Icon: Glyph }) => {
             const active = activeFor(pathname, href);
-            return <Link key={href} href={href} title={label} aria-label={label} aria-current={active ? "page" : undefined} className={`flex h-11 w-11 items-center justify-center rounded-xl focus-visible:outline-offset-2 ${active ? "bg-raised text-primary" : "text-muted hover:bg-raised hover:text-text"}`}>
+            return <Link key={href} href={href} title={label} aria-label={label} aria-current={active ? "page" : undefined} className={`pressable flex h-11 w-11 items-center justify-center rounded-xl focus-visible:outline-offset-2 ${active ? "bg-raised text-primary" : "text-muted hover:bg-raised hover:text-text"}`}>
               <Icon icon={Glyph} />
             </Link>;
           })}
         </nav>
         <div className="mt-auto flex flex-col items-center gap-2">
           <ThemeToggle />
-          <Link href="/settings" title="Settings" aria-label="Settings" aria-current={activeFor(pathname, "/settings") ? "page" : undefined} className={`flex h-11 w-11 items-center justify-center rounded-xl ${activeFor(pathname, "/settings") ? "bg-raised text-primary" : "text-muted hover:bg-raised hover:text-text"}`}>
+          <Link href="/settings" title="Settings" aria-label="Settings" aria-current={activeFor(pathname, "/settings") ? "page" : undefined} className={`pressable flex h-11 w-11 items-center justify-center rounded-xl ${activeFor(pathname, "/settings") ? "bg-raised text-primary" : "text-muted hover:bg-raised hover:text-text"}`}>
             <Icon icon={Settings} />
           </Link>
         </div>
@@ -93,7 +93,7 @@ export function AppShell({
         ) : (
           <ul className="mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto">
             {visibleFarms.map((farm) => <li key={farm.id}>
-              <Link href={`/farms/${farm.id}`} className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 hover:bg-raised">
+              <Link href={`/farms/${farm.id}`} className="pressable-quiet flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 hover:bg-raised">
                 <StatusDot status={farm.status} />
                 <span className="flex min-w-0 flex-col">
                   <span className="text-sm [overflow-wrap:anywhere]">{farm.name}</span>
@@ -115,7 +115,7 @@ export function AppShell({
         <button
           type="button"
           onClick={() => setDialogOpen(true)}
-          className="mt-4 flex min-h-11 flex-none items-center gap-2 rounded-lg border border-dashed border-border px-3 text-sm text-muted hover:bg-raised hover:text-text"
+          className="pressable mt-4 flex min-h-11 flex-none items-center gap-2 rounded-lg border border-dashed border-border px-3 text-sm text-muted hover:bg-raised hover:text-text"
         >
           <Icon icon={Plus} /> Add farm
         </button>
@@ -129,7 +129,7 @@ export function AppShell({
               <Link
                 href="/settings"
                 aria-label={`Settings, signed in as ${email}`}
-                className="flex min-h-11 min-w-0 items-center gap-2 rounded-[10px] px-2 text-sm text-muted hover:bg-raised hover:text-text"
+                className="pressable flex min-h-11 min-w-0 items-center gap-2 rounded-[10px] px-2 text-sm text-muted hover:bg-raised hover:text-text"
               >
                 <Icon icon={Settings} />
                 <span title={email} className="max-w-[160px] truncate min-[768px]:max-w-[260px]">{email}</span>
@@ -146,7 +146,7 @@ export function AppShell({
       <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-30 grid min-w-0 grid-cols-5 border-t border-border bg-surface px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 min-[768px]:hidden">
         {allLinks.map(({ href, label, Icon: Glyph }) => {
           const active = activeFor(pathname, href);
-          return <Link key={href} href={href} aria-label={label} aria-current={active ? "page" : undefined} className={`flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs focus-visible:outline-offset-[-2px] ${active ? "text-primary" : "text-muted"}`}>
+          return <Link key={href} href={href} aria-label={label} aria-current={active ? "page" : undefined} className={`pressable flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs focus-visible:outline-offset-[-2px] ${active ? "text-primary" : "text-muted"}`}>
             <Icon icon={Glyph} />
             <span className="text-sm">{label}</span>
           </Link>;

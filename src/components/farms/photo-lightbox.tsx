@@ -139,7 +139,7 @@ export function PhotoLightbox({
             type="button"
             onClick={onClose}
             aria-label="Close photo viewer"
-            className="ml-auto flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
+            className="pressable ml-auto flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
           >
             <Icon icon={X} />
           </button>

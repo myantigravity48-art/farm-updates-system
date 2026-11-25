@@ -13,7 +13,7 @@ export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted">
         <Link
           href="/farms"
-          className="inline-flex min-h-11 items-center hover:text-text hover:underline"
+          className="pressable inline-flex min-h-11 items-center rounded-[6px] hover:text-text hover:underline"
         >
           Farms
         </Link>

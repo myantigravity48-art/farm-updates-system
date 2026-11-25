@@ -97,7 +97,7 @@ export function PhotosPanel({
                 <button
                   type="button"
                   onClick={() => setLightboxIndex(index)}
-                  className="block w-full rounded-[10px] text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="pressable block w-full rounded-[10px] text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   aria-label={`Open photo: ${alt}`}
                 >
                   <span className="relative block aspect-square overflow-hidden rounded-[10px] border border-border bg-raised">

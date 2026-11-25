@@ -63,14 +63,14 @@ function AttentionRow({ row }: { row: AttentionList["rows"][number] }) {
         aria-hidden="true"
         className={`absolute inset-y-0 left-0 w-1 ${attentionEdgeClasses[row.status]}`}
       />
-      <Link href={`/farms/${row.farmId}`} className="flex min-h-14 min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2">
+      <Link href={`/farms/${row.farmId}`} className="pressable flex min-h-14 min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2">
         <span className="min-w-0">
           <span className="block font-display text-lg font-light leading-tight [overflow-wrap:anywhere]">{row.farmName}</span>
           <span className="block text-sm text-muted [overflow-wrap:anywhere]">{row.stageName}</span>
         </span>
         <StatusPill status={row.status} label={row.phrase} />
       </Link>
-      <button type="button" disabled={!row.stageId} onClick={() => openMarkDone(row.stageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-primary hover:bg-surface disabled:opacity-50">
+      <button type="button" disabled={!row.stageId} onClick={() => openMarkDone(row.stageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="pressable flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-primary hover:bg-surface disabled:opacity-50">
         <Icon icon={Check} />
       </button>
     </div>
@@ -109,7 +109,7 @@ function ComingUpRowLink({ row }: { row: ComingUpRow }) {
   return (
     <Link
       href={`/farms/${row.farmId}`}
-      className="flex min-h-14 items-center gap-3 rounded-[10px] px-2 hover:bg-raised"
+      className="pressable flex min-h-14 items-center gap-3 rounded-[10px] px-2 hover:bg-raised"
     >
       <span className="w-[7.5rem] flex-none text-sm font-medium numeric">
         {formatUkShortDate(row.date)}

@@ -43,7 +43,7 @@ export function Toast({
         <button
           type="button"
           onClick={action.onClick}
-          className="min-h-11 rounded-[10px] px-2 font-medium text-primary hover:bg-surface"
+          className="pressable min-h-11 rounded-[10px] px-2 font-medium text-primary hover:bg-surface"
         >
           {action.label}
         </button>
@@ -52,7 +52,7 @@ export function Toast({
         type="button"
         onClick={onDismiss}
         aria-label="Dismiss notification"
-        className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-surface hover:text-text"
+        className="pressable flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-surface hover:text-text"
       >
         <Icon icon={X} />
       </button>

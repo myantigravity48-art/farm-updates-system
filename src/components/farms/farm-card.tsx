@@ -8,7 +8,7 @@ export function FarmCard({ farm }: { farm: FarmSummary }) {
   return (
     <Link
       href={`/farms/${farm.id}`}
-      className="flex min-w-0 flex-col rounded-[14px] border border-border bg-surface p-5 hover:bg-raised"
+      className="pressable flex min-w-0 flex-col rounded-[14px] border border-border bg-surface p-5 hover:bg-raised"
     >
       <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-2">
         <div className="min-w-0">

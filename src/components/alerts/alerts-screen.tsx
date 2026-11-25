@@ -152,7 +152,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
           {recipientProblem ? <p role="alert" aria-live="polite" className="mb-3 rounded-[10px] border border-overdue/40 bg-overdue/10 px-4 py-3 text-sm">{recipientProblem}</p> : null}
           {nobody ? <EmptyState variant="plain" className="mb-3" title="No one will receive alerts" description="Add a recipient or turn one on." /> : null}
           {data.recipients.length ? (
-            <ul className="divide-y divide-border rounded-[14px] border border-border bg-surface">
+            <ul className="divide-y divide-border rounded-[14px] border border-border bg-surface" aria-busy={pending}>
               {data.recipients.map((recipient) => <RecipientRow key={recipient.id} recipient={recipient} pending={pending} onToggle={toggleRecipient} onRemove={deleteRecipient} onEdit={openEditDialog} />)}
             </ul>
           ) : null}
@@ -181,7 +181,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
             <p className="border-t border-border pt-4 text-sm text-muted">Alerts send at {data.settings.sendHourLondon}:00 UK time</p>
             {timingErrors.reminderDays ? <p role="alert" className="text-sm text-overdue">{timingErrors.reminderDays}</p> : null}
             {recipientProblem && timingErrors.reminderDays === undefined ? <p role="alert" aria-live="polite" className="text-sm text-overdue">{recipientProblem}</p> : null}
-            <Button className="w-full min-[768px]:w-auto" onClick={saveTiming} disabled={!changed || pending}>
+            <Button className="w-full min-[768px]:w-auto" onClick={saveTiming} disabled={!changed || pending} aria-busy={pending}>
               {pending ? "Saving…" : "Save changes"}
             </Button>
           </div>
@@ -194,7 +194,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
           </div>
           <div role="tablist" aria-label="Email preview type" className="mb-3 flex flex-wrap gap-1 rounded-[12px] border border-border bg-raised p-1">
             {PREVIEW_CHOICES.map((choice) => (
-              <button key={choice} type="button" role="tab" aria-selected={preview === choice} onClick={() => setPreview(choice)} className={`min-h-11 rounded-[9px] px-3 text-sm ${preview === choice ? "bg-surface text-text" : "text-muted hover:text-text"}`}>
+              <button key={choice} type="button" role="tab" aria-selected={preview === choice} onClick={() => setPreview(choice)} className={`pressable min-h-11 rounded-[9px] px-3 text-sm ${preview === choice ? "bg-surface text-text" : "text-muted hover:text-text"}`}>
                 {choice}
               </button>
             ))}
@@ -232,7 +232,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
               {recipientErrors.phone ? <p id="recipient-phone-error" className="-mt-3 text-sm text-overdue">{recipientErrors.phone}</p> : null}
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="secondary" onClick={() => { setDialogOpen(false); setEditing(null); }} disabled={pending}>Cancel</Button>
-                <Button type="submit" disabled={pending}>{pending ? "Saving…" : editing ? "Save recipient" : "Add recipient"}</Button>
+                <Button type="submit" disabled={pending} aria-busy={pending}>{pending ? "Saving…" : editing ? "Save recipient" : "Add recipient"}</Button>
               </div>
             </form>
           </div>
@@ -272,9 +272,9 @@ function RecipientRow({ recipient, pending, onToggle, onRemove, onEdit }: { reci
       </p>
       <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
         <Switch checked={recipient.enabled} label={`Send alerts to ${recipient.name}`} onChange={() => onToggle(recipient)} disabled={pending} compact />
-        <button type="button" onClick={testEmail} disabled={sendingTest || now < cooldownUntil} className="min-h-11 rounded-[10px] border border-border px-3 text-sm text-text hover:bg-raised disabled:opacity-50">{sendingTest ? "Sending…" : "Send test email"}</button>
-        <button type="button" onClick={() => onEdit(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Edit</button>
-        <button type="button" onClick={() => onRemove(recipient)} disabled={pending} className="min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Remove</button>
+        <button type="button" onClick={testEmail} disabled={sendingTest || now < cooldownUntil} aria-busy={sendingTest} className="pressable min-h-11 rounded-[10px] border border-border px-3 text-sm text-text hover:bg-raised disabled:opacity-50">{sendingTest ? "Sending…" : "Send test email"}</button>
+        <button type="button" onClick={() => onEdit(recipient)} disabled={pending} className="pressable min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Edit</button>
+        <button type="button" onClick={() => onRemove(recipient)} disabled={pending} className="pressable min-h-11 rounded-[10px] px-3 text-sm text-muted hover:bg-raised hover:text-text">Remove</button>
       </div>
       <p className="mt-2 text-sm text-muted" aria-live="polite" aria-atomic="true">{testMessage}</p>
     </li>
@@ -283,7 +283,7 @@ function RecipientRow({ recipient, pending, onToggle, onRemove, onEdit }: { reci
 
 function Switch({ checked, label, onChange, disabled = false, compact = false }: { checked: boolean; label: string; onChange: (value: boolean) => void; disabled?: boolean; compact?: boolean }) {
   return (
-    <button type="button" role="switch" aria-checked={checked} aria-label={label} disabled={disabled} onClick={() => onChange(!checked)} className={`inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm disabled:opacity-50 ${compact ? "" : "w-full justify-between"}`}>
+    <button type="button" role="switch" aria-checked={checked} aria-label={label} disabled={disabled} onClick={() => onChange(!checked)} className={`pressable inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm disabled:opacity-50 ${compact ? "" : "w-full justify-between"}`}>
       {compact ? null : <span>{label}</span>}
       <span aria-hidden="true" className={`relative h-6 w-11 rounded-full border border-border transition-colors ${checked ? "bg-primary" : "bg-muted"}`}><span className={`absolute top-[3px] h-4 w-4 rounded-full transition-transform ${checked ? "translate-x-[23px] bg-surface" : "translate-x-[3px] bg-text"}`} /></span>
       <span className="sr-only">{checked ? "On" : "Off"}</span>
@@ -297,9 +297,9 @@ function NumberStepper({ label, value, error, min, max, disabled, onChange }: { 
     <div className={`flex flex-wrap items-center justify-between gap-3 ${disabled ? "opacity-50" : ""}`}>
       <div className="min-w-[180px] flex-1"><label htmlFor={inputId} className="text-sm font-medium">{label}</label>{error ? <p role="alert" className="mt-1 text-sm text-overdue">{error}</p> : null}</div>
       <div className="flex items-center gap-1">
-        <button type="button" aria-label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Icon icon={Minus} /></button>
+        <button type="button" aria-label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} className="pressable flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Icon icon={Minus} /></button>
         <input id={inputId} type="number" min={min} max={max} step={1} value={Number.isFinite(value) ? value : ""} disabled={disabled} onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))} aria-invalid={Boolean(error)} className="h-11 w-[72px] rounded-[10px] border border-border bg-bg text-center text-text" />
-        <button type="button" aria-label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Icon icon={Plus} /></button>
+        <button type="button" aria-label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} className="pressable flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Icon icon={Plus} /></button>
       </div>
     </div>
   );

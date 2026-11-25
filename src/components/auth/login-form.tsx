@@ -55,7 +55,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
             onClick={() => setShowPassword((visible) => !visible)}
             aria-label={showPassword ? "Hide password" : "Show password"}
             aria-pressed={showPassword}
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-[10px] text-muted hover:text-text"
+            className="pressable absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-[10px] text-muted hover:text-text"
           >
             {showPassword ? (
               <Icon icon={EyeOff} />
@@ -78,7 +78,8 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="mt-7 flex h-12 w-full items-center justify-center rounded-[10px] bg-primary px-6 font-medium text-on-primary disabled:cursor-not-allowed disabled:opacity-70"
+        aria-busy={pending}
+        className="pressable mt-7 flex h-12 w-full items-center justify-center rounded-[10px] bg-primary px-6 font-medium text-on-primary disabled:cursor-not-allowed disabled:opacity-70"
       >
         {pending ? "Signing in…" : "Sign in"}
       </button>

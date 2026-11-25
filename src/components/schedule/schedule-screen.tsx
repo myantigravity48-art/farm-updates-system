@@ -39,7 +39,7 @@ function ScheduleRow({ row }: { row: SchedulePageRow }) {
     <li className="relative min-w-0 rounded-[10px] bg-raised py-3 pl-5 pr-3 hover:bg-border/40 min-[1024px]:col-span-full min-[1024px]:grid min-[1024px]:min-h-[72px] min-[1024px]:grid-cols-subgrid min-[1024px]:items-center">
       <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1 ${edgeClass[row.status]}`} />
       <div className="flex min-w-0 flex-col items-stretch gap-y-2 min-[1024px]:contents">
-        <Link href={`/farms/${row.farmId}`} className="flex min-h-11 min-w-0 flex-col justify-center [overflow-wrap:anywhere] focus-visible:rounded-md min-[1024px]:col-start-1">
+        <Link href={`/farms/${row.farmId}`} className="pressable-quiet flex min-h-11 min-w-0 flex-col justify-center [overflow-wrap:anywhere] focus-visible:rounded-md min-[1024px]:col-start-1">
           <span className="font-display text-lg font-light leading-tight">{row.farmName}</span>
           <span className="text-sm text-muted [overflow-wrap:anywhere]">{row.stageName}</span>
         </Link>
@@ -51,7 +51,7 @@ function ScheduleRow({ row }: { row: SchedulePageRow }) {
           <div className="flex min-w-0 flex-wrap items-center gap-2 min-[1024px]:contents">
             <span className="min-[1024px]:col-start-3 min-[1024px]:justify-self-start"><StatusPill status={variant[row.status]} label={row.phrase} /></span>
             {row.canMarkDone ? (
-              <button type="button" onClick={() => openMarkDone(row.farmStageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-border bg-surface px-3 text-sm font-medium text-text hover:bg-raised min-[1024px]:justify-self-end">
+              <button type="button" onClick={() => openMarkDone(row.farmStageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-border bg-surface px-3 text-sm font-medium text-text hover:bg-raised min-[1024px]:justify-self-end">
                 <Icon icon={Check} />
                 Mark done
               </button>
@@ -67,7 +67,7 @@ function ScheduleGroup({ group }: { group: SchedulePageGroup }) {
   const content = <ul className="mt-3 grid min-w-0 gap-2 min-[1024px]:grid-cols-[minmax(0,1fr)_8.5rem_13rem_auto] min-[1024px]:gap-x-4">{group.rows.map((row) => <ScheduleRow key={`${row.farmId}-${row.farmStageId ?? row.position}`} row={row} />)}</ul>;
   if (group.collapsed) {
     return <details className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
-      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-display text-2xl font-normal focus-visible:rounded-md">
+      <summary className="pressable-quiet flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 font-display text-2xl font-normal focus-visible:rounded-md">
         <span>{group.label}</span><span className="font-sans text-sm text-muted numeric">{group.count}</span>
       </summary>
       {content}
@@ -124,11 +124,11 @@ export function ScheduleScreen({
           </select>
         </label>
         <div role="group" aria-label="Filter by status" className="flex min-w-0 flex-wrap gap-2 min-[768px]:col-span-2 min-[768px]:row-start-2 min-[768px]:flex-nowrap">
-          {filters.map((filter) => <button key={filter.value} type="button" aria-pressed={selectedStatus === filter.value} onClick={() => updateFilter("status", filter.value === "all" ? null : filter.value)} className={`min-h-11 rounded-full border px-4 text-sm ${selectedStatus === filter.value ? "border-primary bg-raised text-text" : "border-border bg-bg text-muted hover:bg-raised"}`}>
+          {filters.map((filter) => <button key={filter.value} type="button" aria-pressed={selectedStatus === filter.value} onClick={() => updateFilter("status", filter.value === "all" ? null : filter.value)} className={`pressable min-h-11 rounded-full border px-4 text-sm ${selectedStatus === filter.value ? "border-primary bg-raised text-text" : "border-border bg-bg text-muted hover:bg-raised"}`}>
             {filter.label}
           </button>)}
         </div>
-        <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-2 text-sm min-[768px]:col-start-2 min-[768px]:row-start-1">
+        <label className="pressable-quiet flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-2 text-sm min-[768px]:col-start-2 min-[768px]:row-start-1">
           <input type="checkbox" role="switch" aria-checked={showCompleted} checked={showCompleted} onChange={(event) => updateFilter("showCompleted", event.target.checked ? "true" : null)} className="h-5 w-5 accent-primary" />
           <span>Show completed</span>
         </label>

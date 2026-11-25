@@ -368,7 +368,7 @@ function AddFarmForm({
         <button
           type="button"
           onClick={onSwitch}
-          className="mt-2 min-h-11 w-full text-sm text-primary hover:underline"
+          className="pressable mt-2 min-h-11 w-full text-sm text-primary hover:underline"
         >
           Add several farms at once
         </button>
@@ -521,7 +521,7 @@ function BulkAddForm({
                       type="button"
                       onClick={() => removeRow(row.id)}
                       aria-label={`Remove row ${index + 1}`}
-                      className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
+                      className="pressable flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
                     >
                       <Icon icon={Trash2} />
                     </button>
@@ -599,7 +599,7 @@ function BulkAddForm({
           <button
             type="button"
             onClick={addRow}
-            className="mt-3 flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm text-primary hover:bg-raised"
+            className="pressable mt-3 flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm text-primary hover:bg-raised"
           >
             <Icon icon={Plus} />
             Add row
@@ -611,7 +611,7 @@ function BulkAddForm({
         <button
           type="button"
           onClick={onSwitch}
-          className="flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm text-primary hover:bg-raised"
+          className="pressable flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm text-primary hover:bg-raised"
         >
           <Icon icon={ArrowLeft} />
           One farm

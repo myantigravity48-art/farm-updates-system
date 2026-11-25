@@ -173,7 +173,7 @@ function StageActions({ row, farmId, today, plantingDate, onMarkDone, onResult }
         <button ref={triggerRef} type="button" aria-label={`Actions for ${row.name}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((value) => !value)} onKeyDown={(event) => {
           if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); setOpen(true); requestAnimationFrame(() => menuRef.current?.querySelector<HTMLButtonElement>("button")?.focus()); }
           if (event.key === "Escape") setOpen(false);
-        }} className="flex h-11 w-11 items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text">
+        }} className="pressable flex h-11 w-11 items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text">
           <Icon icon={MoreHorizontal} />
         </button>
         {open ? <div ref={menuRef} role="menu" aria-label={`${row.name} actions`} onKeyDown={(event) => {
@@ -182,7 +182,7 @@ function StageActions({ row, farmId, today, plantingDate, onMarkDone, onResult }
           if (event.key === "Escape") { event.preventDefault(); setOpen(false); triggerRef.current?.focus(); }
           if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); items[(index + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus(); }
         }} className="absolute right-0 top-full z-20 mt-1 min-w-52 rounded-[10px] border border-border bg-surface p-1 shadow-lg">
-          {actions.map((action) => <button key={action} type="button" role="menuitem" onClick={() => void runAction(action)} className="flex min-h-11 w-full items-center rounded-[8px] px-3 text-left text-sm hover:bg-raised">{labels[action]}</button>)}
+          {actions.map((action) => <button key={action} type="button" role="menuitem" onClick={() => void runAction(action)} className="pressable flex min-h-11 w-full items-center rounded-[8px] px-3 text-left text-sm hover:bg-raised">{labels[action]}</button>)}
         </div> : null}
       </div>
       {dialog ? <Modal onClose={() => setDialog(null)} labelledBy={`stage-date-heading-${row.position}`}>

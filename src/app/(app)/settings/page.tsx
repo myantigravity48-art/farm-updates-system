@@ -68,7 +68,7 @@ export default async function SettingsPage() {
             <form action={signOut}>
               <button
                 type="submit"
-                className="flex min-h-11 items-center gap-2 rounded-[10px] border border-border px-4 text-sm text-text hover:bg-raised"
+                className="pressable flex min-h-11 items-center gap-2 rounded-[10px] border border-border px-4 text-sm text-text hover:bg-raised"
               >
                 <Icon icon={LogOut} />
                 Sign out

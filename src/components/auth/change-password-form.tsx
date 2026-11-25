@@ -66,7 +66,8 @@ export function ChangePasswordForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-5 flex h-11 items-center justify-center rounded-[10px] bg-primary px-5 text-sm font-medium text-on-primary disabled:cursor-not-allowed disabled:opacity-70"
+        aria-busy={pending}
+        className="pressable mt-5 flex h-11 items-center justify-center rounded-[10px] bg-primary px-5 text-sm font-medium text-on-primary disabled:cursor-not-allowed disabled:opacity-70"
       >
         {pending ? "Changing password…" : "Change password"}
       </button>

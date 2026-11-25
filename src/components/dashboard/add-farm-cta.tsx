@@ -41,7 +41,7 @@ export function AddFarmCta({ stageConfig }: { stageConfig: StageConfig | null })
             <button
               type="button"
               onClick={() => openDialog("bulk")}
-              className="inline-flex min-h-11 items-center text-sm text-primary hover:underline"
+              className="pressable inline-flex min-h-11 items-center text-sm text-primary hover:underline"
             >
               Add several farms at once
             </button>
@@ -53,7 +53,7 @@ export function AddFarmCta({ stageConfig }: { stageConfig: StageConfig | null })
             </Link>
             <Link
               href="/farms"
-              className="inline-flex min-h-11 items-center text-sm text-primary hover:underline"
+              className="pressable inline-flex min-h-11 items-center text-sm text-primary hover:underline"
             >
               Add several farms at once
             </Link>

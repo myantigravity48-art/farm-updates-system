@@ -234,7 +234,7 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
                 {preview ? <p className="mt-2 text-sm text-muted">{preview.farmName}</p> : null}
               </div>
             </header>
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 min-[768px]:px-7">
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 min-[768px]:px-7" aria-busy={loading}>
               {loading ? (
                 <div role="status" aria-live="polite">
                   <span className="sr-only">Loading stage details</span>
@@ -266,7 +266,7 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
                   </div>
                   <div className="mt-5">
                     <label htmlFor="mark-done-photos" className="mb-2 block text-sm font-medium">Add photos <span className="font-normal text-muted">Optional · multiple</span></label>
-                    <label htmlFor="mark-done-photos" className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[10px] border border-dashed border-border bg-raised px-4 py-3">
+                    <label htmlFor="mark-done-photos" className="pressable flex min-h-16 cursor-pointer items-center gap-3 rounded-[10px] border border-dashed border-border bg-raised px-4 py-3">
                       <Icon icon={ImagePlus} className="text-primary" />
                       <span><span className="block font-medium">Choose photos</span><span className="text-sm text-muted">JPEG, PNG or WebP</span></span>
                     </label>
