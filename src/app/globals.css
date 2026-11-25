@@ -84,6 +84,11 @@ button, a, input { -webkit-tap-highlight-color: transparent; }
 button, a, [role="button"], [role="switch"], [role="tab"], [role="menuitem"], summary {
   touch-action: manipulation;
 }
+/* Controls never select their label text; content text stays selectable. */
+button, [role="button"], [role="switch"], [role="tab"], [role="menuitem"], summary {
+  -webkit-user-select: none;
+  user-select: none;
+}
 .pressable {
   transition:
     transform 140ms var(--ease-out),
@@ -136,7 +141,11 @@ textarea:disabled,
   to { opacity: 1; transform: none; }
 }
 .motion-scrim { animation: scrim-fade-in 160ms var(--ease-out) both; }
-.motion-panel { animation: panel-rise-in 200ms var(--ease-out) both; }
+.motion-panel {
+  animation: panel-rise-in 200ms var(--ease-out) both;
+  /* Sheets and dialogs trap their own scroll; the page behind does not move. */
+  overscroll-behavior: contain;
+}
 .motion-toast { animation: toast-rise-in 200ms var(--ease-out) both; }
 
 @media (prefers-reduced-motion: reduce) {
