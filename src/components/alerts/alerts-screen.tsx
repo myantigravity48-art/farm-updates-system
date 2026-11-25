@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, Minus, Plus } from "lucide-react";import { addDays, type CalendarDate } from "@/lib/schedule";
+import { AlertCircle, Mail, Minus, Plus } from "lucide-react";import { addDays, type CalendarDate } from "@/lib/schedule";
 import { renderAlertEmail, renderDoneNotice, type AlertItem } from "@/lib/email/render";
 import type { AlertRecipient, AlertsPageData } from "@/lib/data/alerts";
 import { validateRecipient, validateTiming, type TimingValues } from "@/lib/alerts/validate";
@@ -10,7 +10,6 @@ import { addRecipient, removeRecipient, saveTimingSettings, sendTestEmail, setRe
 import { Modal } from "@/components/ui/modal";
 import { Toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 
 type PreviewChoice = "Digest" | "Heads-up" | "Reminder" | "Overdue" | "Window open" | "Marked done";
@@ -150,7 +149,15 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
           </div>
 
           {recipientProblem ? <p role="alert" aria-live="polite" className="mb-3 rounded-[10px] border border-overdue/40 bg-overdue/10 px-4 py-3 text-sm">{recipientProblem}</p> : null}
-          {nobody ? <EmptyState variant="plain" className="mb-3" title="No one will receive alerts" description="Add a recipient or turn one on." /> : null}
+          {nobody ? (
+            <div className="mb-3 flex items-start gap-3 rounded-[10px] border border-due-soon/40 bg-due-soon/10 px-4 py-3 text-sm text-due-soon">
+              <Icon icon={AlertCircle} size="inline" className="mt-0.5 shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium">No one will receive alerts</p>
+                <p className="mt-1">Add a recipient or turn one on.</p>
+              </div>
+            </div>
+          ) : null}
           {data.recipients.length ? (
             <ul className="divide-y divide-border rounded-[14px] border border-border bg-surface" aria-busy={pending}>
               {data.recipients.map((recipient) => <RecipientRow key={recipient.id} recipient={recipient} pending={pending} onToggle={toggleRecipient} onRemove={deleteRecipient} onEdit={openEditDialog} />)}

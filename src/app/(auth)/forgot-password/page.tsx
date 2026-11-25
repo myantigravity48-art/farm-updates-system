@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
       <div className="mx-auto w-full max-w-[416px]">
         <Wordmark />
 
-        <h1 className="mt-12 font-display text-[32px] font-light leading-tight">Forgot password</h1>
+        <h1 className="mt-12 font-display text-4xl font-light leading-tight">Forgot password</h1>
 
         <p className="mt-4 text-base text-muted">
           Ask the person who manages this system to reset your password.

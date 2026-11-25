@@ -123,6 +123,29 @@ describe("dark due-soon token", () => {
   });
 });
 
+describe("alerts no-recipient warning", () => {
+  it("keeps the due-soon treatment, the alert icon and the warning copy", () => {
+    expect(alertsScreen).toContain('border-due-soon/40 bg-due-soon/10');
+    expect(alertsScreen).toContain('text-sm text-due-soon');
+    expect(alertsScreen).toContain('<Icon icon={AlertCircle} size="inline"');
+    expect(alertsScreen).toContain("No one will receive alerts");
+    expect(alertsScreen).toContain("Add a recipient or turn one on.");
+  });
+
+  it.each([
+    ["dark", dark],
+    ["light", light],
+  ] as const)(
+    "reaches 4.5:1 on its own ten percent tint over background and surface in %s mode",
+    (_theme, tokens) => {
+      for (const layer of ["bg", "surface"] as const) {
+        const tint = tintOver(tokens["due-soon"], tokens[layer], 0.1);
+        expect(round(contrastRatio(tokens["due-soon"], tint))).toBeGreaterThanOrEqual(4.5);
+      }
+    },
+  );
+});
+
 describe("text and status tokens", () => {
   it.each([
     ["dark", dark],
