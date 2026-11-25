@@ -33,7 +33,7 @@ export function Toast({
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-x-4 bottom-24 z-[60] flex items-center gap-3 rounded-[10px] border border-border bg-raised px-4 py-3 text-sm text-text min-[768px]:bottom-6 min-[768px]:left-auto min-[768px]:right-6 min-[768px]:w-[360px]"
+      className="motion-toast fixed inset-x-4 bottom-24 z-[60] flex items-center gap-3 rounded-[10px] border border-border bg-raised px-4 py-3 text-sm text-text min-[768px]:bottom-6 min-[768px]:left-auto min-[768px]:right-6 min-[768px]:w-[360px]"
     >
       <span className={`flex h-8 w-8 flex-none items-center justify-center rounded-full ${status === "success" ? "bg-primary/15 text-primary" : "bg-overdue/15 text-overdue"}`}>
         <Icon icon={StatusIcon} size="inline" />

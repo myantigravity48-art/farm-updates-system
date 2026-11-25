@@ -116,7 +116,7 @@ export function PhotoLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-stretch justify-center p-0 min-[768px]:items-center min-[768px]:p-6"
+      className="motion-scrim fixed inset-0 z-50 flex items-stretch justify-center p-0 min-[768px]:items-center min-[768px]:p-6"
       style={{ backgroundColor: "color-mix(in srgb, var(--bg) 92%, transparent)" }}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -129,7 +129,7 @@ export function PhotoLightbox({
         aria-label="Photo viewer"
         tabIndex={-1}
         onKeyDown={onKeyDown}
-        className="relative flex h-full w-full min-w-0 flex-col overflow-hidden border border-border bg-surface text-text min-[768px]:h-auto min-[768px]:max-h-[92dvh] min-[768px]:max-w-[1000px] min-[768px]:rounded-[14px]"
+        className="motion-panel relative flex h-full w-full min-w-0 flex-col overflow-hidden border border-border bg-surface text-text min-[768px]:h-auto min-[768px]:max-h-[92dvh] min-[768px]:max-w-[1000px] min-[768px]:rounded-[14px]"
       >
         <header className="flex flex-none items-center gap-3 border-b border-border px-4 py-3 min-[768px]:px-5">
           <p className="text-sm text-muted numeric">

@@ -285,7 +285,7 @@ function Switch({ checked, label, onChange, disabled = false, compact = false }:
   return (
     <button type="button" role="switch" aria-checked={checked} aria-label={label} disabled={disabled} onClick={() => onChange(!checked)} className={`pressable inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm disabled:opacity-50 ${compact ? "" : "w-full justify-between"}`}>
       {compact ? null : <span>{label}</span>}
-      <span aria-hidden="true" className={`relative h-6 w-11 rounded-full border border-border transition-colors ${checked ? "bg-primary" : "bg-muted"}`}><span className={`absolute top-[3px] h-4 w-4 rounded-full transition-transform ${checked ? "translate-x-[23px] bg-surface" : "translate-x-[3px] bg-text"}`} /></span>
+      <span aria-hidden="true" className={`relative h-6 w-11 rounded-full border border-border transition-colors duration-150 ease-out ${checked ? "bg-primary" : "bg-muted"}`}><span className={`absolute top-[3px] h-4 w-4 rounded-full transition-transform duration-150 ease-out ${checked ? "translate-x-[23px] bg-surface" : "translate-x-[3px] bg-text"}`} /></span>
       <span className="sr-only">{checked ? "On" : "Off"}</span>
     </button>
   );
