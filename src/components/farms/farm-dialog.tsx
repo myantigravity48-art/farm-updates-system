@@ -3,6 +3,7 @@
 import { ArrowLeft, Leaf, Plus, Trash2 } from "lucide-react";
 import { useActionState, useEffect, useId, useRef, useState, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import {
   errorTextClass,
   hintTextClass,
@@ -107,7 +108,7 @@ function FarmDialogContent({
       <header className="border-b border-border px-5 pb-5 pt-6 min-[768px]:px-7">
         <div className="flex items-start gap-4 pr-10">
           <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] bg-raised text-primary">
-            <Leaf aria-hidden="true" size={20} strokeWidth={1.5} />
+            <Icon icon={Leaf} />
           </span>
           <div className="min-w-0">
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
@@ -522,7 +523,7 @@ function BulkAddForm({
                       aria-label={`Remove row ${index + 1}`}
                       className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
                     >
-                      <Trash2 aria-hidden="true" size={18} strokeWidth={1.5} />
+                      <Icon icon={Trash2} />
                     </button>
                   </div>
                   <div className="grid min-w-0 gap-3 min-[520px]:grid-cols-2">
@@ -600,7 +601,7 @@ function BulkAddForm({
             onClick={addRow}
             className="mt-3 flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm text-primary hover:bg-raised"
           >
-            <Plus aria-hidden="true" size={18} strokeWidth={1.5} />
+            <Icon icon={Plus} />
             Add row
           </button>
         </section>
@@ -612,7 +613,7 @@ function BulkAddForm({
           onClick={onSwitch}
           className="flex min-h-11 items-center gap-2 rounded-[10px] px-2 text-sm text-primary hover:bg-raised"
         >
-          <ArrowLeft aria-hidden="true" size={18} strokeWidth={1.5} />
+          <Icon icon={ArrowLeft} />
           One farm
         </button>
         <Button type="submit" disabled={pending || rows.length === 0} aria-busy={pending}>

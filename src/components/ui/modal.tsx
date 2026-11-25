@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
+import { Icon } from "@/components/ui/icon";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -103,7 +104,7 @@ export function Modal({
           aria-label="Close"
           className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
         >
-          <X aria-hidden="true" size={20} strokeWidth={1.5} />
+          <Icon icon={X} />
         </button>
         {children}
       </div>

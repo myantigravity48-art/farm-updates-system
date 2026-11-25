@@ -5,6 +5,7 @@ import { AlertCircle, Check, ChevronRight, Clock3, type LucideIcon } from "lucid
 import { SeasonTimelineStrip } from "@/components/dashboard/season-timeline-strip";
 import { StatusPill } from "@/components/status-pill";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Icon } from "@/components/ui/icon";
 import { Section, SectionStack } from "@/components/ui/section";
 import { formatUkShortDate } from "@/lib/format/dates";
 import type {
@@ -24,12 +25,12 @@ function KpiCard({
   label,
   value,
   tone,
-  Icon,
+  icon,
 }: {
   label: string;
   value: number;
   tone?: keyof typeof kpiTones;
-  Icon?: LucideIcon;
+  icon?: LucideIcon;
 }) {
   const valueClass = tone ? kpiTones[tone] : "text-text";
   const iconClass = tone ? kpiTones[tone] : "text-muted";
@@ -37,7 +38,7 @@ function KpiCard({
   return (
     <div className="min-w-0 rounded-[14px] border border-border bg-surface p-4 min-[768px]:p-5">
       <p className="flex items-center gap-1.5 text-sm text-muted">
-        {Icon ? <Icon aria-hidden="true" size={16} strokeWidth={1.6} className={iconClass} /> : null}
+        {icon ? <Icon icon={icon} size="inline" className={iconClass} /> : null}
         {label}
       </p>
       <p
@@ -70,7 +71,7 @@ function AttentionRow({ row }: { row: AttentionList["rows"][number] }) {
         <StatusPill status={row.status} label={row.phrase} />
       </Link>
       <button type="button" disabled={!row.stageId} onClick={() => openMarkDone(row.stageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-primary hover:bg-surface disabled:opacity-50">
-        <Check aria-hidden="true" size={20} strokeWidth={1.7} />
+        <Icon icon={Check} />
       </button>
     </div>
   );
@@ -117,7 +118,7 @@ function ComingUpRowLink({ row }: { row: ComingUpRow }) {
         <span className="block text-sm leading-tight [overflow-wrap:anywhere]">{row.stageName}</span>
         <span className="block text-sm leading-tight text-muted [overflow-wrap:anywhere]">{row.farmName}</span>
       </span>
-      <ChevronRight aria-hidden="true" size={18} strokeWidth={1.5} className="flex-none text-muted" />
+      <Icon icon={ChevronRight} size="inline" className="flex-none text-muted" />
     </Link>
   );
 }
@@ -140,8 +141,8 @@ export function DashboardScreen({
       */}
       <div className="grid min-w-0 gap-6 min-[768px]:gap-8 lg:grid-cols-[3fr_2fr] lg:items-start">
         <section aria-label="This week at a glance" className="order-2 grid grid-cols-2 gap-4 min-[768px]:gap-6 lg:order-1 lg:col-span-2 lg:grid-cols-4">
-          <KpiCard label="Overdue" value={kpis.overdue} tone="overdue" Icon={AlertCircle} />
-          <KpiCard label="Next 14 days" value={kpis.dueSoon} tone="due-soon" Icon={Clock3} />
+          <KpiCard label="Overdue" value={kpis.overdue} tone="overdue" icon={AlertCircle} />
+          <KpiCard label="Next 14 days" value={kpis.dueSoon} tone="due-soon" icon={Clock3} />
           <KpiCard label="Done this month" value={kpis.doneThisMonth} />
           <KpiCard label="Farms" value={kpis.farms} />
         </section>

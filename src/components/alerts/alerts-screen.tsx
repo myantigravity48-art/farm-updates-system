@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, Minus, Plus } from "lucide-react";
-import { addDays, type CalendarDate } from "@/lib/schedule";
+import { Mail, Minus, Plus } from "lucide-react";import { addDays, type CalendarDate } from "@/lib/schedule";
 import { renderAlertEmail, renderDoneNotice, type AlertItem } from "@/lib/email/render";
 import type { AlertRecipient, AlertsPageData } from "@/lib/data/alerts";
 import { validateRecipient, validateTiming, type TimingValues } from "@/lib/alerts/validate";
@@ -12,6 +11,7 @@ import { Modal } from "@/components/ui/modal";
 import { Toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Icon } from "@/components/ui/icon";
 
 type PreviewChoice = "Digest" | "Heads-up" | "Reminder" | "Overdue" | "Window open" | "Marked done";
 const PREVIEW_CHOICES: PreviewChoice[] = ["Digest", "Heads-up", "Reminder", "Overdue", "Window open", "Marked done"];
@@ -145,7 +145,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
               <p className="mt-1 text-sm text-muted">Email alerts go to the people on this list.</p>
             </div>
             <Button variant="secondary" onClick={openAddDialog} disabled={data.recipients.length >= 10}>
-              <Plus aria-hidden="true" size={18} /> Add recipient
+              <Icon icon={Plus} /> Add recipient
             </Button>
           </div>
 
@@ -201,7 +201,7 @@ export function AlertsScreen({ data }: { data: AlertsPageData }) {
           </div>
           <article className="overflow-hidden rounded-[14px] border border-border bg-surface">
             <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-primary"><Mail aria-hidden="true" size={18} /></span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-primary"><Icon icon={Mail} /></span>
               <div className="min-w-0"><p className="text-xs text-muted">Subject</p><p className="font-medium">{previewContent.subject}</p></div>
             </div>
             <pre className="whitespace-pre-wrap break-words px-4 py-4 font-mono text-sm leading-6 text-text">{previewContent.text}</pre>
@@ -297,9 +297,9 @@ function NumberStepper({ label, value, error, min, max, disabled, onChange }: { 
     <div className={`flex flex-wrap items-center justify-between gap-3 ${disabled ? "opacity-50" : ""}`}>
       <div className="min-w-[180px] flex-1"><label htmlFor={inputId} className="text-sm font-medium">{label}</label>{error ? <p role="alert" className="mt-1 text-sm text-overdue">{error}</p> : null}</div>
       <div className="flex items-center gap-1">
-        <button type="button" aria-label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Minus aria-hidden="true" size={18} /></button>
+        <button type="button" aria-label={`Decrease ${label}`} disabled={disabled || value <= min} onClick={() => onChange(value - 1)} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Icon icon={Minus} /></button>
         <input id={inputId} type="number" min={min} max={max} step={1} value={Number.isFinite(value) ? value : ""} disabled={disabled} onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))} aria-invalid={Boolean(error)} className="h-11 w-[72px] rounded-[10px] border border-border bg-bg text-center text-text" />
-        <button type="button" aria-label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Plus aria-hidden="true" size={18} /></button>
+        <button type="button" aria-label={`Increase ${label}`} disabled={disabled || value >= max} onClick={() => onChange(value + 1)} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-bg text-text disabled:opacity-40"><Icon icon={Plus} /></button>
       </div>
     </div>
   );

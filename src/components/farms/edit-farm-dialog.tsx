@@ -4,6 +4,7 @@ import { Leaf } from "lucide-react";
 import { useActionState, useEffect, useId, useRef, useState, type ChangeEvent } from "react";
 import { ErrorSummary } from "@/components/farms/error-summary";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import {
   errorTextClass,
   hintTextClass,
@@ -90,7 +91,7 @@ function EditFarmDialogContent({
         <header className="border-b border-border px-5 pb-5 pt-6 min-[768px]:px-7">
           <div className="flex items-start gap-4 pr-10">
             <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[10px] bg-raised text-primary">
-              <Leaf aria-hidden="true" size={20} strokeWidth={1.5} />
+              <Icon icon={Leaf} />
             </span>
             <div className="min-w-0">
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, CalendarDays, LayoutDashboard, Leaf, Search, Settings, Sprout } from "lucide-react";
+import { Bell, CalendarDays, LayoutDashboard, Leaf, Plus, Search, Settings, Sprout } from "lucide-react";
 import { useMemo, useState } from "react";
 import { FarmDialog } from "@/components/farms/farm-dialog";
 import { StatusDot } from "@/components/status-dot";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Icon } from "@/components/ui/icon";
 import { Toast } from "@/components/ui/toast";
 import type { FarmSummary, StageConfig } from "@/lib/data/types";
 
@@ -62,20 +63,20 @@ export function AppShell({
     <div className="min-h-dvh min-w-0 bg-bg text-text">
       <aside aria-label="Primary navigation" className="fixed inset-y-0 left-0 z-20 hidden w-[72px] flex-col items-center border-r border-border bg-surface py-4 min-[768px]:flex">
         <Link href="/" aria-label="Farm updates system dashboard" className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl border border-border text-primary focus-visible:outline-offset-2">
-          <Leaf aria-hidden="true" size={21} strokeWidth={1.5} />
+          <Icon icon={Leaf} />
         </Link>
         <nav className="flex flex-col gap-2">
-          {primaryLinks.map(({ href, label, Icon }) => {
+          {primaryLinks.map(({ href, label, Icon: Glyph }) => {
             const active = activeFor(pathname, href);
             return <Link key={href} href={href} title={label} aria-label={label} aria-current={active ? "page" : undefined} className={`flex h-11 w-11 items-center justify-center rounded-xl focus-visible:outline-offset-2 ${active ? "bg-raised text-primary" : "text-muted hover:bg-raised hover:text-text"}`}>
-              <Icon aria-hidden="true" size={21} strokeWidth={1.5} />
+              <Icon icon={Glyph} />
             </Link>;
           })}
         </nav>
         <div className="mt-auto flex flex-col items-center gap-2">
           <ThemeToggle />
           <Link href="/settings" title="Settings" aria-label="Settings" aria-current={activeFor(pathname, "/settings") ? "page" : undefined} className={`flex h-11 w-11 items-center justify-center rounded-xl ${activeFor(pathname, "/settings") ? "bg-raised text-primary" : "text-muted hover:bg-raised hover:text-text"}`}>
-            <Settings aria-hidden="true" size={21} strokeWidth={1.5} />
+            <Icon icon={Settings} />
           </Link>
         </div>
       </aside>
@@ -83,7 +84,7 @@ export function AppShell({
       {showFarmPanel && <aside aria-label="Farm list" className="fixed inset-y-0 left-[72px] z-10 hidden w-[248px] flex-col border-r border-border bg-surface px-4 py-7 min-[1024px]:flex">
         <h2 className="mb-5 font-display text-2xl font-normal">Farms</h2>
         <label className="flex h-11 flex-none items-center gap-2 rounded-[10px] border border-border bg-bg px-3 text-muted focus-within:outline focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2">
-          <Search aria-hidden="true" size={17} strokeWidth={1.5} />
+          <Icon icon={Search} />
           <span className="sr-only">Search farms</span>
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search farms" className="min-w-0 flex-1 bg-transparent text-sm text-text outline-none placeholder:text-muted" />
         </label>
@@ -116,7 +117,7 @@ export function AppShell({
           onClick={() => setDialogOpen(true)}
           className="mt-4 flex min-h-11 flex-none items-center gap-2 rounded-lg border border-dashed border-border px-3 text-sm text-muted hover:bg-raised hover:text-text"
         >
-          <span aria-hidden="true" className="text-lg leading-none">+</span> Add farm
+          <Icon icon={Plus} /> Add farm
         </button>
       </aside>}
 
@@ -130,7 +131,7 @@ export function AppShell({
                 aria-label={`Settings, signed in as ${email}`}
                 className="flex min-h-11 min-w-0 items-center gap-2 rounded-[10px] px-2 text-sm text-muted hover:bg-raised hover:text-text"
               >
-                <Settings aria-hidden="true" size={18} strokeWidth={1.5} />
+                <Icon icon={Settings} />
                 <span title={email} className="max-w-[160px] truncate min-[768px]:max-w-[260px]">{email}</span>
               </Link>
               <span className="min-[768px]:hidden">
@@ -143,10 +144,10 @@ export function AppShell({
       </main>
 
       <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-30 grid min-w-0 grid-cols-5 border-t border-border bg-surface px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 min-[768px]:hidden">
-        {allLinks.map(({ href, label, Icon }) => {
+        {allLinks.map(({ href, label, Icon: Glyph }) => {
           const active = activeFor(pathname, href);
           return <Link key={href} href={href} aria-label={label} aria-current={active ? "page" : undefined} className={`flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs focus-visible:outline-offset-[-2px] ${active ? "text-primary" : "text-muted"}`}>
-            <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
+            <Icon icon={Glyph} />
             <span className="text-sm">{label}</span>
           </Link>;
         })}

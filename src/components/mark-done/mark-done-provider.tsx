@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { useRouter } from "next/navigation";
 import { Check, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { Modal } from "@/components/ui/modal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Toast } from "@/components/ui/toast";
@@ -249,7 +250,7 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
               {preview && !saved ? (
                 <>
                   <div className="mb-5 rounded-[10px] border border-border bg-raised px-4 py-3">
-                    <p className="flex items-center gap-2 font-medium"><Check aria-hidden="true" size={18} />{preview.stageName}</p>
+                    <p className="flex items-center gap-2 font-medium"><Icon icon={Check} size="inline" />{preview.stageName}</p>
                     <p className="mt-1 text-sm text-muted">Stage {preview.stagePosition} for {preview.farmName}</p>
                   </div>
                   {earlier.length ? <p className="mb-5 rounded-[10px] border border-border px-4 py-3 text-sm text-muted">{earlier.join(", ")} not marked done yet. You can still mark this one.</p> : null}
@@ -266,7 +267,7 @@ export function MarkDoneProvider({ children }: { children: ReactNode }) {
                   <div className="mt-5">
                     <label htmlFor="mark-done-photos" className="mb-2 block text-sm font-medium">Add photos <span className="font-normal text-muted">Optional · multiple</span></label>
                     <label htmlFor="mark-done-photos" className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[10px] border border-dashed border-border bg-raised px-4 py-3">
-                      <ImagePlus aria-hidden="true" size={20} className="text-primary" />
+                      <Icon icon={ImagePlus} className="text-primary" />
                       <span><span className="block font-medium">Choose photos</span><span className="text-sm text-muted">JPEG, PNG or WebP</span></span>
                     </label>
                     <input id="mark-done-photos" type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" onChange={onFiles} />

@@ -6,6 +6,7 @@ import { ConfigError } from "@/components/auth/config-error";
 import { signOut } from "@/lib/auth/actions";
 import { readSession } from "@/lib/auth/session";
 import { SectionStack } from "@/components/ui/section";
+import { Icon } from "@/components/ui/icon";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 
@@ -69,7 +70,7 @@ export default async function SettingsPage() {
                 type="submit"
                 className="flex min-h-11 items-center gap-2 rounded-[10px] border border-border px-4 text-sm text-text hover:bg-raised"
               >
-                <LogOut aria-hidden="true" size={18} strokeWidth={1.5} />
+                <Icon icon={LogOut} />
                 Sign out
               </button>
             </form>

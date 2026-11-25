@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ImageOff, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Icon } from "@/components/ui/icon";
 import { PhotoLightbox } from "@/components/farms/photo-lightbox";
 import { PhotoUploadDialog } from "@/components/farms/photo-upload-dialog";
 import { photoAltText } from "@/components/farms/photo-alt";
@@ -65,7 +66,7 @@ export function PhotosPanel({
           variant="secondary"
           onClick={() => inputRef.current?.click()}
         >
-          <ImagePlus aria-hidden="true" size={18} strokeWidth={1.5} />
+          <Icon icon={ImagePlus} />
           Add photos
         </Button>
         <input
@@ -111,7 +112,7 @@ export function PhotosPanel({
                       />
                     ) : (
                       <span className="flex h-full w-full flex-col items-center justify-center gap-2 px-2 text-muted">
-                        <ImageOff aria-hidden="true" size={22} strokeWidth={1.5} />
+                        <Icon icon={ImageOff} />
                         <span className="text-center text-sm">Photo unavailable</span>
                       </span>
                     )}

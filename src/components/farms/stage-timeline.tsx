@@ -10,6 +10,7 @@ import { setPlantingDate, setStageDueOverride, undoStageDone } from "@/lib/mark-
 import { useMarkDone } from "@/components/mark-done/mark-done-provider";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { useRouter } from "next/navigation";
 import { formatUkShortDate } from "@/lib/format/dates";
 
@@ -50,7 +51,7 @@ export function StageTimeline({ rows, farmId, today, plantingDate }: { rows: Sta
         <ol className="px-2 py-2 min-[768px]:px-3">
           {rows.map((row, index) => {
             const variant = pillStatus[row.state];
-            const Icon = statusIcons[variant];
+            const StatusIcon = statusIcons[variant];
             const done = row.state === "done";
 
             return (
@@ -64,7 +65,7 @@ export function StageTimeline({ rows, farmId, today, plantingDate }: { rows: Sta
                   <span
                     className={`flex h-7 w-7 flex-none items-center justify-center rounded-full border ${markerClass[row.state]}`}
                   >
-                    <Icon aria-hidden="true" size={15} strokeWidth={1.7} />
+                    <Icon icon={StatusIcon} size="inline" />
                   </span>
                   {index < rows.length - 1 ? (
                     <span aria-hidden="true" className="mt-1 w-px flex-1 bg-border" />
@@ -173,7 +174,7 @@ function StageActions({ row, farmId, today, plantingDate, onMarkDone, onResult }
           if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); setOpen(true); requestAnimationFrame(() => menuRef.current?.querySelector<HTMLButtonElement>("button")?.focus()); }
           if (event.key === "Escape") setOpen(false);
         }} className="flex h-11 w-11 items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text">
-          <MoreHorizontal aria-hidden="true" size={20} />
+          <Icon icon={MoreHorizontal} />
         </button>
         {open ? <div ref={menuRef} role="menu" aria-label={`${row.name} actions`} onKeyDown={(event) => {
           const items = Array.from(menuRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);

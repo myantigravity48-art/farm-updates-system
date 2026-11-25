@@ -7,6 +7,7 @@ import { useMarkDone } from "@/components/mark-done/mark-done-provider";
 import { StatusPill, type StatusVariant } from "@/components/status-pill";
 import { buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Icon } from "@/components/ui/icon";
 import type { ScheduleFilterStatus, SchedulePageGroup, SchedulePageRow } from "@/lib/schedule-page/build-schedule-page";
 
 const edgeClass: Record<SchedulePageRow["status"], string> = {
@@ -51,7 +52,7 @@ function ScheduleRow({ row }: { row: SchedulePageRow }) {
             <span className="min-[1024px]:col-start-3 min-[1024px]:justify-self-start"><StatusPill status={variant[row.status]} label={row.phrase} /></span>
             {row.canMarkDone ? (
               <button type="button" onClick={() => openMarkDone(row.farmStageId)} aria-label={`Mark ${row.stageName} done on ${row.farmName}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-border bg-surface px-3 text-sm font-medium text-text hover:bg-raised min-[1024px]:justify-self-end">
-                <Check aria-hidden="true" size={17} strokeWidth={1.7} />
+                <Icon icon={Check} />
                 Mark done
               </button>
             ) : null}

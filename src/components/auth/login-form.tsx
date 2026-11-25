@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useActionState, useId, useState } from "react";
+import { Icon } from "@/components/ui/icon";
 import { signIn } from "@/lib/auth/actions";
 import { initialSignInState } from "@/lib/auth/types";
 
@@ -57,9 +58,9 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
             className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-[10px] text-muted hover:text-text"
           >
             {showPassword ? (
-              <EyeOff aria-hidden="true" size={20} strokeWidth={1.5} />
+              <Icon icon={EyeOff} />
             ) : (
-              <Eye aria-hidden="true" size={20} strokeWidth={1.5} />
+              <Icon icon={Eye} />
             )}
           </button>
         </div>
@@ -68,7 +69,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       <div aria-live="assertive" aria-atomic="true" className="min-h-0">
         {state.error ? (
           <p className="mt-4 flex items-start gap-2 text-sm text-overdue">
-            <AlertCircle aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+            <Icon icon={AlertCircle} size="inline" className="mt-0.5 shrink-0" />
             <span>{state.error}</span>
           </p>
         ) : null}

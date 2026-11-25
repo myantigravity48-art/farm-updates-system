@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useActionState, type KeyboardEvent } from 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ImageOff, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { photoAltText } from "@/components/farms/photo-alt";
 import { deletePhoto, type PhotoActionState } from "@/lib/photos/actions";
 import { formatUkDate } from "@/lib/format/dates";
@@ -140,7 +141,7 @@ export function PhotoLightbox({
             aria-label="Close photo viewer"
             className="ml-auto flex h-11 w-11 flex-none items-center justify-center rounded-[10px] text-muted hover:bg-raised hover:text-text"
           >
-            <X aria-hidden="true" size={20} strokeWidth={1.5} />
+            <Icon icon={X} />
           </button>
         </header>
 
@@ -157,7 +158,7 @@ export function PhotoLightbox({
             />
           ) : (
             <div className="flex flex-col items-center gap-2 py-16 text-muted">
-              <ImageOff aria-hidden="true" size={28} strokeWidth={1.5} />
+              <Icon icon={ImageOff} />
               <p className="text-sm">Photo unavailable</p>
             </div>
           )}
@@ -218,7 +219,7 @@ export function PhotoLightbox({
               aria-label="Previous photo"
               disabled={photos.length < 2}
             >
-              <ChevronLeft aria-hidden="true" size={18} strokeWidth={1.5} />
+              <Icon icon={ChevronLeft} />
               <span className="min-[768px]:sr-only">Previous</span>
             </Button>
             <Button
@@ -229,7 +230,7 @@ export function PhotoLightbox({
               disabled={photos.length < 2}
             >
               <span className="min-[768px]:sr-only">Next</span>
-              <ChevronRight aria-hidden="true" size={18} strokeWidth={1.5} />
+              <Icon icon={ChevronRight} />
             </Button>
           </div>
         </footer>

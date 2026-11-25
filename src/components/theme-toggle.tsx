@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useSyncExternalStore } from "react";
+import { Icon } from "@/components/ui/icon";
 
 function subscribe() {
   return () => {};
@@ -30,7 +31,7 @@ export function ThemeToggle() {
       title={label}
       className="flex h-11 w-11 items-center justify-center rounded-xl text-muted hover:bg-raised hover:text-text"
     >
-      {isDark ? <Sun aria-hidden="true" size={20} strokeWidth={1.5} /> : <Moon aria-hidden="true" size={20} strokeWidth={1.5} />}
+      {isDark ? <Icon icon={Sun} /> : <Icon icon={Moon} />}
     </button>
   );
 }

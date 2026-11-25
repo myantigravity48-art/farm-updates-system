@@ -2,6 +2,7 @@
 
 import { AlertCircle, Check } from "lucide-react";
 import { useActionState, useId } from "react";
+import { Icon } from "@/components/ui/icon";
 import { changePassword } from "@/lib/auth/actions";
 import { initialChangePasswordState } from "@/lib/auth/types";
 
@@ -53,9 +54,9 @@ export function ChangePasswordForm() {
         {state.message ? (
           <p className={`mt-3 flex items-start gap-2 text-sm ${isError ? "text-overdue" : "text-primary"}`}>
             {isError ? (
-              <AlertCircle aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+              <Icon icon={AlertCircle} size="inline" className="mt-0.5 shrink-0" />
             ) : isSuccess ? (
-              <Check aria-hidden="true" size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+              <Icon icon={Check} size="inline" className="mt-0.5 shrink-0" />
             ) : null}
             <span>{state.message}</span>
           </p>

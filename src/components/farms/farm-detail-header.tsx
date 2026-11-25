@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { FarmDetailActions } from "@/components/farms/farm-detail-actions";
 import { StatusPill } from "@/components/status-pill";
+import { Icon } from "@/components/ui/icon";
 import type { FarmDetailView } from "@/lib/data/types";
 
 export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
@@ -16,7 +17,7 @@ export function FarmDetailHeader({ farm }: { farm: FarmDetailView }) {
         >
           Farms
         </Link>
-        <ChevronRight aria-hidden="true" size={16} strokeWidth={1.5} className="flex-none" />
+        <Icon icon={ChevronRight} size="inline" className="flex-none" />
         <span aria-current="page" className="min-w-0 truncate text-text">
           {farm.name}
         </span>
