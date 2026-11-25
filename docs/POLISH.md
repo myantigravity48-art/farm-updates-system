@@ -21,7 +21,7 @@ Do not work on this until every v1 feature is built and working (see `STATUS.md`
 - The Mark done panel and stage actions menu are intentionally plain. Polish their spacing and hierarchy after every v1 feature is built and working.
 - Farms has no dedicated design export. The page currently reuses the shared cards, tokens and layout; give it a proper visual pass for both themes at desktop and mobile widths.
 - Farm detail: the stage timeline and photo grid are plain. Polish them last, after every v1 feature works: spacing and hierarchy on the 8 stage rows, the done and next-up treatments, the empty notes and photos states, and the tile hover and focus states.
-- Icons feel generic. Choose ONE icon family and apply it everywhere (candidates: Phosphor, Tabler, or Lucide at a different weight). Decide once.
+- Icons feel generic. Choose ONE icon family and apply it everywhere (candidates: Phosphor, Tabler, or Lucide at a different weight). Decide once. DONE in polish pass 4: Lucide stays, behind one wrapper.
 - The app feels bland. Add depth, hierarchy and life while staying inside the tokens in `DESIGN.md`: surface layering, spacing rhythm, micro-interactions, considered empty states, and motion that respects reduced-motion settings.
 - Settings: the Change password form is not centred and hangs to the left. Fix the layout and align it with the page's content width.
 - Login: add the licensed photograph at `public/login-moss.jpg` (about 1600px wide, under 300 KB). The login panel picks it up automatically. Do not crop it from a design mockup, and check the licence first.
@@ -64,6 +64,16 @@ Eleven visible fixes, inferred from code and not yet verified in a browser:
 9. Numerals: one `.numeric` class replaces every `tabular-nums`; lifecycle month labels are 12px, the Mark done heading is 28px and the login title is 36px.
 10. Type: Fraunces headings below 28px use 400 instead of 300; the 18px farm-name spans stay light.
 11. Empty states: the dashboard "Nothing needs attention" box, the farm rail lines and the alerts notice use the shared `EmptyState`.
+
+## Completed in polish pass 4 (2026-11-25)
+
+Six system-level items, inferred from code and not verified in a browser:
+1. Icons: one `Icon` wrapper in `src/components/ui/icon.tsx`; Lucide at 1.5px stroke, `control` 20px, `inline` 16px, `large` 24px reserved for a prominent primary action (currently unused). The shell's Add farm uses Lucide `Plus`; icon-only controls keep their `aria-label`s.
+2. Interaction states: `hover:` is now a custom variant limited to `(hover: hover) and (pointer: fine)`; `.pressable` is a 140ms scale(.97) plus opacity press, `.pressable-quiet` is opacity only for schedule and farm-rail rows; one 2px focus ring at 2px offset; disabled controls share `opacity: .5` and `cursor: not-allowed`; loading regions carry `aria-busy`; the reduced-motion branch keeps opacity and drops transforms.
+3. Motion: sheets, dialogs and toasts fade and lift 10-12px in 160-200ms, ease-out, transform and opacity only; the final keyframe returns `transform: none`. No layout animation, no bounce, no motion on high-frequency rows.
+4. PWA: light and dark `themeColor` from the `--bg` token; `src/app/manifest.ts` with name, short_name, start_url, standalone, background and theme colours; `user-select: none` on controls only; `overscroll-behavior: contain` inside panels only. No manifest icons yet.
+5. Safe areas: the photo lightbox pads its header and footer with `max(base, env(safe-area-inset-*))`; the shared modal keeps the drawer inset and now pads the dialog variant too.
+6. Leftovers: the forgot-password title is 36px; the alerts no-recipient notice is a due-soon callout with `AlertCircle` and is asserted in `src/lib/design/contrast.test.ts`; the body `tnum` rule is unchanged.
 
 # Lifecycle editor
 
