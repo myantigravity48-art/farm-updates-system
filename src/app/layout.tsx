@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 /** Browser chrome colours come from the --bg token in globals.css. */
 export const viewport: Viewport = {
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#F4F3EC" },
     { media: "(prefers-color-scheme: dark)", color: "#0A110D" },

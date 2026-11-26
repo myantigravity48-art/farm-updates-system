@@ -57,7 +57,7 @@ export function AppShell({
 
   return (
     <div className="min-h-dvh min-w-0 bg-bg text-text">
-      <aside aria-label="Primary navigation" className="fixed inset-y-0 left-0 z-20 hidden w-[72px] flex-col items-center border-r border-border bg-surface py-4 min-[768px]:flex">
+      <aside aria-label="Primary navigation" className="fixed inset-y-0 left-0 z-20 hidden w-[72px] flex-col items-center border-r border-border bg-surface pb-4 pt-[max(16px,env(safe-area-inset-top))] min-[768px]:flex">
         <Link href="/" aria-label="Farm updates system dashboard" className="pressable mb-7 flex h-11 w-11 items-center justify-center rounded-xl border border-border text-primary focus-visible:outline-offset-2">
           <Icon icon={Leaf} />
         </Link>
@@ -77,7 +77,7 @@ export function AppShell({
         </div>
       </aside>
 
-      {showFarmPanel && <aside aria-label="Farm list" className="fixed inset-y-0 left-[72px] z-10 hidden w-[248px] flex-col border-r border-border bg-surface px-4 py-7 min-[1024px]:flex">
+      {showFarmPanel && <aside aria-label="Farm list" className="fixed inset-y-0 left-[72px] z-10 hidden w-[248px] flex-col border-r border-border bg-surface px-4 pb-7 pt-[max(28px,env(safe-area-inset-top))] min-[1024px]:flex">
         <h2 className="mb-5 font-display text-2xl font-normal">Farms</h2>
         <label className="flex h-11 flex-none items-center gap-2 rounded-[10px] border border-border bg-bg px-3 text-muted focus-within:outline focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2">
           <Icon icon={Search} />
@@ -117,7 +117,7 @@ export function AppShell({
         </button>
       </aside>}
 
-      <main className={`min-h-dvh min-w-0 px-4 pb-24 pt-5 min-[768px]:ml-[72px] min-[768px]:px-6 min-[768px]:pb-10 min-[768px]:pt-9 ${showFarmPanel ? "min-[1024px]:ml-[320px]" : ""}`}>
+      <main className={`min-h-dvh min-w-0 pb-24 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] pt-[max(20px,env(safe-area-inset-top))] min-[768px]:ml-[72px] min-[768px]:pb-10 min-[768px]:pl-[max(24px,env(safe-area-inset-left))] min-[768px]:pr-[max(24px,env(safe-area-inset-right))] min-[768px]:pt-[max(36px,env(safe-area-inset-top))] ${showFarmPanel ? "min-[1024px]:ml-[320px]" : ""}`}>
         <div className="mx-auto w-full max-w-[1200px]">
           <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="mr-auto font-medium min-[768px]:hidden">Farm updates system</span>
