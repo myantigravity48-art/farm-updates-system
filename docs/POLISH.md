@@ -75,6 +75,25 @@ Six system-level items, inferred from code and not verified in a browser:
 5. Safe areas: the photo lightbox pads its header and footer with `max(base, env(safe-area-inset-*))`; the shared modal keeps the drawer inset and now pads the dialog variant too.
 6. Leftovers: the forgot-password title is 36px; the alerts no-recipient notice is a due-soon callout with `AlertCircle` and is asserted in `src/lib/design/contrast.test.ts`; the body `tnum` rule is unchanged.
 
+## Completed in polish pass 5 (2026-11-26)
+
+Final polish pass. Six items, inferred from code and not verified in a browser:
+1. Farms search: `/farms` has a 44px search field (full width on phone, 360px maximum on desktop, 16px text, `aria-label`) that filters by name with the same case- and accent-insensitive matcher as the farm rail. The term lives in `?q=`, so a refresh keeps it. No results uses the shared `EmptyState` with one "Clear search" action. The matcher is `src/lib/farms/search.ts` with unit tests.
+2. Safe areas: `viewportFit: "cover"` is set. The shell's top header, both fixed desktop panels, the app loading frame and the full-height dialog variant pad the top with `env(safe-area-inset-top)`. The shell content gutters use the left and right insets in landscape. The bottom tab bar and sheets keep their bottom inset.
+3. Theme colour: the `theme-color` meta is a single value with no media attribute. An inline script in the root layout sets it from the stored theme before the first paint, and `ThemeColorSync` rewrites it to the computed `--bg` whenever the in-app toggle changes.
+4. App icons: `src/app/icon.tsx` (32px), `src/app/apple-icon.tsx` (180px) and the `/icon-192`, `/icon-512` and `/icon-512-maskable` route handlers use `ImageResponse` and one inline-SVG sprout mark, moss green on the dark `--bg`. The maskable mark sits inside the central 60% of the canvas. All three routes are static and listed in the manifest.
+5. Proxy: `/manifest.webmanifest`, `/icon`, `/apple-icon`, `/icon-192`, `/icon-512`, `/icon-512-maskable` and `/favicon.ico` are public paths, with tests in `src/lib/auth/public-path.test.ts`.
+6. Login photograph: the panel already expected `public/login-moss.jpg`; the file was stored as `public/login-moss (1).jpg`. It is renamed, so the panel now finds it. The file is 375 KB, above the 300 KB guidance.
+
+## Polish pass complete (2026-11-26)
+
+The polish pass is complete. Deferred:
+- Schedule farm picker: the farm filter is still a native select. A searchable picker is deferred until it can be built with existing primitives or an approved dependency.
+- Farms density switch: search shipped now; a compact list is deferred until the farm count approaches 25.
+- Login photograph: compress `public/login-moss.jpg` below 300 KB and confirm the licence before launch.
+- Visual verification: the viewport matrix and both themes still need checking in a real browser and on a physical phone. Every claim in passes 3 to 5 is inferred from code.
+- Remove `/dev/tokens` and `/dev/emails` before launch.
+
 # Lifecycle editor
 
 - The lifecycle page is plain and has no dedicated Stage template design export. Polish it later.
