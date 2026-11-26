@@ -24,7 +24,7 @@ Do not work on this until every v1 feature is built and working (see `STATUS.md`
 - Icons feel generic. Choose ONE icon family and apply it everywhere (candidates: Phosphor, Tabler, or Lucide at a different weight). Decide once. DONE in polish pass 4: Lucide stays, behind one wrapper.
 - The app feels bland. Add depth, hierarchy and life while staying inside the tokens in `DESIGN.md`: surface layering, spacing rhythm, micro-interactions, considered empty states, and motion that respects reduced-motion settings.
 - Settings: the Change password form is not centred and hangs to the left. Fix the layout and align it with the page's content width.
-- Login: add the licensed photograph at `public/login-moss.jpg` (about 1600px wide, under 300 KB). The login panel picks it up automatically. Do not crop it from a design mockup, and check the licence first.
+- Login: the licensed photograph is now at `public/login-moss.jpg` and the panel picks it up automatically. The file is 375 KB, above the 300 KB guidance; compress it before launch and confirm the licence. Do not crop it from a design mockup.
 - The Alert settings design export still shows WhatsApp. Follow `DESIGN.md` (email only), not the export.
 - The Alerts page is intentionally plain. Polish its layout and hierarchy after all v1 features are built and working.
 - The Dashboard has no dedicated treatment for large numbers of farms beyond the 8-row caps: Needs attention and Farm progress stop at 8 rows each ("+ N more" / "View all N farms"), Coming up at 4, and there is no pagination or density handling for many farms. Revisit when 50+ farms are live.

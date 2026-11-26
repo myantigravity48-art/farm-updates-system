@@ -62,7 +62,7 @@ Before launch, remove `/dev/tokens` and `/dev/emails`.
 - Safe-area padding resolves to zero without `viewport-fit=cover` in the viewport meta. Adding it would change shell layout on every screen, so it is left as an owner decision.
 - `renderDoneNotice` inputs omit `farmId`, while the email-link rule says each message links to `/farms/${farmId}`. The current done notice links to `appUrl` until that contract is clarified.
 - `/forgot-password` is a stub with no email. Replace it after Resend SMTP is set up (TODO in the page and `docs/AUTH.md`).
-- The login desktop panel uses `public/login-moss.jpg` when present. The real photograph still needs to be added.
+- The login desktop panel uses `public/login-moss.jpg`, which is now present. The file is 375 KB, above the 300 KB guidance in `docs/POLISH.md`; compress it before launch.
 - The Farms page has no dedicated design export. It reuses the shared cards and tokens for now and is on the polish list in `docs/POLISH.md`.
 - The Farm detail page shows the 50 newest notes and 60 newest photos with no paging yet. Revisit when farms collect more.
 
