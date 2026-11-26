@@ -3,7 +3,16 @@ import { PageHeader } from "@/components/page-header";
 import { getFarmSummaries, getStageConfig } from "@/lib/data/farms";
 import type { StageConfig } from "@/lib/data/types";
 
-export default async function FarmsPage() {
+type SearchParams = Record<string, string | string[] | undefined>;
+
+export default async function FarmsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const query = await searchParams;
+  const rawQuery = query.q;
+  const initialQuery = Array.isArray(rawQuery) ? (rawQuery[0] ?? "") : (rawQuery ?? "");
   const [farmResult, stageResult] = await Promise.allSettled([
     getFarmSummaries(),
     getStageConfig(),
@@ -22,7 +31,7 @@ export default async function FarmsPage() {
   return (
     <>
       <PageHeader title="Farms" description="Every plot and where it is in the process." />
-      <FarmsScreen farms={farms} stageConfig={stageConfig} error={error} />
+      <FarmsScreen farms={farms} stageConfig={stageConfig} error={error} initialQuery={initialQuery} />
     </>
   );
 }

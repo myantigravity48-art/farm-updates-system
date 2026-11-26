@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 import { Toast } from "@/components/ui/toast";
 import type { FarmSummary, StageConfig } from "@/lib/data/types";
+import { filterFarms } from "@/lib/farms/search";
 
 const primaryLinks = [
   { href: "/", label: "Dashboard", Icon: LayoutDashboard },
@@ -44,15 +45,10 @@ export function AppShell({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const showFarmPanel = pathname === "/" || pathname === "/farms" || pathname.startsWith("/farms/");
-  const visibleFarms = useMemo(() => {
-    const needle = query.trim().toLowerCase();
-    if (!needle) return farms;
-    return farms.filter(
-      (farm) =>
-        farm.name.toLowerCase().includes(needle) ||
-        (farm.location ?? "").toLowerCase().includes(needle),
-    );
-  }, [farms, query]);
+  const visibleFarms = useMemo(
+    () => filterFarms(farms, query, (farm) => `${farm.name} ${farm.location ?? ""}`),
+    [farms, query],
+  );
 
   const handleAdded = (message: string) => {
     setToast(message);
